@@ -29,7 +29,7 @@ Aceder à API em `http://localhost:3000`
 ```bash
 cd frontend
 npm install
-ng serve
+ng serve --open
 ```
 
 Aceder a aplicação em `http://localhost:4200`
