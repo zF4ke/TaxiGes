@@ -17,6 +17,11 @@ npm install
 npm run dev
 ```
 
+Para popular a base de dados com dados de teste:
+```bash
+npm run seed
+```
+
 Aceder à API em `http://localhost:3000`
 
 ### Frontend
