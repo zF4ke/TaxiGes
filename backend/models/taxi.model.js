@@ -1,12 +1,5 @@
 const mongoose = require('mongoose');
-
-const TAXI_BRANDS = ['Toyota', 'Ford', 'Mercedes', 'Volkswagen'];
-const TAXI_MODELS = {
-  Toyota: ['Corolla', 'Prius', 'Camry'],
-  Ford: ['Focus', 'Fiesta', 'Mondeo'],
-  Mercedes: ['C-Class', 'E-Class', 'S-Class'],
-  Volkswagen: ['Golf', 'Passat', 'Polo'],
-};
+const { TAXI_BRANDS, TAXI_MODELS } = require('../utils/constants');
 
 const taxiSchema = new mongoose.Schema({
     matricula: {

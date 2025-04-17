@@ -1,0 +1,78 @@
+<div class="form-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Adicionar Novo Táxi</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="taxiForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Matrícula</mat-label>
+          <input matInput placeholder="Ex: 00-AA-00" formControlName="matricula" uppercase>
+          <mat-error *ngIf="taxiForm.get('matricula')?.hasError('required')">
+            Matrícula é obrigatória
+          </mat-error>
+          <mat-error *ngIf="taxiForm.get('matricula')?.hasError('pattern')">
+            Formato inválido. Use o formato XX-XX-XX
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Ano de Compra</mat-label>
+          <input matInput type="number" placeholder="Ex: 2023" formControlName="anoCompra">
+          <mat-error *ngIf="taxiForm.get('anoCompra')?.hasError('required')">
+            Ano de compra é obrigatório
+          </mat-error>
+          <mat-error *ngIf="taxiForm.get('anoCompra')?.hasError('min')">
+            Ano inválido (mínimo: 1900)
+          </mat-error>
+          <mat-error *ngIf="taxiForm.get('anoCompra')?.hasError('max')">
+            O ano não pode ser no futuro
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Marca</mat-label>
+          <mat-select formControlName="marca">
+            <mat-option *ngFor="let marca of marcas" [value]="marca">
+              {{marca}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="taxiForm.get('marca')?.hasError('required')">
+            Marca é obrigatória
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Modelo</mat-label>
+          <mat-select formControlName="modelo" [disabled]="!taxiForm.get('marca')?.value">
+            <mat-option *ngFor="let modelo of modelos" [value]="modelo">
+              {{modelo}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="taxiForm.get('modelo')?.hasError('required')">
+            Modelo é obrigatório
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nível de Conforto</mat-label>
+          <mat-select formControlName="conforto">
+            <mat-option *ngFor="let opcao of confortoOpcoes" [value]="opcao">
+              {{opcao}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="taxiForm.get('conforto')?.hasError('required')">
+            Nível de conforto é obrigatório
+          </mat-error>
+        </mat-form-field>
+
+        <div class="actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="!taxiForm.valid">
+            Adicionar Táxi
+          </button>
+          <button mat-button type="button" routerLink="/list-taxis">Cancelar</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

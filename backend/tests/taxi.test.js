@@ -11,7 +11,7 @@ const mockTaxiData = [
     {
         matricula: "CC-34-DD",
         anoCompra: 2024,
-        marca: "Mercedes",
+        marca: "Mercedes-Benz",
         modelo: "E-Class",
         conforto: "luxuoso"
     },
