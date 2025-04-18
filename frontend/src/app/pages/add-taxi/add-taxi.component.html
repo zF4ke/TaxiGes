@@ -22,9 +22,6 @@
           <mat-error *ngIf="taxiForm.get('anoCompra')?.hasError('required')">
             Ano de compra é obrigatório
           </mat-error>
-          <mat-error *ngIf="taxiForm.get('anoCompra')?.hasError('min')">
-            Ano inválido (mínimo: 1900)
-          </mat-error>
           <mat-error *ngIf="taxiForm.get('anoCompra')?.hasError('max')">
             O ano não pode ser no futuro
           </mat-error>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { TaxiService } from '../../services/taxi.service';
@@ -38,11 +38,10 @@ export class AddTaxiComponent implements OnInit {
     this.taxiForm = this.fb.group({
       matricula: ['', [
         Validators.required,
-        Validators.pattern('^[A-Z0-9]{2}-[A-Z0-9]{2}-[A-Z0-9]{2}$')
+        plateValidator()
       ]],
       anoCompra: ['', [
         Validators.required,
-        Validators.min(1900),
         Validators.max(this.currentYear)
       ]],
       marca: ['', Validators.required],
@@ -68,4 +67,26 @@ export class AddTaxiComponent implements OnInit {
       });
     }
   }
+}
+
+function plateValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const plateRegex = /^[A-Z0-9]{2}-[A-Z0-9]{2}-[A-Z0-9]{2}$/;
+    if (!plateRegex.test(control.value)) {
+      return { invalidPlate: 'Formato invalido. Use o formato XX-XX-XX.' };
+    }
+
+    const [part1, part2, part3] = control.value.split('-');
+    const isAllNumbers = (str: string) => /^[0-9]{2}$/.test(str);
+    const isAllLetters = (str: string) => /^[A-Z]{2}$/.test(str);
+
+    if (
+      (isAllNumbers(part1) && isAllNumbers(part2) && isAllNumbers(part3)) ||
+      (isAllLetters(part1) && isAllLetters(part2) && isAllLetters(part3))
+    ) {
+      return { invalidPlate: 'Os pares nao podem ser todos numeros ou todas letras.' };
+    }
+
+    return null;
+  };
 }
