@@ -1,4 +1,4 @@
-const { TAXI_BRANDS, TAXI_MODELS } = require('./constants');
+const { TAXI_BRANDS, TAXI_MODELS, TAXI_COMFORT } = require('./constants');
 
 function validateRequiredFields({ matricula, anoCompra, marca, modelo, conforto }) {
     if (!matricula || !anoCompra || !marca || !modelo || !conforto) {
@@ -13,9 +13,14 @@ function validatePlate(matricula) {
     }
 
     const [part1, part2, part3] = matricula.split('-');
-
     const isAllNumbers = (str) => /^[0-9]{2}$/.test(str);
     const isAllLetters = (str) => /^[A-Z]{2}$/.test(str);
+    const hasMixedCharacters = (str) => !isAllNumbers(str) && !isAllLetters(str);
+
+    // Check if any pair has mixed characters
+    if (hasMixedCharacters(part1) || hasMixedCharacters(part2) || hasMixedCharacters(part3)) {
+      return { patternError: true };
+    }
 
     if (
         (isAllNumbers(part1) && isAllNumbers(part2) && isAllNumbers(part3)) ||
@@ -50,7 +55,7 @@ function validateModel(marca, modelo) {
 }
 
 function validateComfort(conforto) {
-    if (!['básico', 'luxuoso'].includes(conforto)) {
+    if (!TAXI_COMFORT.includes(conforto)) {
         return 'Nivel de conforto invalido. Use "básico" ou "luxuoso".';
     }
     return null;

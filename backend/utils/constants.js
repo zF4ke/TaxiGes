@@ -10,7 +10,7 @@ module.exports = {
         'Hyundai',
         'Nissan',
         'Peugeot'
-  ],
+    ],
     TAXI_MODELS: {
         'Toyota': ['Camry', 'Corolla', 'Prius', 'Avensis'],
         'Volkswagen': ['Passat', 'Jetta', 'Arteon'],
@@ -22,5 +22,6 @@ module.exports = {
         'Hyundai': ['Sonata', 'Elantra', 'IONIQ'],
         'Nissan': ['Altima', 'Sentra', 'Leaf'],
         'Peugeot': ['508', '308', '408']
-    }
+    },
+    TAXI_COMFORT: ['básico', 'luxuoso'],
 };
