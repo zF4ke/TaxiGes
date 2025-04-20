@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/database');
 const taxiRoutes = require('./routes/taxi.routes');
+const precoRoutes = require('./routes/preco.routes');
 require('dotenv').config();
 
 const app = express();
@@ -14,6 +15,7 @@ app.use(express.json());
 
 // API Routes
 app.use('/api/taxis', taxiRoutes);
+app.use('/api/precos', precoRoutes);
 
 app.get('/', (req, res) => {
     res.send('TaxiGes API is running!');
