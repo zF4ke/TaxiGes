@@ -1,0 +1,49 @@
+.form-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  mat-card {
+    max-width: 600px;
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  
+  mat-card-header {
+    margin-bottom: 16px;
+  }
+  
+  mat-card-title {
+    margin-bottom: 20px;
+  }
+  
+  mat-card-content {
+    padding: 20px;
+  }
+
+  .info-message {
+    color: #ff9800;
+    font-size: 14px;
+    margin-top: 16px;
+  }

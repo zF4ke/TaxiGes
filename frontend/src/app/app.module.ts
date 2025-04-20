@@ -23,13 +23,15 @@ import { AppComponent } from './app.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 import { AddTaxiComponent } from './pages/add-taxi/add-taxi.component';
 import { ListTaxisComponent } from './pages/list-taxis/list-taxis.component';
-
-
+import { ListPriceComponent } from './pages/list-price/list-price.component';
+import { AddPriceComponent } from './pages/add-price/add-price.component';
 
 const routes: Routes = [
   { path: '', component: LandingPageComponent },
   { path: 'add-taxi', component: AddTaxiComponent },
   { path: 'list-taxis', component: ListTaxisComponent },
+  { path: 'list-prices', component: ListPriceComponent },
+  { path: 'add-price', component: AddPriceComponent },
   { path: '**', redirectTo: '' }
 ];
 
@@ -38,7 +40,9 @@ const routes: Routes = [
     AppComponent,
     LandingPageComponent,
     AddTaxiComponent,
-    ListTaxisComponent
+    ListTaxisComponent,
+    ListPriceComponent, 
+    AddPriceComponent
   ],
   imports: [
     BrowserModule,
