@@ -1,0 +1,108 @@
+<div class="form-container">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Adicionar Novo Motorista</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="motoristaForm" (ngSubmit)="onSubmit()">
+  
+          <mat-form-field appearance="outline">
+            <mat-label>NIF</mat-label>
+            <input matInput type="text" placeholder="Ex: 123456789" formControlName="nif" maxlength="9">
+            <mat-icon matSuffix *ngIf="nif?.valid && nif?.touched" color="primary">check_circle</mat-icon>
+            <mat-error *ngIf="nif?.hasError('required')">
+              NIF é obrigatório
+            </mat-error>
+            <mat-error *ngIf="nif?.hasError('pattern') && !nif?.hasError('required')">
+              NIF deve ter 9 dígitos numéricos
+            </mat-error>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline">
+            <mat-label>Nome Completo</mat-label>
+            <input matInput type="text" placeholder="Ex: João Silva" formControlName="nome">
+            <mat-error *ngIf="nome?.hasError('required')">
+              Nome é obrigatório
+            </mat-error>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline">
+            <mat-label>Género</mat-label>
+            <mat-select formControlName="genero">
+              <mat-option *ngFor="let opcao of generoOpcoes" [value]="opcao">
+                {{opcao | titlecase}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="genero?.hasError('required')">
+              Género é obrigatório
+            </mat-error>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline">
+            <mat-label>Ano de Nascimento</mat-label>
+            <input matInput type="number" placeholder="Ex: 1990" formControlName="anoNascimento">
+            <mat-error *ngIf="anoNascimento?.hasError('required')">
+              Ano de Nascimento é obrigatório
+            </mat-error>
+            <mat-error *ngIf="anoNascimento?.hasError('min') && !anoNascimento?.hasError('required')">
+              Ano inválido
+            </mat-error>
+             <mat-error *ngIf="anoNascimento?.hasError('max') && !anoNascimento?.hasError('required')">
+              Deve ter pelo menos 18 anos
+            </mat-error>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline">
+            <mat-label>Número da Carta de Condução</mat-label>
+            <input matInput type="text" placeholder="Ex: L-1234567" formControlName="cartaConducao">
+             <mat-error *ngIf="cartaConducao?.hasError('required')">
+              Número da Carta de Condução é obrigatório
+            </mat-error>
+          </mat-form-field>
+  
+          <div formGroupName="morada" class="address-group">
+            <h3 class="address-title">Morada</h3>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Rua</mat-label>
+              <input matInput type="text" placeholder="Ex: Av. da Liberdade" formControlName="rua">
+               <mat-error *ngIf="rua?.hasError('required')">
+                Rua é obrigatória
+              </mat-error>
+            </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+              <mat-label>Número da Porta</mat-label>
+              <input matInput type="text" placeholder="Ex: 123, 1º Esq" formControlName="numeroPorta">
+              </mat-form-field>
+  
+            <mat-form-field appearance="outline">
+                <mat-label>Código Postal</mat-label>
+                <input matInput placeholder="Ex: 1600-001" formControlName="codigoPostal" maxlength="8">
+                <mat-error *ngIf="codigoPostal?.hasError('required')">
+                    Código Postal é obrigatório
+                </mat-error>
+                <mat-error *ngIf="codigoPostal?.hasError('pattern') && !codigoPostal?.hasError('required')">
+                    Formato inválido (use 0000-000)
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Localidade</mat-label>
+              <input matInput type="text" placeholder="Preenchido automaticamente ou manualmente" formControlName="localidade">
+              <mat-error *ngIf="localidade?.hasError('required')">
+                Localidade é obrigatória
+              </mat-error>
+            </mat-form-field>
+  
+          </div> <div class="actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="!motoristaForm.valid">
+              <mat-icon>save</mat-icon> Adicionar Motorista
+            </button>
+            <button mat-stroked-button type="button" routerLink="/"> <mat-icon>cancel</mat-icon> Cancelar
+            </button>
+          </div>
+  
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>

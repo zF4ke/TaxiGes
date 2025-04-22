@@ -1,18 +1,25 @@
 <mat-toolbar color="primary">
   <button mat-button routerLink="/">TaxiGes</button>
   <span class="spacer"></span>
-  <button mat-button routerLink="/list-taxis">
-    <mat-icon>list</mat-icon>
-    Lista de Táxis
+
+  <button mat-button routerLink="/list-taxis" matTooltip="Ver lista de táxis">
+    <mat-icon>local_taxi</mat-icon> Táxis
   </button>
-  <button mat-button routerLink="/add-taxi">
-    <mat-icon>add</mat-icon>
-    Adicionar Táxi
+  <button mat-button routerLink="/add-taxi" matTooltip="Adicionar novo táxi">
+    <mat-icon>add_circle_outline</mat-icon> Novo Táxi
   </button>
   <button mat-button routerLink="/list-prices">
     <mat-icon>list</mat-icon>
     Lista de Preços
   </button>
+
+  <button mat-button routerLink="/list-motoristas" matTooltip="Ver lista de motoristas">
+    <mat-icon>people</mat-icon> Motoristas
+  </button>
+  <button mat-button routerLink="/add-motorista" matTooltip="Adicionar novo motorista">
+    <mat-icon>person_add</mat-icon> Novo Motorista
+  </button>
+
 </mat-toolbar>
 
 <router-outlet></router-outlet>

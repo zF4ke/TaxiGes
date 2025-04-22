@@ -27,6 +27,10 @@ import { ListPriceComponent } from './pages/list-price/list-price.component';
 import { AddPriceComponent } from './pages/add-price/add-price.component';
 import { UpdatePriceComponent } from './pages/update-price/update-price.component';
 import { SimulateTravelComponent } from './pages/simulate-travel/simulate-travel.component';
+import { AddMotoristaComponent } from './pages/add-motorista/add-motorista.component';
+import { ListMotoristaComponent } from './pages/list-motorista/list-motorista.component';
+
+
 
 const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -36,6 +40,10 @@ const routes: Routes = [
   { path: 'add-price', component: AddPriceComponent },
   { path: 'update-price/:id', component: UpdatePriceComponent},
   { path: 'simulate-travel', component: SimulateTravelComponent},
+
+  { path: 'add-motorista', component: AddMotoristaComponent },
+  { path: 'list-motoristas', component: ListMotoristaComponent },
+
   { path: '**', redirectTo: '' }
 ];
 
@@ -48,7 +56,9 @@ const routes: Routes = [
     ListPriceComponent, 
     AddPriceComponent,
     UpdatePriceComponent,
-    SimulateTravelComponent
+    SimulateTravelComponent,
+    AddMotoristaComponent,
+    ListMotoristaComponent
   ],
   imports: [
     BrowserModule,

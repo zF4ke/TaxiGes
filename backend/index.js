@@ -3,6 +3,8 @@ const cors = require('cors');
 const connectDB = require('./config/database');
 const taxiRoutes = require('./routes/taxi.routes');
 const precoRoutes = require('./routes/preco.routes');
+const motoristaRoutes = require('./routes/motorista.routes');
+
 require('dotenv').config();
 
 const app = express();
@@ -20,6 +22,8 @@ app.use('/api/precos', precoRoutes);
 app.get('/', (req, res) => {
     res.send('TaxiGes API is running!');
 });
+
+app.use('/api/motoristas', motoristaRoutes);
 
 app.listen(PORT, () => {
     console.log(`O servidor está a rodar na porta ${PORT}`);
