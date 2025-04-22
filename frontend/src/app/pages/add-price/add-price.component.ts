@@ -11,8 +11,7 @@ import { Router } from '@angular/router';
 export class AddPriceComponent implements OnInit {
   priceForm: FormGroup;
   tipoConforto: string[] = ['básico', 'luxuoso'];
-  errorMessage: string | null = null;
-  canAddPrice = true; // Controla se o botão deve ser exibido
+  canAddPrice = true; 
 
   constructor(
     private fb: FormBuilder,
@@ -33,10 +32,9 @@ export class AddPriceComponent implements OnInit {
   checkExistingPrices(): void {
     this.precoService.getPrecos().subscribe({
       next: (prices) => {
-        // Verifica se já existem preços para os dois tipos
         const tiposExistentes = prices.map((preco: any) => preco.tipo);
         if (tiposExistentes.includes('básico') && tiposExistentes.includes('luxuoso')) {
-          this.canAddPrice = false; // Desabilita o botão
+          this.canAddPrice = false; 
         }
       },
       error: (err) => {
@@ -46,7 +44,6 @@ export class AddPriceComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.errorMessage = null;
 
     if (this.priceForm.valid) {
       this.precoService.addPrice(this.priceForm.value).subscribe({
@@ -56,12 +53,6 @@ export class AddPriceComponent implements OnInit {
         },
         error: (err) => {
           console.error('Erro ao adicionar preço:', err);
-
-          if (err.error && err.error.error === 'Já existe um preço para este tipo de conforto.') {
-            this.errorMessage = 'Já existe um preço para este tipo de conforto.';
-          } else {
-            this.errorMessage = 'Erro ao adicionar preço. Tente novamente mais tarde.';
-          }
         }
       });
     }

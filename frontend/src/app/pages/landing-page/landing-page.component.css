@@ -21,3 +21,9 @@ mat-card-content {
   padding: 16px;
   font-size: 1.1em;
 }
+
+.simulador-viagem {
+  max-width: 600px;
+  width: 100%;
+  margin: 25px;
+}

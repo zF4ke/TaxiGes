@@ -23,18 +23,15 @@ exports.createPreco = async (req, res) => {
     } catch (err) {
         console.error('Erro ao criar preco:', err);
 
-        // Trata erro de duplicação de chave
         if (err.code === 11000) {
             return res.status(400).json({ error: 'Já existe um preço para este tipo de conforto.' });
         }
 
-        // Trata outros erros de validação
         if (err.name === 'ValidationError') {
             const messages = Object.values(err.errors).map((e) => e.message);
             return res.status(400).json({ error: messages.join(', ') });
         }
 
-        // Erro genérico
         res.status(500).json({ error: 'Erro ao criar preço!' });
     }
 };
@@ -60,5 +57,18 @@ exports.atualizarPreco = async (req, res) => {
     } catch (err) {
         console.error('Erro ao atualizar o preço:', err);
         res.status(500).json({ error: 'Erro ao atualizar o preço!' });
+    }
+};
+
+exports.getPrecoById = async (req, res) => {
+    try {
+        const preco = await Preco.findById(req.params.id);
+        if (!preco) {
+        return res.status(404).json({ error: 'Preço não encontrado.' });
+        }
+        res.status(200).json(preco);
+    } catch (err) {
+        console.error('Erro ao buscar preço:', err);
+        res.status(500).json({ error: 'Erro ao buscar preço.' });
     }
 };

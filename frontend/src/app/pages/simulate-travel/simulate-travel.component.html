@@ -1,0 +1,66 @@
+<div class="form-container">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Simular uma viagem</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="!hasPrices" class="no-prices">
+            <p>Não existem preços cadastrados. Por favor, defina os preços antes de simular uma viagem.</p>
+            <button mat-raised-button color="primary" routerLink="/add-price">
+              Definir Preços
+            </button>
+        </div>
+
+        <form *ngIf="hasPrices" [formGroup]="travelForm" (ngSubmit)="onSubmit()">
+            <mat-form-field appearance="outline">
+                <mat-label>Tipo de Conforto</mat-label>
+                <mat-select formControlName="tipo">
+                  <mat-option *ngFor="let tipo of tipoConforto" [value]="tipo">
+                    {{ tipo }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="travelForm.get('tipo')?.hasError('required')">
+                  O tipo de conforto é obrigatório
+                </mat-error>
+              </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Hora de ínicio da viagem</mat-label>
+            <input matInput type="time" placeholder="Ex: 12:20" formControlName="horaInicial">
+            <mat-error *ngIf="travelForm.get('horaInicial')?.hasError('required')">
+                Hora de ínicio da viagem é obrigatório
+            </mat-error>
+            <mat-error *ngIf="travelForm.get('horaInicial')?.hasError('min')">
+              Não pode ser um valor negativo
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Hora estimada de chegada</mat-label>
+            <input matInput type="time" placeholder="Ex: 13:00" formControlName="horaFinal">
+            <mat-error *ngIf="travelForm.get('horaFinal')?.hasError('required')">
+                Hora estimada de chegada é obrigatório
+            </mat-error>
+            <mat-error *ngIf="travelForm.get('horaFinal')?.hasError('min')">
+              Não pode ser um valor negativo
+            </mat-error>
+          </mat-form-field>
+  
+          <div class="actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="!travelForm.valid">
+              Simular viagem
+            </button>
+            <button mat-button type="button" routerLink="/">Cancelar</button>
+          </div>
+        </form>
+
+        <div *ngIf="resultado" class="resultado">
+            <h3>Resultado da Simulação</h3>
+            <p><strong>Tipo de Conforto:</strong> {{ resultado.tipo }}</p>
+            <p><strong>Hora de Início:</strong> {{ resultado.horaInicial }}</p>
+            <p><strong>Hora de Fim:</strong> {{ resultado.horaFinal }}</p>
+            <p><strong>Preço Estimado:</strong> {{ resultado.preco | currency:'EUR' }}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>

@@ -10,7 +10,7 @@ import {Preco} from '../../models/preco.model';
 export class ListPriceComponent implements OnInit {
     prices: Preco[] = [];
     isLoading = true; 
-    displayedColumns: string[] = ['tipo', 'precoPorMinuto', 'agravamento']; 
+    displayedColumns: string[] = ['precoPorMinuto', 'tipo', 'agravamento', 'acoes'];
   
     constructor(private precoService: PrecoService) {}
   
@@ -30,4 +30,6 @@ export class ListPriceComponent implements OnInit {
         }
       });
     }
+
+    
 }

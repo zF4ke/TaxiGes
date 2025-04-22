@@ -18,4 +18,12 @@ export class PrecoService {
   addPrice(preco: Preco): Observable<Preco> {
     return this.http.post<Preco>(this.apiUrl, preco);
   }
+
+  updatePrice(id: string, preco: Preco): Observable<Preco> {
+    return this.http.put<Preco>(`${this.apiUrl}/${id}`, preco);
+  }
+
+  getPrecoById(id: string): Observable<Preco> {
+    return this.http.get<Preco>(`${this.apiUrl}/${id}`);
+  }
 }

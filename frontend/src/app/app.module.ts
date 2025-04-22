@@ -25,6 +25,8 @@ import { AddTaxiComponent } from './pages/add-taxi/add-taxi.component';
 import { ListTaxisComponent } from './pages/list-taxis/list-taxis.component';
 import { ListPriceComponent } from './pages/list-price/list-price.component';
 import { AddPriceComponent } from './pages/add-price/add-price.component';
+import { UpdatePriceComponent } from './pages/update-price/update-price.component';
+import { SimulateTravelComponent } from './pages/simulate-travel/simulate-travel.component';
 
 const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -32,6 +34,8 @@ const routes: Routes = [
   { path: 'list-taxis', component: ListTaxisComponent },
   { path: 'list-prices', component: ListPriceComponent },
   { path: 'add-price', component: AddPriceComponent },
+  { path: 'update-price/:id', component: UpdatePriceComponent},
+  { path: 'simulate-travel', component: SimulateTravelComponent},
   { path: '**', redirectTo: '' }
 ];
 
@@ -42,7 +46,9 @@ const routes: Routes = [
     AddTaxiComponent,
     ListTaxisComponent,
     ListPriceComponent, 
-    AddPriceComponent
+    AddPriceComponent,
+    UpdatePriceComponent,
+    SimulateTravelComponent
   ],
   imports: [
     BrowserModule,

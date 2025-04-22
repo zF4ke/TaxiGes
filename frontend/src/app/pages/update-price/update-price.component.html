@@ -1,10 +1,11 @@
 <div class="form-container">
     <mat-card>
       <mat-card-header>
-        <mat-card-title>Adicionar Novo Preço</mat-card-title>
+        <mat-card-title>Editar Preço</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <form [formGroup]="priceForm" (ngSubmit)="onSubmit()" *ngIf="canAddPrice">
+  
+        <form [formGroup]="priceForm" (ngSubmit)="onSubmit()">
           <mat-form-field appearance="outline">
             <mat-label>Preço por minuto</mat-label>
             <input matInput type="number" placeholder="Ex: 0.25" formControlName="precoPorMinuto">
@@ -17,11 +18,6 @@
           </mat-form-field>
   
           <mat-form-field appearance="outline">
-            <mat-label>Tipo de Conforto</mat-label>
-            <input matInput type="text" formControlName="tipo">
-          </mat-form-field>
-          
-          <mat-form-field appearance="outline">
             <mat-label>Agravamento no período noturno</mat-label>
             <input matInput type="number" placeholder="Ex: 20" formControlName="agravamento">
             <mat-error *ngIf="priceForm.get('agravamento')?.hasError('required')">
@@ -32,17 +28,18 @@
             </mat-error>
           </mat-form-field>
   
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo de Conforto</mat-label>
+            <input matInput type="text" formControlName="tipo">
+          </mat-form-field>
+  
           <div class="actions">
             <button mat-raised-button color="primary" type="submit" [disabled]="!priceForm.valid">
-              Adicionar Preço
+              Atualizar Preço
             </button>
-            <button mat-button type="button" routerLink="/list-price">Cancelar</button>
+            <button mat-button type="button" routerLink="/list-prices">Cancelar</button>
           </div>
         </form>
-  
-        <div *ngIf="!canAddPrice" class="info-message">
-          Já existem preços cadastrados para os tipos "básico" e "luxuoso". Não é possível adicionar mais preços.
-        </div>
       </mat-card-content>
     </mat-card>
   </div>
