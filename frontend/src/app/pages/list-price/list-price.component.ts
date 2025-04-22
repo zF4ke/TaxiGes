@@ -11,6 +11,7 @@ export class ListPriceComponent implements OnInit {
     prices: Preco[] = [];
     isLoading = true; 
     displayedColumns: string[] = ['precoPorMinuto', 'tipo', 'agravamento', 'acoes'];
+
   
     constructor(private precoService: PrecoService) {}
   
@@ -30,5 +31,20 @@ export class ListPriceComponent implements OnInit {
         }
       });
     }
+
+    deletePrice(id: string): void {
+      if (confirm('Tem a certeza de que deseja eliminar este preço?')) {
+        this.precoService.deletePrecoById(id).subscribe({
+          next: () => {
+            console.log('Preço deletado com sucesso!');
+            this.prices = this.prices.filter(preco => preco._id !== id);
+          },
+          error: (err) => {
+            console.error('Erro ao eliminar preço:', err);
+          }
+        });
+      }
+    }
+
 
 }

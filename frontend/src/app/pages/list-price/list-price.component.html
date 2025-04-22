@@ -28,6 +28,9 @@
             <button mat-icon-button color="primary" [routerLink]="['/update-price', preco._id]">
               <mat-icon>edit</mat-icon>
             </button>
+            <button mat-icon-button color="warn" (click)="deletePrice(preco._id)">
+              <mat-icon>delete</mat-icon>
+            </button>
           </td>
         </ng-container>
 

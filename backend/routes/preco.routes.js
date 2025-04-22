@@ -11,7 +11,10 @@ router.post('/', precoController.createPreco);
 // Update price
 router.put('/:id', precoController.atualizarPreco);
 
-// Get price by a id
+// Get price by id
 router.get('/:id', precoController.getPrecoById);
+
+// Delete price by id 
+router.delete('/:id', precoController.deletePrecoById);
 
 module.exports = router;

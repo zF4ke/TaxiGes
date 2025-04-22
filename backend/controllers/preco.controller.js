@@ -68,7 +68,24 @@ exports.getPrecoById = async (req, res) => {
         }
         res.status(200).json(preco);
     } catch (err) {
-        console.error('Erro ao buscar preço:', err);
-        res.status(500).json({ error: 'Erro ao buscar preço.' });
+        console.error('Erro ao obter preço:', err);
+        res.status(500).json({ error: 'Erro ao obter preço.' });
+    }
+};
+
+exports.deletePrecoById = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const deletedPreco = await Preco.deleteOne({ _id: id });
+
+        if (!deletedPreco) {
+            return res.status(404).json({ error: 'Preço não encontrado.' });
+        }
+
+        res.status(200).json({ message: 'Preço eliminado com sucesso!' });
+    } catch (err) {
+        console.error('Erro ao apagar preço:', err);
+        res.status(500).json({ error: 'Erro ao apagar o preço.' });
     }
 };

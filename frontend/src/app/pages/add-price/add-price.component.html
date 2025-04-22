@@ -18,9 +18,19 @@
   
           <mat-form-field appearance="outline">
             <mat-label>Tipo de Conforto</mat-label>
-            <input matInput type="text" formControlName="tipo">
+            <mat-select formControlName="tipo">
+              <mat-option *ngFor="let tipo of tipoConforto" [value]="tipo">
+                {{ tipo }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="priceForm.get('tipo')?.hasError('required')">
+              O tipo de conforto é obrigatório
+            </mat-error>
+            <mat-error *ngIf="tipoError">
+                Já existe esse tipo de conforto, pode editar na lista!
+            </mat-error>
           </mat-form-field>
-          
+
           <mat-form-field appearance="outline">
             <mat-label>Agravamento no período noturno</mat-label>
             <input matInput type="number" placeholder="Ex: 20" formControlName="agravamento">

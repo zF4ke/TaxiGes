@@ -12,6 +12,7 @@ export class AddPriceComponent implements OnInit {
   priceForm: FormGroup;
   tipoConforto: string[] = ['básico', 'luxuoso'];
   canAddPrice = true; 
+  tipoError: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -33,9 +34,9 @@ export class AddPriceComponent implements OnInit {
     this.precoService.getPrecos().subscribe({
       next: (prices) => {
         const tiposExistentes = prices.map((preco: any) => preco.tipo);
-        if (tiposExistentes.includes('básico') && tiposExistentes.includes('luxuoso')) {
-          this.canAddPrice = false; 
-        }
+
+        this.tipoConforto = this.tipoConforto.filter(tipo => !tiposExistentes.includes(tipo));
+        this.canAddPrice = this.tipoConforto.length > 0;; 
       },
       error: (err) => {
         console.error('Erro ao verificar preços existentes:', err);
@@ -49,10 +50,14 @@ export class AddPriceComponent implements OnInit {
       this.precoService.addPrice(this.priceForm.value).subscribe({
         next: () => {
           console.log('Preço adicionado com sucesso!');
-          this.router.navigate(['/list-price']);
+          this.router.navigate(['/list-prices']);
         },
         error: (err) => {
-          console.error('Erro ao adicionar preço:', err);
+            if (err.status === 400) {
+                this.tipoError = err.error.error || 'Erro ao adicionar preço.';
+              } else {
+                console.error('Erro ao adicionar preço:', err);
+              }
         }
       });
     }

@@ -26,4 +26,8 @@ export class PrecoService {
   getPrecoById(id: string): Observable<Preco> {
     return this.http.get<Preco>(`${this.apiUrl}/${id}`);
   }
+
+  deletePrecoById(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }
