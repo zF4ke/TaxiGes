@@ -31,5 +31,4 @@ export class ListPriceComponent implements OnInit {
       });
     }
 
-    
 }
