@@ -1,4 +1,5 @@
 const Motorista = require('../models/motorista.model');
+const { getLocalityByPostalCode: findLocalityByPostalCode } = require('../utils/postalCodes');
 
 // --- Criar Motorista ---
 exports.createMotorista = async (req, res) => {
@@ -24,6 +25,7 @@ exports.createMotorista = async (req, res) => {
         // Duplicação (NIF ou cartaConducao)
         if (err.code === 11000) {
             const campoDuplicado = Object.keys(err.keyValue)[0];
+            //console.log('Campo duplicado:', campoDuplicado);
             const nomeCampo = campoDuplicado === 'pessoa.nif' ? 'NIF' : 'Carta de Condução';
             return res.status(409).json({ message: `Erro: ${nomeCampo} já existe.` });
         }
@@ -53,14 +55,13 @@ exports.getLocalityByPostalCode = async (req, res) => {
         return res.status(400).json({ message: 'Formato de código postal inválido (dddd-ddd).' });
     }
 
-    const locais = {
-        '1600-001': 'Lisboa (Lumiar)',
-        '1749-016': 'Lisboa (Campo Grande)'
-    };
-
-    if (locais[cp]) {
-        return res.status(200).json({ localidade: locais[cp] });
+    try {
+        const localidade = await findLocalityByPostalCode(cp);
+        if (localidade) {
+            return res.status(200).json({ localidade });
+        }
+        return res.status(404).json({ message: 'Localidade não encontrada para este código postal.' });
+    } catch (error) {
+        return res.status(500).json({ message: 'Erro ao processar o código postal.' });
     }
-
-    return res.status(404).json({ message: 'Localidade não encontrada para este código postal.' });
 };

@@ -11,7 +11,13 @@ const pessoaSchema = new mongoose.Schema({
         type: String,
         required: [true, 'O NIF é obrigatório.'],
         trim: true,
-        match: [/^\d{9}$/, 'NIF inválido. Deve conter exatamente 9 dígitos.']
+        match: [/^\d{9}$/, 'NIF inválido. Deve conter exatamente 9 dígitos.'],
+        validate: {
+            validator: function(v) {
+                return v !== null && v !== undefined && v.length === 9;
+            },
+            message: 'NIF inválido ou não fornecido.'
+        }
     },
     genero: {
         type: String,

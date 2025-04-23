@@ -14,8 +14,10 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "csv-parser": "^3.2.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "fs": "^0.0.1-security",
     "mongoose": "^8.13.2"
   },
   "devDependencies": {
