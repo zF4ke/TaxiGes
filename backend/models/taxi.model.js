@@ -32,9 +32,9 @@ const taxiSchema = new mongoose.Schema({
         required: true,
         validate: {
             validator: function(v) {
-                // se a marca existir, validar modelo associado
-                if (!this.brand || !TAXI_MODELS[this.brand]) return true;
-                return TAXI_MODELS[this.brand].includes(v);
+                const marca = this.marca;
+                if (!marca || !TAXI_MODELS[marca]) return false;
+                return TAXI_MODELS[marca].includes(v);
             },
             message: 'Modelo inválido para a marca especificada.'
         }

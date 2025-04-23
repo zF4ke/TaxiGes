@@ -17,4 +17,7 @@ router.get('/:id', precoController.getPrecoById);
 // Delete price by id 
 router.delete('/:id', precoController.deletePrecoById);
 
+// Simulate travel price
+router.post('/simulate', precoController.simulateTravel);
+
 module.exports = router;

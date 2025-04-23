@@ -1,89 +1,66 @@
 const Motorista = require('../models/motorista.model');
-const { validateMotoristaData } = require('../utils/motoristaValidators');
 
 // --- Criar Motorista ---
 exports.createMotorista = async (req, res) => {
-    console.log('[CreateMotorista] Dados recebidos no backend:', req.body);
-
-    // Validação assíncrona 
-    const validationResult = await validateMotoristaData(req.body);
-    if (!validationResult.isValid) {
-        console.error('Erro de validação:', validationResult.errors);
-        const firstErrorKey = Object.keys(validationResult.errors)[0];
-        return res.status(400).json({
-             message: validationResult.errors[firstErrorKey] || validationResult.message
-        });
-    }
+    //console.log('[CreateMotorista] Dados recebidos no backend:', req.body);
 
     try {
-        const novoMotorista = new Motorista({
-            nif: req.body.nif,
-            nome: req.body.nome,
-            genero: req.body.genero,
-            anoNascimento: Number(req.body.anoNascimento), // Garante que é número
-            cartaConducao: req.body.cartaConducao,
-            morada: {
-                rua: req.body.morada.rua,
-                numeroPorta: req.body.morada.numeroPorta,
-                codigoPostal: req.body.morada.codigoPostal,
-                localidade: req.body.morada.localidade
-            }
-        });
+        const novoMotorista = new Motorista(req.body);
+        await novoMotorista.save();
 
-        await novoMotorista.save(); 
-
-        console.log('[CreateMotorista] Motorista criado:', novoMotorista);
-        res.status(201).json(novoMotorista);
+        //console.log('[CreateMotorista] Motorista criado com sucesso:', novoMotorista);
+        return res.status(201).json(novoMotorista);
 
     } catch (err) {
-        console.error('Erro ao criar motorista:', err);
-        // Verifica se é erro de validação do Mongoose ou outro erro
+        //console.error('Erro ao criar motorista:', err);
+
+        // Validação de esquema (usamos o modelo do Mongoose para validação)
         if (err.name === 'ValidationError') {
-            const messages = Object.values(err.errors).map(e => e.message);
-            return res.status(400).json({ message: messages.join(' ') });
+            const mensagens = Object.values(err.errors).map(e => e.message);
+            //console.error('Erros de validação:', mensagens);
+            return res.status(400).json({ message: mensagens.join(' ') });
         }
+
+        // Duplicação (NIF ou cartaConducao)
         if (err.code === 11000) {
-             let field = Object.keys(err.keyValue)[0];
-             field = field === 'nif' ? 'NIF' : 'Carta de Condução'; // Torna mais legível
-             return res.status(409).json({ message: `Erro: ${field} já existe.` });
+            const campoDuplicado = Object.keys(err.keyValue)[0];
+            const nomeCampo = campoDuplicado === 'pessoa.nif' ? 'NIF' : 'Carta de Condução';
+            return res.status(409).json({ message: `Erro: ${nomeCampo} já existe.` });
         }
-        res.status(500).json({ message: 'Ocorreu um erro interno ao criar o motorista.' });
+
+        // Outros erros
+        return res.status(500).json({ message: 'Erro interno ao criar o motorista.' });
     }
 };
 
-// --- Listar todos os Motoristas ---
+// --- Listar Motoristas ---
 exports.getAllMotoristas = async (req, res) => {
     try {
-        const motoristas = await Motorista.find().sort({ createdAt: -1 }); // Ordenado por data de criação
-        res.status(200).json(motoristas);
+        const motoristas = await Motorista.find().sort({ createdAt: -1 });
+        return res.status(200).json(motoristas);
     } catch (err) {
-        console.error('Erro ao buscar motoristas:', err);
-        res.status(500).json({ message: 'Erro interno ao buscar motoristas' });
+        //console.error('Erro ao buscar motoristas:', err);
+        return res.status(500).json({ message: 'Erro interno ao buscar motoristas.' });
     }
 };
 
-
+// --- Obter localidade por código postal ---
 exports.getLocalityByPostalCode = async (req, res) => {
     const cp = req.params.cp;
-    console.log(`[GetLocality] Procurando localidade para CP: ${cp}`);
+    //console.log(`[GetLocality] Código postal recebido: ${cp}`);
 
-    // Validação simples do formato
     if (!/^\d{4}-\d{3}$/.test(cp)) {
         return res.status(400).json({ message: 'Formato de código postal inválido (dddd-ddd).' });
     }
 
-    
-    let localidadeEncontrada = null;
-    if (cp === '1600-001') {
-        localidadeEncontrada = 'Lisboa (Lumiar)';
-    } else if (cp === '1749-016') {
-        localidadeEncontrada = 'Lisboa (Campo Grande)';
+    const locais = {
+        '1600-001': 'Lisboa (Lumiar)',
+        '1749-016': 'Lisboa (Campo Grande)'
+    };
+
+    if (locais[cp]) {
+        return res.status(200).json({ localidade: locais[cp] });
     }
 
-    if (localidadeEncontrada) {
-        res.status(200).json({ localidade: localidadeEncontrada });
-    } else {
-        res.status(404).json({ message: 'Localidade não encontrada para este código postal.' });
-
-    }
+    return res.status(404).json({ message: 'Localidade não encontrada para este código postal.' });
 };
