@@ -1,14 +1,18 @@
 .landing-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 20px;
   padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .welcome-section {
   text-align: center;
   margin-bottom: 20px;
+  flex-basis: 100%;
+  width: 100%;
 }
 
 .welcome-title {
@@ -23,14 +27,15 @@
   color: #555;
 }
 
-
 mat-card {
-  width: 80%;
-  max-width: 700px;
+  flex: 1 1 calc(50% - 10px);
+  min-width: 300px;
+  max-width: calc(50% - 10px);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   text-align: center;
+  margin: 0;
 }
 
 mat-card-header {
@@ -50,6 +55,7 @@ mat-card-content {
   padding: 10px;
   font-size: 16px;
   text-align: center;
+  flex-grow: 1;
 }
 
 mat-card-actions {

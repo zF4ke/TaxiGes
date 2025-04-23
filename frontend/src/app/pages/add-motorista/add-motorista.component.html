@@ -70,19 +70,23 @@
 
               <mat-form-field appearance="outline">
                 <mat-label>Código Postal</mat-label>
-                <input matInput placeholder="Ex: 1600-001" formControlName="codigoPostal" maxlength="8">
-                <mat-error *ngIf="codigoPostal?.hasError('required')">
-                  Código Postal é obrigatório
+                <input matInput formControlName="codigoPostal" 
+                       placeholder="xxxx-xxx" 
+                       (blur)="onPostalCodeChange($event)"
+                       [pattern]="'^\\d{4}-\\d{3}$'">
+                <mat-error *ngIf="codigoPostal?.errors?.['required']">
+                  Código postal é obrigatório
                 </mat-error>
-                <mat-error *ngIf="codigoPostal?.hasError('pattern') && !codigoPostal?.hasError('required')">
-                  Formato inválido (use 0000-000)
+                <mat-error *ngIf="codigoPostal?.errors?.['pattern']">
+                  Formato inválido (deve ser xxxx-xxx)
                 </mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="outline">
                 <mat-label>Localidade</mat-label>
-                <input matInput type="text" placeholder="Preenchido automaticamente ou manualmente" formControlName="localidade">
-                <mat-error *ngIf="localidade?.hasError('required')">
+                <input matInput formControlName="localidade" [readonly]="isLoadingLocality">
+                <mat-spinner matSuffix diameter="20" *ngIf="isLoadingLocality"></mat-spinner>
+                <mat-error *ngIf="localidade?.errors?.['required']">
                   Localidade é obrigatória
                 </mat-error>
               </mat-form-field>

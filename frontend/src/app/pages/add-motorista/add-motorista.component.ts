@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'; 
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MotoristaService } from '../../services/motorista.service';
@@ -18,6 +18,9 @@ export class AddMotoristaComponent implements OnInit, OnDestroy {
   generoOpcoes: Genero[] = ['feminino', 'masculino'];
   maxYear = new Date().getFullYear() - 18;
   isLoadingLocality = false;
+
+  errorMessage: string = '';
+  successMessage: string = '';
 
   // Subject para ajudar a cancelar subscrições quando o componente é destruído
   private destroy$ = new Subject<void>();
@@ -45,17 +48,29 @@ export class AddMotoristaComponent implements OnInit, OnDestroy {
     this.motoristaForm = this.fb.group({
       pessoa: this.fb.group({
         nif: ['', [ Validators.required, Validators.pattern(/^[0-9]{9}$/) ]],
-        nome: ['', Validators.required],
+        nome: ['', [Validators.required, (control: AbstractControl) => {
+          const value = control.value?.trim() || '';
+          return value === '' ? { required: true } : null;
+        }]],
         genero: ['', Validators.required],
-        anoNascimento: ['', [ Validators.required, Validators.min(1900), Validators.max(this.maxYear) ]],
+        anoNascimento: ['', [ Validators.required, Validators.max(this.maxYear) ]],
         morada: this.fb.group({
-          rua: ['', Validators.required],
+          rua: ['', [Validators.required, (control: AbstractControl) => {
+            const value = control.value?.trim() || '';
+            return value === '' ? { required: true } : null;
+          }]],
           numeroPorta: [''],
           codigoPostal: ['', [ Validators.required, Validators.pattern(/^\d{4}-\d{3}$/) ]],
-          localidade: ['', Validators.required]
+          localidade: ['', [Validators.required, (control: AbstractControl) => {
+            const value = control.value?.trim() || '';
+            return value === '' ? { required: true } : null;
+          }]]
         })
       }),
-      cartaConducao: ['', Validators.required]
+      cartaConducao: ['', [Validators.required, (control: AbstractControl) => {
+        const value = control.value?.trim() || '';
+        return value === '' ? { required: true } : null;
+      }]]
     });
   }
 
@@ -98,10 +113,33 @@ export class AddMotoristaComponent implements OnInit, OnDestroy {
     }
   }
 
+  onPostalCodeChange(event: any): void {
+    const cp = event.target.value;
+    if (/^\d{4}-\d{3}$/.test(cp)) {
+      this.motoristaService.getLocalityFromPostalCode(cp).subscribe({
+        next: (response) => {
+          if (response && response.localidade) {
+            this.motoristaForm.get('pessoa.morada.localidade')?.setValue(response.localidade);
+          }
+        },
+        error: (error) => {
+          console.error('Erro ao buscar localidade:', error);
+        }
+      });
+    }
+  }
 
   onSubmit(): void {
     if (this.motoristaForm.valid) {
       const formValue = { ...this.motoristaForm.value };
+      // Trim all text fields
+      formValue.pessoa.nome = formValue.pessoa.nome.trim();
+      formValue.pessoa.morada.rua = formValue.pessoa.morada.rua.trim();
+      if (formValue.pessoa.morada.numeroPorta) {
+        formValue.pessoa.morada.numeroPorta = formValue.pessoa.morada.numeroPorta.trim();
+      }
+      formValue.pessoa.morada.localidade = formValue.pessoa.morada.localidade.trim();
+      formValue.cartaConducao = formValue.cartaConducao.trim();
       formValue.pessoa.anoNascimento = Number(formValue.pessoa.anoNascimento);
 
       this.motoristaService.addMotorista(formValue).subscribe({
@@ -112,7 +150,7 @@ export class AddMotoristaComponent implements OnInit, OnDestroy {
         error: (err) => {
           console.error('Erro ao adicionar motorista:', err);
           const message = err.error?.message || err.message || 'Ocorreu um erro desconhecido.';
-          this.snackBar.open(`Erro: ${message}`, 'Fechar', { duration: 5000 });
+          this.snackBar.open(`${message}`, 'Fechar', { duration: 5000 });
         }
       });
     } else {
