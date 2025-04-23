@@ -3,6 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Preco } from '../models/preco.model';
 
+export interface SimulationRequest {
+  tipo: string;
+  horaInicial: string;
+  horaFinal: string;
+}
+
+export interface SimulationResult {
+  preco: number;
+  tipo: string;
+  horaInicial: string;
+  horaFinal: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -29,5 +42,9 @@ export class PrecoService {
 
   deletePrecoById(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  simulateTravel(params: SimulationRequest): Observable<SimulationResult> {
+    return this.http.post<SimulationResult>(`${this.apiUrl}/simulate`, params);
   }
 }

@@ -43,25 +43,25 @@ export class AddMotoristaComponent implements OnInit, OnDestroy {
 
   private createForm(): void {
     this.motoristaForm = this.fb.group({
-      nif: ['', [ Validators.required, Validators.pattern(/^[0-9]{9}$/) ]],
-      nome: ['', Validators.required],
-      genero: ['', Validators.required],
-      anoNascimento: ['', [ Validators.required, Validators.min(1900), Validators.max(this.maxYear) ]],
-      cartaConducao: ['', Validators.required],
-      morada: this.fb.group({
-        rua: ['', Validators.required],
-        numeroPorta: [''],
-        codigoPostal: ['', [ Validators.required, Validators.pattern(/^\d{4}-\d{3}$/) ]],
-        // A localidade começa vazia e será preenchida
-        localidade: ['', Validators.required]
-        // Poderias adicionar { updateOn: 'blur' } ao codigoPostal se preferires que a validação/lookup só ocorra ao sair do campo
-      })
+      pessoa: this.fb.group({
+        nif: ['', [ Validators.required, Validators.pattern(/^[0-9]{9}$/) ]],
+        nome: ['', Validators.required],
+        genero: ['', Validators.required],
+        anoNascimento: ['', [ Validators.required, Validators.min(1900), Validators.max(this.maxYear) ]],
+        morada: this.fb.group({
+          rua: ['', Validators.required],
+          numeroPorta: [''],
+          codigoPostal: ['', [ Validators.required, Validators.pattern(/^\d{4}-\d{3}$/) ]],
+          localidade: ['', Validators.required]
+        })
+      }),
+      cartaConducao: ['', Validators.required]
     });
   }
 
   // Configura a lógica de consulta automática do código postal
   private setupPostalCodeLookup(): void {
-    const cpControl = this.motoristaForm.get('morada.codigoPostal');
+    const cpControl = this.motoristaForm.get('pessoa.morada.codigoPostal');
 
     if (cpControl) {
       cpControl.valueChanges.pipe(
@@ -71,7 +71,7 @@ export class AddMotoristaComponent implements OnInit, OnDestroy {
         // Ações antes de chamar o serviço: mostra loading, limpa localidade anterior
         tap(() => {
           this.isLoadingLocality = true;
-          this.motoristaForm.get('morada.localidade')?.setValue(''); 
+          this.motoristaForm.get('pessoa.morada.localidade')?.setValue(''); 
         }),
         // Chama o serviço; switchMap cancela chamadas anteriores se o user digitar rápido
         switchMap(cpValue =>
@@ -89,7 +89,7 @@ export class AddMotoristaComponent implements OnInit, OnDestroy {
       ).subscribe(result => {
         this.isLoadingLocality = false;
         if (result && result.localidade) {
-          this.motoristaForm.get('morada.localidade')?.setValue(result.localidade);
+          this.motoristaForm.get('pessoa.morada.localidade')?.setValue(result.localidade);
           console.log(`Localidade encontrada para ${cpControl.value}: ${result.localidade}`);
         } else {
           console.log(`Localidade não encontrada para ${cpControl.value}`);
@@ -102,11 +102,11 @@ export class AddMotoristaComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.motoristaForm.valid) {
       const formValue = { ...this.motoristaForm.value };
-      formValue.anoNascimento = Number(formValue.anoNascimento);
+      formValue.pessoa.anoNascimento = Number(formValue.pessoa.anoNascimento);
 
       this.motoristaService.addMotorista(formValue).subscribe({
         next: (novoMotorista) => {
-          this.snackBar.open(`Motorista '${novoMotorista.nome}' adicionado com sucesso!`, 'Fechar', { duration: 3000 });
+          this.snackBar.open(`Motorista '${novoMotorista.pessoa.nome}' adicionado com sucesso!`, 'Fechar', { duration: 3000 });
           this.router.navigate(['/list-motoristas']);
         },
         error: (err) => {
@@ -121,12 +121,12 @@ export class AddMotoristaComponent implements OnInit, OnDestroy {
     }
   }
 
-  get nif() { return this.motoristaForm.get('nif'); }
-  get nome() { return this.motoristaForm.get('nome'); }
-  get genero() { return this.motoristaForm.get('genero'); }
-  get anoNascimento() { return this.motoristaForm.get('anoNascimento'); }
+  get nif() { return this.motoristaForm.get('pessoa.nif'); }
+  get nome() { return this.motoristaForm.get('pessoa.nome'); }
+  get genero() { return this.motoristaForm.get('pessoa.genero'); }
+  get anoNascimento() { return this.motoristaForm.get('pessoa.anoNascimento'); }
   get cartaConducao() { return this.motoristaForm.get('cartaConducao'); }
-  get morada() { return this.motoristaForm.get('morada'); }
+  get morada() { return this.motoristaForm.get('pessoa.morada'); }
   get rua() { return this.morada?.get('rua'); }
   get numeroPorta() { return this.morada?.get('numeroPorta'); }
   get codigoPostal() { return this.morada?.get('codigoPostal'); }

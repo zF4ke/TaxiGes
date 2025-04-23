@@ -1,4 +1,5 @@
-export type TaxiConforto = 'básico' | 'luxuoso';
+export const TAXI_CONFORTO = ['básico', 'luxuoso'] as const;
+export type TaxiConforto = typeof TAXI_CONFORTO[number];
 
 export interface Taxi {
     _id?: string;

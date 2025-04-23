@@ -42,7 +42,8 @@ export class AddTaxiComponent implements OnInit {
       ]],
       anoCompra: ['', [
         Validators.required,
-        Validators.max(this.currentYear)
+        Validators.max(this.currentYear),
+        Validators.min(0)
       ]],
       marca: ['', Validators.required],
       modelo: ['', Validators.required],
@@ -73,18 +74,25 @@ function plateValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const plateRegex = /^[A-Z0-9]{2}-[A-Z0-9]{2}-[A-Z0-9]{2}$/;
     if (!plateRegex.test(control.value)) {
-      return { invalidPlate: 'Formato invalido. Use o formato XX-XX-XX.' };
+      return { patternError: true };
     }
 
     const [part1, part2, part3] = control.value.split('-');
     const isAllNumbers = (str: string) => /^[0-9]{2}$/.test(str);
     const isAllLetters = (str: string) => /^[A-Z]{2}$/.test(str);
+    const hasMixedCharacters = (str: string) => !isAllNumbers(str) && !isAllLetters(str);
 
+    // Check if any pair has mixed characters
+    if (hasMixedCharacters(part1) || hasMixedCharacters(part2) || hasMixedCharacters(part3)) {
+      return { patternError: true };
+    }
+
+    // Check if all pairs are numbers or all pairs are letters
     if (
       (isAllNumbers(part1) && isAllNumbers(part2) && isAllNumbers(part3)) ||
       (isAllLetters(part1) && isAllLetters(part2) && isAllLetters(part3))
     ) {
-      return { invalidPlate: 'Os pares nao podem ser todos numeros ou todas letras.' };
+      return { patternError: true };
     }
 
     return null;
