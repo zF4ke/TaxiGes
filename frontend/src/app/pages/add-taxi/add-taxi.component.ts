@@ -47,7 +47,7 @@ export class AddTaxiComponent implements OnInit {
       ]],
       marca: ['', Validators.required],
       modelo: ['', Validators.required],
-      conforto: ['básico', Validators.required]
+      conforto: ['', Validators.required]
     });
   }
 
@@ -89,12 +89,14 @@ function plateValidator(): ValidatorFn {
 
     // Check if all pairs are numbers or all pairs are letters
     if (
-      (isAllNumbers(part1) && isAllNumbers(part2) && isAllNumbers(part3)) ||
-      (isAllLetters(part1) && isAllLetters(part2) && isAllLetters(part3))
+      (isAllLetters(part1) && isAllNumbers(part2) && isAllLetters(part3)) || // XX-00-XX
+      (isAllNumbers(part1) && isAllLetters(part2) && isAllNumbers(part3)) || // 00-XX-00
+      (isAllNumbers(part1) && isAllNumbers(part2) && isAllLetters(part3)) || // 00-00-XX
+      (isAllLetters(part1) && isAllNumbers(part2) && isAllNumbers(part3))    // XX-00-00
     ) {
-      return { patternError: true };
+      return null;
     }
 
-    return null;
+    return { patternError: true };
   };
 }
