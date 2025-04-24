@@ -12,7 +12,7 @@
               Preço por minuto é obrigatório
             </mat-error>
             <mat-error *ngIf="priceForm.get('precoPorMinuto')?.hasError('min')">
-              Não pode ser um valor negativo
+              Preço tem que ser maior que 0.01
             </mat-error>
           </mat-form-field>
   

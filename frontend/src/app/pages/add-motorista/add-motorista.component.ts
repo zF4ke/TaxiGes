@@ -53,7 +53,11 @@ export class AddMotoristaComponent implements OnInit, OnDestroy {
           return value === '' ? { required: true } : null;
         }]],
         genero: ['', Validators.required],
-        anoNascimento: ['', [ Validators.required, Validators.max(this.maxYear) ]],
+        anoNascimento: ['', [ 
+          Validators.required, 
+          Validators.max(this.maxYear),
+          Validators.min(0)
+        ]],
         morada: this.fb.group({
           rua: ['', [Validators.required, (control: AbstractControl) => {
             const value = control.value?.trim() || '';
