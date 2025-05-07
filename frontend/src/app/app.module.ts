@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 // Material UI
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -29,6 +30,7 @@ import { UpdatePriceComponent } from './pages/update-price/update-price.componen
 import { SimulateTravelComponent } from './pages/simulate-travel/simulate-travel.component';
 import { AddMotoristaComponent } from './pages/add-motorista/add-motorista.component';
 import { ListMotoristaComponent } from './pages/list-motorista/list-motorista.component';
+import { MotoristaLoginComponent } from './pages/motorista-login/motorista-login.component';
 
 
 
@@ -44,6 +46,8 @@ const routes: Routes = [
   { path: 'add-motorista', component: AddMotoristaComponent },
   { path: 'list-motoristas', component: ListMotoristaComponent },
 
+  { path: 'motorista/login', component: MotoristaLoginComponent },
+
   { path: '**', redirectTo: '' }
 ];
 
@@ -58,7 +62,8 @@ const routes: Routes = [
     UpdatePriceComponent,
     SimulateTravelComponent,
     AddMotoristaComponent,
-    ListMotoristaComponent
+    ListMotoristaComponent,
+    MotoristaLoginComponent
   ],
   imports: [
     BrowserModule,
@@ -78,7 +83,8 @@ const routes: Routes = [
     MatDatepickerModule,
     MatNativeDateModule,
     MatSlideToggleModule,
-    MatSelectModule
+    MatSelectModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
