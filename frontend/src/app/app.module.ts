@@ -31,6 +31,7 @@ import { SimulateTravelComponent } from './pages/simulate-travel/simulate-travel
 import { AddMotoristaComponent } from './pages/add-motorista/add-motorista.component';
 import { ListMotoristaComponent } from './pages/list-motorista/list-motorista.component';
 import { MotoristaLoginComponent } from './pages/motorista-login/motorista-login.component';
+import { MotoristaDashboardComponent } from './pages/motorista-dashboard/motorista-dashboard.component';
 
 
 
@@ -46,7 +47,8 @@ const routes: Routes = [
   { path: 'add-motorista', component: AddMotoristaComponent },
   { path: 'list-motoristas', component: ListMotoristaComponent },
 
-  { path: 'motorista/login', component: MotoristaLoginComponent },
+  { path: 'motorista-login', component: MotoristaLoginComponent },
+  { path: 'motorista-dashboard', component: MotoristaDashboardComponent },
 
   { path: '**', redirectTo: '' }
 ];
@@ -63,7 +65,8 @@ const routes: Routes = [
     SimulateTravelComponent,
     AddMotoristaComponent,
     ListMotoristaComponent,
-    MotoristaLoginComponent
+    MotoristaLoginComponent,
+    MotoristaDashboardComponent
   ],
   imports: [
     BrowserModule,
