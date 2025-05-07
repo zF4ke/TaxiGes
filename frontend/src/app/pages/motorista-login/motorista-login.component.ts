@@ -74,7 +74,7 @@ export class MotoristaLoginComponent implements OnInit {
         const motoristaParaLogin: MotoristaLogado = {
             _id: motoristaInfo._id,
             nome: motoristaInfo.nome,
-            NIF: motoristaInfo.NIF
+            nif: motoristaInfo.nif
         };
         this.motoristaService.setMotoristaLogado(motoristaParaLogin);
         console.log('Motorista selecionado da lista:', motoristaParaLogin);

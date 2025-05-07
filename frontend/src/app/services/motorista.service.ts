@@ -6,13 +6,13 @@ import { Observable, of, delay, tap } from 'rxjs';
 export interface MotoristaSelecao {
   _id: string;
   nome: string;
-  NIF: string;
+  nif: string;
 }
 
 export interface MotoristaLogado {
   _id: string;
   nome: string;
-  NIF: string;
+  nif: string;
 }
 
 @Injectable({
