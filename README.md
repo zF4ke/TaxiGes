@@ -17,9 +17,9 @@ npm install
 npm run dev
 ```
 
-Para popular a base de dados com dados de teste:
+Executar os testes com jest:
 ```bash
-npm run seed
+npm test
 ```
 
 Aceder à API em `http://localhost:3000`

@@ -1,4 +1,5 @@
 <div class="form-container">
+<<<<<<< HEAD
   <mat-card>
     <mat-card-header>
       <mat-card-title>Definir Preços</mat-card-title>
@@ -15,6 +16,39 @@
             Não pode ser um valor negativo
           </mat-error>
         </mat-form-field>
+=======
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Adicionar Novo Preço</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="priceForm" (ngSubmit)="onSubmit()" *ngIf="canAddPrice">
+          <mat-form-field appearance="outline">
+            <mat-label>Preço por minuto</mat-label>
+            <input matInput type="number" placeholder="Ex: 0.25" formControlName="precoPorMinuto">
+            <mat-error *ngIf="priceForm.get('precoPorMinuto')?.hasError('required')">
+              Preço por minuto é obrigatório
+            </mat-error>
+            <mat-error *ngIf="priceForm.get('precoPorMinuto')?.hasError('min')">
+              Preço tem que ser maior que 0.01
+            </mat-error>
+          </mat-form-field>
+  
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo de Conforto</mat-label>
+            <mat-select formControlName="tipo">
+              <mat-option *ngFor="let tipo of tipoConforto" [value]="tipo">
+                {{ tipo }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="priceForm.get('tipo')?.hasError('required')">
+              O tipo de conforto é obrigatório
+            </mat-error>
+            <mat-error *ngIf="tipoError">
+                Já existe esse tipo de conforto, pode editar na lista!
+            </mat-error>
+          </mat-form-field>
+>>>>>>> master
 
         <mat-form-field appearance="outline">
           <mat-label>Preço por minuto (Luxo)</mat-label>

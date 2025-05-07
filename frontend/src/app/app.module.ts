@@ -4,6 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 // Material UI
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -27,6 +28,12 @@ import { ListPriceComponent } from './pages/list-price/list-price.component';
 import { AddPriceComponent } from './pages/add-price/add-price.component';
 import { UpdatePriceComponent } from './pages/update-price/update-price.component';
 import { SimulateTravelComponent } from './pages/simulate-travel/simulate-travel.component';
+import { AddMotoristaComponent } from './pages/add-motorista/add-motorista.component';
+import { ListMotoristaComponent } from './pages/list-motorista/list-motorista.component';
+import { MotoristaLoginComponent } from './pages/motorista-login/motorista-login.component';
+import { MotoristaDashboardComponent } from './pages/motorista-dashboard/motorista-dashboard.component';
+
+
 
 const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -36,6 +43,10 @@ const routes: Routes = [
   { path: 'add-price', component: AddPriceComponent },
   { path: 'update-price/:id', component: UpdatePriceComponent},
   { path: 'simulate-travel', component: SimulateTravelComponent},
+  { path: 'add-motorista', component: AddMotoristaComponent },
+  { path: 'list-motoristas', component: ListMotoristaComponent },
+  { path: 'motorista-login', component: MotoristaLoginComponent },
+  { path: 'motorista-dashboard', component: MotoristaDashboardComponent },
   { path: '**', redirectTo: '' }
 ];
 
@@ -48,7 +59,11 @@ const routes: Routes = [
     ListPriceComponent, 
     AddPriceComponent,
     UpdatePriceComponent,
-    SimulateTravelComponent
+    SimulateTravelComponent,
+    AddMotoristaComponent,
+    ListMotoristaComponent,
+    MotoristaLoginComponent,
+    MotoristaDashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -68,7 +83,8 @@ const routes: Routes = [
     MatDatepickerModule,
     MatNativeDateModule,
     MatSlideToggleModule,
-    MatSelectModule
+    MatSelectModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

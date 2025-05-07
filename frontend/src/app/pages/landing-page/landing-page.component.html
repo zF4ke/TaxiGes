@@ -1,11 +1,17 @@
 <div class="landing-container">
-  <mat-card class="welcome-card">
+
+  <section class="welcome-section">
+    <h1 class="welcome-title">Bem-vindo ao TaxiGes</h1>
+    <p class="welcome-description">Sistema de Gestão de Táxis. Gerencie sua frota de táxis, motoristas e preços de forma eficiente.</p>
+  </section>
+
+  <mat-card class="taxi-card">
     <mat-card-header>
-      <mat-card-title>Bem-vindo ao TaxiGes</mat-card-title>
-      <mat-card-subtitle>Sistema de Gestão de Táxis</mat-card-subtitle>
+      <mat-card-title>Gestão de Táxis</mat-card-title>
+      <mat-card-subtitle>Adicione e visualize os táxis da sua frota</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <p>Este sistema permite gerir a sua frota de táxis de forma eficiente.</p>
+      <p> Adicione, edite ou visualize os táxis da sua frota. </p>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button color="primary" routerLink="/add-taxi">
@@ -18,18 +24,61 @@
       </button>
     </mat-card-actions>
   </mat-card>
-  <mat-card class="simulador-viagem">
+
+  <mat-card class="motorista-card">
     <mat-card-header>
-      <mat-card-title>Simula a tua viagem</mat-card-title>
+      <mat-card-title>Gestão de Motoristas</mat-card-title>
+      <mat-card-subtitle>Adicione e visualize os motoristas da sua frota</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <p> Simula a tua viagem e descobre quanto vais pagar </p>
+      <p> Adicione, edite ou visualize os motoristas da sua frota. </p>
+      <p>Se é motorista, aceda à sua área para gerir os seus turnos e viagens.</p>
     </mat-card-content>
     <mat-card-actions>
-      <button mat-raised-button color="primary" routerLink="/simulate-travel">
-        <mat-icon>directions_car</mat-icon>
-        Simular viagem 
+      <button mat-raised-button color="primary" routerLink="/add-motorista">
+        <mat-icon>add</mat-icon>
+        Adicionar Motorista </button>
+      <button mat-raised-button color="accent" routerLink="/list-motoristas">
+        <mat-icon>list</mat-icon>
+        Ver Motoristas </button>
+
+      <button mat-stroked-button color="primary" routerLink="/motorista-login">
+        <mat-icon>login</mat-icon> Acesso do Motorista
+      </button>
+      </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="precos-card">
+    <mat-card-header>
+      <mat-card-title>Preços</mat-card-title>
+      <mat-card-subtitle>Defina e visualize os preços dos serviços</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Defina os preços para os serviços e visualize ou edite os preços existentes.</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" routerLink="/add-price">
+        <mat-icon>add</mat-icon> Adicionar Preço
+      </button>
+      <button mat-raised-button color="accent" routerLink="/list-prices">
+        <mat-icon>list</mat-icon> Ver Preços
       </button>
     </mat-card-actions>
   </mat-card>
+
+  <mat-card class="simulation-card">
+    <mat-card-header>
+      <mat-card-title>Simulação de Viagens</mat-card-title>
+      <mat-card-subtitle>Calcule o preço estimado de uma viagem</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Simule o preço de uma viagem com base no tipo de táxi e horário.</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" routerLink="/simulate-travel">
+        <mat-icon>calculate</mat-icon> Simular Viagem
+      </button>
+    </mat-card-actions>
+  </mat-card>
+  
 </div>

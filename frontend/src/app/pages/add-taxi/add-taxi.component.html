@@ -11,8 +11,8 @@
           <mat-error *ngIf="taxiForm.get('matricula')?.hasError('required')">
             Matrícula é obrigatória
           </mat-error>
-          <mat-error *ngIf="taxiForm.get('matricula')?.hasError('pattern')">
-            Formato inválido. Use o formato XX-XX-XX
+          <mat-error *ngIf="taxiForm.get('matricula')?.hasError('patternError')">
+            Use um dos formatos válidos: XX-00-XX, 00-XX-00, 00-00-XX, XX-00-00
           </mat-error>
         </mat-form-field>
 
@@ -24,6 +24,9 @@
           </mat-error>
           <mat-error *ngIf="taxiForm.get('anoCompra')?.hasError('max')">
             O ano não pode ser no futuro
+          </mat-error>
+          <mat-error *ngIf="taxiForm.get('anoCompra')?.hasError('min')">
+            O ano não pode ser negativo
           </mat-error>
         </mat-form-field>
 
@@ -67,7 +70,9 @@
           <button mat-raised-button color="primary" type="submit" [disabled]="!taxiForm.valid">
             Adicionar Táxi
           </button>
-          <button mat-button type="button" routerLink="/list-taxis">Cancelar</button>
+          <button mat-button type="button" routerLink="/">
+            Cancelar
+          </button>
         </div>
       </form>
     </mat-card-content>

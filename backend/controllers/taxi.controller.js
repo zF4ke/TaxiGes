@@ -1,35 +1,42 @@
 const Taxi = require('../models/taxi.model');
-const { validateTaxiData } = require('../utils/validators');
 
-// Get all taxis
+// --- Listar todos os Táxis ---
 exports.getAllTaxis = async (req, res) => {
     try {
         const taxis = await Taxi.find().sort({ createdAt: -1 });
-        res.status(200).json(taxis);
-
+        return res.status(200).json(taxis);
     } catch (err) {
-        console.error('Erro ao buscar táxis:', err);
-        res.status(500).json({ error: 'Erro ao buscar táxis' });
+        //console.error('[GetAllTaxis] Erro ao buscar táxis:', err);
+        return res.status(500).json({ message: 'Erro interno ao buscar táxis.' });
     }
 };
 
-// Create a new taxi
+// --- Criar Táxi ---
 exports.createTaxi = async (req, res) => {
-    const { matricula, anoCompra, marca, modelo, conforto } = req.body;
-
-    console.log('[CreateTaxi] Dados recebidos no backend:', { matricula, anoCompra, marca, modelo, conforto });
-
-    const validationError = validateTaxiData({ matricula, anoCompra, marca, modelo, conforto });
-    if (validationError) {
-        return res.status(400).json({ error: validationError });
-    }
+    //console.log('[CreateTaxi] Dados recebidos no backend:', req.body);
 
     try {
-        const newTaxi = new Taxi({ matricula, anoCompra, marca, modelo, conforto });
-        await newTaxi.save();
-        res.status(201).json(newTaxi);
+        const novoTaxi = new Taxi(req.body);
+        await novoTaxi.save();
+
+        //console.log('[CreateTaxi] Táxi criado com sucesso:', novoTaxi);
+        return res.status(201).json(novoTaxi);
+
     } catch (err) {
-        console.error('Erro ao criar taxi:', err);
-        res.status(500).json({ error: 'Erro ao criar taxi!' });
+        //console.error('[CreateTaxi] Erro ao criar táxi:', err);
+
+        // Validação de esquema (usamos o modelo do Mongoose para validação)
+        if (err.name === 'ValidationError') {
+            const mensagens = Object.values(err.errors).map(e => e.message);
+            return res.status(400).json({ message: mensagens.join(' ') });
+        }
+
+        // Duplicação de matrícula
+        if (err.code === 11000 && err.keyPattern?.licensePlate) {
+            return res.status(409).json({ message: 'Erro: Matrícula já existente.' });
+        }
+
+        // Outros erros
+        return res.status(500).json({ message: 'Erro interno ao criar o táxi.' });
     }
 };

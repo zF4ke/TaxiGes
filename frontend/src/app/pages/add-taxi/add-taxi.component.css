@@ -10,6 +10,7 @@ mat-card {
   max-width: 600px;
   width: 100%;
   margin-top: 20px;
+  
 }
 
 form {
@@ -24,20 +25,16 @@ mat-form-field {
   margin-bottom: 16px;
 }
 
-.actions {
-  display: flex;
-  gap: 16px;
-  margin-top: 20px;
-}
-
 mat-card-header {
   margin-bottom: 16px;
 }
 
 mat-card-title {
   margin-bottom: 20px;
+  padding: 20px;
 }
 
-mat-card-content {
-  padding: 20px;
+.actions {
+  display: flex;
+  gap: 16px;
 }
