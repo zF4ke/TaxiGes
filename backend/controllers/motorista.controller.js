@@ -60,14 +60,22 @@ exports.getLocalityByPostalCode = async (req, res) => {
 
 exports.listarParaSelecao = async (req, res) => {
     try {
-        // Apenas _id, nome e NIF. Ordenado por nome para facilitar a seleção.
-        const motoristas = await Motorista.find({}, '_id nome NIF').sort({ nome: 1 });
-        res.status(200).json(motoristas);
+        // Busca os campos _id e o subdocumento pessoa (que contém nome e NIF)
+        const motoristas = await Motorista.find({}, '_id pessoa.nome pessoa.NIF').sort({ 'pessoa.nome': 1 });
+
+        const resultadoFormatado = motoristas.map(m => ({
+            _id: m._id,
+            nome: m.pessoa.nome,
+            NIF: m.pessoa.NIF  
+        }));
+        res.status(200).json(resultadoFormatado); 
+
     } catch (error) {
         console.error("Erro ao listar motoristas para seleção:", error);
         res.status(500).json({ message: 'Erro ao buscar motoristas para seleção.', error: error.message });
     }
 };
+
 
 
 exports.acessoPorNIF = async (req, res) => {
@@ -76,14 +84,20 @@ exports.acessoPorNIF = async (req, res) => {
     if (!nif || !/^\d{9}$/.test(nif) || parseInt(nif, 10) <= 0) {
         return res.status(400).json({ message: "NIF inválido. Deve ter 9 dígitos e ser um número positivo." });
     }
-
     try {
-        // Apenas _id, nome, NIF.
-        const motorista = await Motorista.findOne({ NIF: nif }, '_id nome NIF');
+        const motorista = await Motorista.findOne(
+            { 'pessoa.NIF': nif },
+            '_id pessoa.nome pessoa.NIF'
+        );
         if (!motorista) {
             return res.status(404).json({ message: "Motorista não encontrado com o NIF fornecido." });
         }
-        res.status(200).json(motorista);
+        const resultadoFormatado = {
+            _id: motorista._id,
+            nome: motorista.pessoa.nome, 
+            NIF: motorista.pessoa.NIF 
+        };
+        res.status(200).json(resultadoFormatado); 
     } catch (error) {
         console.error("Erro no acesso do motorista por NIF:", error);
         res.status(500).json({ message: 'Erro ao processar o acesso do motorista.', error: error.message });
