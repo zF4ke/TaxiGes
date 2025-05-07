@@ -7,7 +7,7 @@ const pessoaSchema = new mongoose.Schema({
         required: [true, 'O nome é obrigatório.'],
         trim: true
     },
-    nif: {
+    NIF: {
         type: String,
         required: [true, 'O NIF é obrigatório.'],
         unique: true,

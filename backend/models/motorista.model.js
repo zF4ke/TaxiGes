@@ -23,7 +23,7 @@ const motoristaSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 // Ensure NIF is unique and non-null
-motoristaSchema.index({ 'pessoa.nif': 1 }, { unique: true, sparse: true });
+motoristaSchema.index({ 'pessoa.NIF': 1 }, { unique: true, sparse: true });
 motoristaSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model('Motorista', motoristaSchema);
