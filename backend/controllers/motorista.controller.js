@@ -3,34 +3,27 @@ const { getLocalityByPostalCode: findLocalityByPostalCode } = require('../utils/
 
 // --- Criar Motorista ---
 exports.createMotorista = async (req, res) => {
-    //console.log('[CreateMotorista] Dados recebidos no backend:', req.body);
 
     try {
         const novoMotorista = new Motorista(req.body);
         await novoMotorista.save();
 
-        //console.log('[CreateMotorista] Motorista criado com sucesso:', novoMotorista);
         return res.status(201).json(novoMotorista);
 
     } catch (err) {
-        //console.error('Erro ao criar motorista:', err);
-
         // Validação de esquema (usamos o modelo do Mongoose para validação)
         if (err.name === 'ValidationError') {
             const mensagens = Object.values(err.errors).map(e => e.message);
-            //console.error('Erros de validação:', mensagens);
             return res.status(400).json({ message: mensagens.join(' ') });
         }
 
         // Duplicação (NIF ou cartaConducao)
         if (err.code === 11000) {
             const campoDuplicado = Object.keys(err.keyValue)[0];
-            //console.log('Campo duplicado:', campoDuplicado);
             const nomeCampo = campoDuplicado === 'pessoa.nif' ? 'NIF' : 'Carta de Condução';
             return res.status(409).json({ message: `Erro: ${nomeCampo} já existe.` });
         }
 
-        // Outros erros
         return res.status(500).json({ message: 'Erro interno ao criar o motorista.' });
     }
 };
@@ -49,7 +42,6 @@ exports.getAllMotoristas = async (req, res) => {
 // --- Obter localidade por código postal ---
 exports.getLocalityByPostalCode = async (req, res) => {
     const cp = req.params.cp;
-    //console.log(`[GetLocality] Código postal recebido: ${cp}`);
 
     if (!/^\d{4}-\d{3}$/.test(cp)) {
         return res.status(400).json({ message: 'Formato de código postal inválido (dddd-ddd).' });
@@ -63,5 +55,37 @@ exports.getLocalityByPostalCode = async (req, res) => {
         return res.status(404).json({ message: 'Localidade não encontrada para este código postal.' });
     } catch (error) {
         return res.status(500).json({ message: 'Erro ao processar o código postal.' });
+    }
+};
+
+exports.listarParaSelecao = async (req, res) => {
+    try {
+        // Apenas _id, nome e NIF. Ordenado por nome para facilitar a seleção.
+        const motoristas = await Motorista.find({}, '_id nome NIF').sort({ nome: 1 });
+        res.status(200).json(motoristas);
+    } catch (error) {
+        console.error("Erro ao listar motoristas para seleção:", error);
+        res.status(500).json({ message: 'Erro ao buscar motoristas para seleção.', error: error.message });
+    }
+};
+
+
+exports.acessoPorNIF = async (req, res) => {
+    const { nif } = req.body;
+
+    if (!nif || !/^\d{9}$/.test(nif) || parseInt(nif, 10) <= 0) {
+        return res.status(400).json({ message: "NIF inválido. Deve ter 9 dígitos e ser um número positivo." });
+    }
+
+    try {
+        // Apenas _id, nome, NIF.
+        const motorista = await Motorista.findOne({ NIF: nif }, '_id nome NIF');
+        if (!motorista) {
+            return res.status(404).json({ message: "Motorista não encontrado com o NIF fornecido." });
+        }
+        res.status(200).json(motorista);
+    } catch (error) {
+        console.error("Erro no acesso do motorista por NIF:", error);
+        res.status(500).json({ message: 'Erro ao processar o acesso do motorista.', error: error.message });
     }
 };
