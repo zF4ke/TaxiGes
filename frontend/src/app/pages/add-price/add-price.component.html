@@ -1,58 +1,50 @@
 <div class="form-container">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Adicionar Novo Preço</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <form [formGroup]="priceForm" (ngSubmit)="onSubmit()" *ngIf="canAddPrice">
-          <mat-form-field appearance="outline">
-            <mat-label>Preço por minuto</mat-label>
-            <input matInput type="number" placeholder="Ex: 0.25" formControlName="precoPorMinuto">
-            <mat-error *ngIf="priceForm.get('precoPorMinuto')?.hasError('required')">
-              Preço por minuto é obrigatório
-            </mat-error>
-            <mat-error *ngIf="priceForm.get('precoPorMinuto')?.hasError('min')">
-              Não pode ser um valor negativo
-            </mat-error>
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Tipo de Conforto</mat-label>
-            <mat-select formControlName="tipo">
-              <mat-option *ngFor="let tipo of tipoConforto" [value]="tipo">
-                {{ tipo }}
-              </mat-option>
-            </mat-select>
-            <mat-error *ngIf="priceForm.get('tipo')?.hasError('required')">
-              O tipo de conforto é obrigatório
-            </mat-error>
-            <mat-error *ngIf="tipoError">
-                Já existe esse tipo de conforto, pode editar na lista!
-            </mat-error>
-          </mat-form-field>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Definir Preços</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="priceForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Preço por minuto (Básico)</mat-label>
+          <input matInput type="number" placeholder="Ex: 0.25" formControlName="precoBasico">
+          <mat-error *ngIf="priceForm.get('precoBasico')?.hasError('required')">
+            Preço básico é obrigatório
+          </mat-error>
+          <mat-error *ngIf="priceForm.get('precoBasico')?.hasError('min')">
+            Não pode ser um valor negativo
+          </mat-error>
+        </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Agravamento no período noturno</mat-label>
-            <input matInput type="number" placeholder="Ex: 20" formControlName="agravamento">
-            <mat-error *ngIf="priceForm.get('agravamento')?.hasError('required')">
-              Agravamento é obrigatório
-            </mat-error>
-            <mat-error *ngIf="priceForm.get('agravamento')?.hasError('min')">
-              Não pode ser um valor negativo
-            </mat-error>
-          </mat-form-field>
-  
-          <div class="actions">
-            <button mat-raised-button color="primary" type="submit" [disabled]="!priceForm.valid">
-              Adicionar Preço
-            </button>
-            <button mat-button type="button" routerLink="/list-price">Cancelar</button>
-          </div>
-        </form>
-  
-        <div *ngIf="!canAddPrice" class="info-message">
-          Já existem preços cadastrados para os tipos "básico" e "luxuoso". Não é possível adicionar mais preços.
+        <mat-form-field appearance="outline">
+          <mat-label>Preço por minuto (Luxo)</mat-label>
+          <input matInput type="number" placeholder="Ex: 0.50" formControlName="precoLuxo">
+          <mat-error *ngIf="priceForm.get('precoLuxo')?.hasError('required')">
+            Preço luxo é obrigatório
+          </mat-error>
+          <mat-error *ngIf="priceForm.get('precoLuxo')?.hasError('min')">
+            Não pode ser um valor negativo
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Agravamento no período noturno (%)</mat-label>
+          <input matInput type="number" placeholder="Ex: 20" formControlName="agravamento">
+          <mat-error *ngIf="priceForm.get('agravamento')?.hasError('required')">
+            Agravamento é obrigatório
+          </mat-error>
+          <mat-error *ngIf="priceForm.get('agravamento')?.hasError('min')">
+            Não pode ser um valor negativo
+          </mat-error>
+        </mat-form-field>
+
+        <div class="actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="!priceForm.valid">
+            Salvar Preços
+          </button>
+          <button mat-button type="button" routerLink="/list-price">Cancelar</button>
         </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
