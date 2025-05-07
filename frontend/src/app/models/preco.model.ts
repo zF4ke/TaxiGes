@@ -1,8 +1,6 @@
-export type tipoConforto = 'básico' | 'luxuoso';
-
 export interface Preco {
     _id?: string;
-    precoPorMinuto: number;
-    tipo: tipoConforto;
+    precoBasico: number;
+    precoLuxo: number;
     agravamento: number;
 }

@@ -5,11 +5,8 @@ const precoController = require('../controllers/preco.controller');
 //List the prices
 router.get('/', precoController.getPrecos);
 
-// Create new price
+// Create new price ou update
 router.post('/', precoController.saveOrUpdatePreco);
-
-// Update price
-router.put('/:id', precoController.atualizarPreco);
 
 // Get price by id
 router.get('/:id', precoController.getPrecoById);
