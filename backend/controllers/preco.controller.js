@@ -11,30 +11,29 @@ exports.getPrecos = async (req, res) => {
     }
 };
 
-exports.createPreco = async (req, res) => {
-    const { precoPorMinuto, tipo, agravamento } = req.body;
-
-    console.log('[CreatePreco] Dados recebidos no backend:', { precoPorMinuto, tipo, agravamento });
-
+exports.saveOrUpdatePreco = async (req, res) => {
+    const { precoBasico, precoLuxo, agravamento } = req.body;
+  
     try {
-        const newPreco = new Preco({ precoPorMinuto, tipo, agravamento });
-        await newPreco.save();
-        res.status(201).json(newPreco);
+      let preco = await Preco.findOne();
+      if (preco) {
+        // Atualiza o documento existente
+        preco.precoBasico = precoBasico;
+        preco.precoLuxo = precoLuxo;
+        preco.agravamento = agravamento;
+        await preco.save();
+        return res.status(200).json(preco);
+      } else {
+        // Cria o documento se não existir
+        preco = new Preco({ precoBasico, precoLuxo, agravamento });
+        await preco.save();
+        return res.status(201).json(preco);
+      }
     } catch (err) {
-        console.error('Erro ao criar preco:', err);
-
-        if (err.code === 11000) {
-            return res.status(400).json({ error: 'Já existe um preço para este tipo de conforto.' });
-        }
-
-        if (err.name === 'ValidationError') {
-            const messages = Object.values(err.errors).map((e) => e.message);
-            return res.status(400).json({ error: messages.join(', ') });
-        }
-
-        res.status(500).json({ error: 'Erro ao criar preço!' });
+      console.error('Erro ao salvar preço:', err);
+      res.status(500).json({ error: 'Erro ao salvar preço.' });
     }
-};
+  };
 
 exports.atualizarPreco = async (req, res) => {
     const { id } = req.params;

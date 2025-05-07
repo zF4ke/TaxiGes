@@ -6,7 +6,7 @@ const precoController = require('../controllers/preco.controller');
 router.get('/', precoController.getPrecos);
 
 // Create new price
-router.post('/', precoController.createPreco);
+router.post('/', precoController.saveOrUpdatePreco);
 
 // Update price
 router.put('/:id', precoController.atualizarPreco);
