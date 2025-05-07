@@ -32,17 +32,20 @@
     </mat-card-header>
     <mat-card-content>
       <p> Adicione, edite ou visualize os motoristas da sua frota. </p>
+      <p>Se é motorista, aceda à sua área para gerir os seus turnos e viagens.</p>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button color="primary" routerLink="/add-motorista">
         <mat-icon>add</mat-icon>
-        Adicionar Motorista
-      </button>
+        Adicionar Motorista </button>
       <button mat-raised-button color="accent" routerLink="/list-motoristas">
         <mat-icon>list</mat-icon>
-        Ver Motoristas
+        Ver Motoristas </button>
+
+      <button mat-stroked-button color="primary" routerLink="/motorista-login">
+        <mat-icon>login</mat-icon> Acesso do Motorista
       </button>
-    </mat-card-actions>
+      </mat-card-actions>
   </mat-card>
 
   <mat-card class="precos-card">

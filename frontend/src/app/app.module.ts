@@ -43,13 +43,10 @@ const routes: Routes = [
   { path: 'add-price', component: AddPriceComponent },
   { path: 'update-price/:id', component: UpdatePriceComponent},
   { path: 'simulate-travel', component: SimulateTravelComponent},
-
   { path: 'add-motorista', component: AddMotoristaComponent },
   { path: 'list-motoristas', component: ListMotoristaComponent },
-
   { path: 'motorista-login', component: MotoristaLoginComponent },
   { path: 'motorista-dashboard', component: MotoristaDashboardComponent },
-
   { path: '**', redirectTo: '' }
 ];
 

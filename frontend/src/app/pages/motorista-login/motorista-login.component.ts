@@ -20,7 +20,7 @@ export class MotoristaLoginComponent implements OnInit {
   ngOnInit(): void {
     // Se já houver um motorista logado, redireciona para o dashboard
     if (this.motoristaService.getMotoristaLogado()) {
-      this.router.navigate(['/motorista/dashboard']);
+      this.router.navigate(['/motorista-dashboard']);
       return; 
     }
     this.loadMotoristasParaSelecao();
@@ -52,7 +52,7 @@ export class MotoristaLoginComponent implements OnInit {
     this.motoristaService.loginComNIF(nif).subscribe({
       next: (motoristaLogado) => {
         console.log('Login com NIF bem-sucedido:', motoristaLogado);
-        this.router.navigate(['/motorista/dashboard']); 
+        this.router.navigate(['/motorista-dashboard']); 
       },
       error: (err) => {
         console.error('Erro no login com NIF:', err);
@@ -78,7 +78,7 @@ export class MotoristaLoginComponent implements OnInit {
         };
         this.motoristaService.setMotoristaLogado(motoristaParaLogin);
         console.log('Motorista selecionado da lista:', motoristaParaLogin);
-        this.router.navigate(['/motorista/dashboard']);
+        this.router.navigate(['/motorista-dashboard']);
       }
     }
   }

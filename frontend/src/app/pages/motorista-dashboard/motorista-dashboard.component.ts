@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MotoristaService, MotoristaLogado } from '../../services/motorista.service'; // Ajusta o caminho se necessário
+import { MotoristaService, MotoristaLogado } from '../../services/motorista.service'; 
 
 @Component({
   selector: 'app-motorista-dashboard',
@@ -19,13 +19,13 @@ export class MotoristaDashboardComponent implements OnInit {
     this.motorista = this.motoristaService.getMotoristaLogado();
 
     if (!this.motorista) {
-      this.router.navigate(['/motorista/login']); 
+      this.router.navigate(['/motorista-login']); 
     }
   }
 
   logout(): void {
     this.motoristaService.logoutMotorista();
-    this.router.navigate(['/motorista/login']); 
+    this.router.navigate(['/motorista-login']); 
   }
 
   navigateTo(feature: string): void {
