@@ -2,19 +2,18 @@
     <h2>Painel do Motorista</h2>
     <h3>Bem-vindo, {{ motorista.nome }}!</h3>
     <p>(NIF: {{ motorista.nif }})</p>
-  
     <div class="actions-grid">
       <button class="action-button" (click)="navigateTo('requisitar-taxi')">
-        Requisitar Táxi para Turno (Story 5)
+        Requisitar Táxi para Turno
       </button>
-      <button class="action-button" (click)="navigateTo('aceitar-pedido')">
-        Aceitar Pedido de Táxi (Story 7)
+      <button class="action-button" routerLink="/pedidos">
+        Ver Pedidos de Táxi
       </button>
       <button class="action-button" (click)="navigateTo('registar-viagem')">
-        Registar Viagem com Clientes (Story 8)
+        Registar Viagem com Clientes
       </button>
       <button class="action-button" (click)="navigateTo('emitir-fatura')">
-        Emitir Fatura (Story 9)
+        Emitir Fatura
       </button>
     </div>
   

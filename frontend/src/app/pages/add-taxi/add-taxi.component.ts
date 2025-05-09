@@ -3,7 +3,8 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn,
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { TaxiService } from '../../services/taxi.service';
-import { TAXI_BRANDS, TAXI_MODELS, TaxiConforto } from '../../models/taxi.model';
+import { TAXI_BRANDS, TAXI_MODELS } from '../../models/taxi.model';
+import { NivelConforto } from 'src/app/models/nivel-conforto.type';
 
 @Component({
   selector: 'app-add-taxi',
@@ -14,7 +15,7 @@ export class AddTaxiComponent implements OnInit {
   taxiForm!: FormGroup;
   marcas = TAXI_BRANDS;
   modelos: string[] = [];
-  confortoOpcoes: TaxiConforto[] = ['básico', 'luxuoso'];
+  confortoOpcoes: NivelConforto[] = ['básico', 'luxuoso'];
   currentYear = new Date().getFullYear();
 
   constructor(

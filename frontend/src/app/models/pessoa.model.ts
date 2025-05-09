@@ -1,5 +1,5 @@
 import { Morada } from './morada.model';
-import { Genero } from './motorista.model';
+export type Genero = 'feminino' | 'masculino';
 
 export interface Pessoa {
     nif: string;
