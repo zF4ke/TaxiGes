@@ -31,7 +31,12 @@ import { AddMotoristaComponent } from './pages/add-motorista/add-motorista.compo
 import { ListMotoristaComponent } from './pages/list-motorista/list-motorista.component';
 import { MotoristaLoginComponent } from './pages/motorista-login/motorista-login.component';
 import { MotoristaDashboardComponent } from './pages/motorista-dashboard/motorista-dashboard.component';
-
+import { PedidoTaxiComponent } from './pages/pedido-taxi/pedido-taxi.component';
+import { ListPedidosComponent } from './pages/list-pedidos/list-pedidos.component';
+import { PedidoDetalheComponent } from './pages/pedido-detalhe/pedido-detalhe.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { MotoristaPedidoDetalheComponent } from './pages/motorista-pedido-detalhe/motorista-pedido-detalhe.component';
+import { MapaSelecionarDestinoComponent } from './pages/mapa-selecionar-destino/mapa-selecionar-destino.component';
 
 
 const routes: Routes = [
@@ -45,6 +50,10 @@ const routes: Routes = [
   { path: 'list-motoristas', component: ListMotoristaComponent },
   { path: 'motorista-login', component: MotoristaLoginComponent },
   { path: 'motorista-dashboard', component: MotoristaDashboardComponent },
+  { path: 'pedido-taxi', component: PedidoTaxiComponent },
+  { path: 'pedidos', component: ListPedidosComponent },
+  { path: 'pedido/:id', component: PedidoDetalheComponent },
+  { path: 'motorista/pedido/:id', component: MotoristaPedidoDetalheComponent },
   { path: '**', redirectTo: '' }
 ];
 
@@ -60,7 +69,12 @@ const routes: Routes = [
     AddMotoristaComponent,
     ListMotoristaComponent,
     MotoristaLoginComponent,
-    MotoristaDashboardComponent
+    MotoristaDashboardComponent,
+    PedidoTaxiComponent,
+    ListPedidosComponent,
+    PedidoDetalheComponent,
+    MotoristaPedidoDetalheComponent,
+    MapaSelecionarDestinoComponent
   ],
   imports: [
     BrowserModule,
@@ -80,7 +94,9 @@ const routes: Routes = [
     MatDatepickerModule,
     MatNativeDateModule,
     MatSlideToggleModule,
+    
     MatSelectModule,
+    MatDividerModule,
     FormsModule
   ],
   providers: [],

@@ -29,7 +29,7 @@
         <label for="motoristaSelect">Escolha o seu nome:</label>
         <select id="motoristaSelect" name="selectedMotorista" (change)="onSelectMotorista($event)">
           <option value="">-- Selecione um motorista --</option> <option *ngFor="let motorista of motoristasParaSelecao" [value]="motorista._id">
-            {{ motorista.nome }} (NIF: {{ motorista.NIF }})
+            {{ motorista.nome }} (NIF: {{ motorista.nif }})
           </option>
         </select>
       </div>

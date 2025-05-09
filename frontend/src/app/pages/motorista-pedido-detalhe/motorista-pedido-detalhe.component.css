@@ -1,0 +1,91 @@
+.detalhe-container {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.pedido-card {
+  width: 100%;
+  max-width: 800px;
+}
+
+.avatar-icon {
+  background-color: #e0f7fa;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-icon mat-icon {
+  font-size: 24px;
+  color: #00796b;
+}
+
+.status {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.status.pendente {
+  background-color: #fff8e1;
+  color: #f57c00;
+}
+
+.status.aceite {
+  background-color: #e8f5e9;
+  color: #388e3c;
+}
+
+.status.cancelado {
+  background-color: #ffebee;
+  color: #d32f2f;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+}
+
+.info-item mat-icon {
+  margin-right: 8px;
+  color: #616161;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #424242;
+}
+
+.map-placeholder {
+  margin-top: 24px;
+  padding: 40px;
+  border: 2px dashed #bdbdbd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #757575;
+}
+
+.map-placeholder mat-icon {
+  margin-right: 8px;
+}
+
+mat-card-actions {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  justify-content: flex-end;
+}

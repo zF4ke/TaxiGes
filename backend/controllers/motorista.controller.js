@@ -66,7 +66,7 @@ exports.listarParaSelecao = async (req, res) => {
         const resultadoFormatado = motoristas.map(m => ({
             _id: m._id,
             nome: m.pessoa.nome,
-            nif: m.pessoa.NIF 
+            nif: m.pessoa.nif 
         }));
         
         res.status(200).json(resultadoFormatado);
@@ -100,7 +100,7 @@ exports.acessoPorNIF = async (req, res) => {
         const resultadoFormatado = {
             _id: motorista._id,
             nome: motorista.pessoa.nome,
-            nif: motorista.pessoa.NIF 
+            nif: motorista.pessoa.nif 
         };
         res.status(200).json(resultadoFormatado);
     } catch (error) {
@@ -109,13 +109,3 @@ exports.acessoPorNIF = async (req, res) => {
     }
 };
 
-exports.createMotorista = async (req, res) => {
-    try {
-    } catch (err) { 
-        if (err.code === 11000) {
-            const campoDuplicado = Object.keys(err.keyValue)[0];
-            const nomeCampo = campoDuplicado === 'pessoa.nif' ? 'NIF' : 'Carta de Condução';
-            return res.status(409).json({ message: `Erro: ${nomeCampo} já existe.` });
-        }
-    }
-};

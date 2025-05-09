@@ -1,0 +1,12 @@
+<!-- src/app/components/mapa-selecionar-destino/mapa-selecionar-destino.component.html -->
+<div class="map-popup-overlay" *ngIf="mapVisible">
+  <div class="map-popup">
+    <div class="popup-header">
+      <h3>Escolher Destino no Mapa</h3>
+      <button mat-icon-button (click)="fecharMapa()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    <div #mapContainer class="map-container"></div>
+  </div>
+</div>

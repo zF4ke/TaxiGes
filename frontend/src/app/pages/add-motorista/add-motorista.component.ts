@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/fo
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MotoristaService } from '../../services/motorista.service';
-import { Genero } from '../../models/motorista.model';
 import { Subject, Subscription, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap, catchError, filter, takeUntil } from 'rxjs/operators';
+import { Genero } from 'src/app/models/pessoa.model';
 
 @Component({
   selector: 'app-add-motorista',

@@ -1,5 +1,4 @@
-export const TAXI_CONFORTO = ['básico', 'luxuoso'] as const;
-export type TaxiConforto = typeof TAXI_CONFORTO[number];
+import { NivelConforto } from "./nivel-conforto.type";
 
 export interface Taxi {
     _id?: string;
@@ -7,7 +6,7 @@ export interface Taxi {
     anoCompra: number;
     marca: string;
     modelo: string;
-    conforto: TaxiConforto;
+    conforto: NivelConforto;
     createdAt?: Date;
     updatedAt?: Date;
 }

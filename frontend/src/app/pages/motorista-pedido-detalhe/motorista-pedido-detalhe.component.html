@@ -1,0 +1,81 @@
+<!-- src/app/pages/motorista-pedido-detalhe/motorista-pedido-detalhe.component.html -->
+
+<div class="detalhe-container" *ngIf="pedido">
+  <mat-card class="pedido-card">
+    <mat-card-header>
+      <div mat-card-avatar class="avatar-icon">
+        <mat-icon>local_taxi</mat-icon>
+      </div>
+      <mat-card-title>Pedido #{{ pedido._id }}</mat-card-title>
+      <mat-card-subtitle>
+        Status: 
+        <span class="status" [ngClass]="pedido.status">
+          {{ pedido.status | titlecase }}
+        </span>
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+      <div class="info-grid">
+        <!-- Cliente -->
+        <div class="info-item">
+          <mat-icon>person</mat-icon>
+          <div>
+            <div class="label">Cliente</div>
+            <div>{{ pedido.cliente.nome }} ({{ pedido.cliente.nif }})</div>
+          </div>
+        </div>
+
+        <!-- Origem -->
+        <div class="info-item">
+          <mat-icon>place</mat-icon>
+          <div>
+            <div class="label">Origem</div>
+            <div>{{ pedido.localizacaoAtual.rua }}, {{ pedido.localizacaoAtual.localidade }}</div>
+          </div>
+        </div>
+
+        <!-- Destino -->
+        <div class="info-item">
+          <mat-icon>flag</mat-icon>
+          <div>
+            <div class="label">Destino</div>
+            <div>{{ pedido.destino.rua }}, {{ pedido.destino.localidade }}</div>
+          </div>
+        </div>
+
+        <!-- Conforto -->
+        <div class="info-item">
+          <mat-icon>weekend</mat-icon>
+          <div>
+            <div class="label">Conforto</div>
+            <div>{{ pedido.nivelConforto }}</div>
+          </div>
+        </div>
+
+        <!-- Nº Pessoas -->
+        <div class="info-item">
+          <mat-icon>people</mat-icon>
+          <div>
+            <div class="label">Pessoas</div>
+            <div>{{ pedido.numeroPessoas }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="map-placeholder">
+        <mat-icon>map</mat-icon>
+        <span>Mapa da rota (a implementar)</span>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-raised-button color="primary" routerLink="/list-pedidos">
+        <mat-icon>arrow_back</mat-icon>
+        Voltar
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
