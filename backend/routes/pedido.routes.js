@@ -8,6 +8,9 @@ router.get('/', pedidoController.getAllPedidos);
 // Create a new pedido
 router.post('/', pedidoController.createPedido);
 
+// Aceitar um pedido 
+router.put('/:id/aceitar', pedidoController.aceitarPedido);
+
 // Get a specific pedido by ID
 router.get('/:id', pedidoController.getPedidoById);
 
@@ -16,5 +19,9 @@ router.put('/:id', pedidoController.updatePedidoById);
 
 // Delete a pedido by ID
 router.delete('/:id', pedidoController.deletePedidoById);
+
+// Get the last accepted pedido by motorista ID
+router.get('/ultimo-aceite/:motoristaId', pedidoController.getUltimoPedidoAceiteByMotorista);
+
 
 module.exports = router;

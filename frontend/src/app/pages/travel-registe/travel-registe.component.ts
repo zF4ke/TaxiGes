@@ -1,5 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PedidoService } from '../../services/pedido.service';
+import { MotoristaService } from '../../services/motorista.service';
 
 @Component({
   selector: 'app-travel-registe',
@@ -7,11 +9,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./travel-registe.component.css']
 })
 export class TravelRegisteComponent implements OnInit {
-  @Input() pedidoAceite: any; 
   travelForm: FormGroup;
   submitted = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private pedidoService: PedidoService,
+    private motoristaService: MotoristaService
+  ) {
     this.travelForm = this.fb.group({
       origem: ['', Validators.required],
       destino: ['', Validators.required],
@@ -23,18 +28,20 @@ export class TravelRegisteComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.pedidoAceite && history.state.pedidoAceite) {
-        this.pedidoAceite = history.state.pedidoAceite;
-    }
-    if (this.pedidoAceite) {
-        const agora = new Date();
-        this.travelForm.patchValue({
-            origem: this.pedidoAceite.moradaOrigem,
-            destino: this.pedidoAceite.moradaDestino,
-            data: agora.toISOString().substring(0, 10),
-            hora: agora.toTimeString().substring(0, 5),
-            passageiros: this.pedidoAceite.numeroPessoas || 1
+    const motorista = this.motoristaService.getMotoristaLogado();
+    if (motorista && motorista._id) {
+      this.pedidoService.getUltimoPedidoAceiteDoMotorista(motorista._id).subscribe(pedidoAceite => {
+        if (pedidoAceite) {
+            const agora = new Date();
+            this.travelForm.patchValue({
+             origem: this.formatarMorada(pedidoAceite.localizacaoAtual),
+             destino: this.formatarMorada(pedidoAceite.destino),
+             data: agora.toISOString().substring(0, 10),
+             hora: agora.toTimeString().substring(0, 5),
+             passageiros: pedidoAceite.numeroPessoas || 1
         });
+        }
+      });
     }
   }
 
@@ -55,5 +62,10 @@ export class TravelRegisteComponent implements OnInit {
   onReset() {
     this.travelForm.reset();
     this.submitted = false;
+  }
+
+  formatarMorada(morada: any): string {
+    if (!morada) return '';
+    return `${morada.rua || ''} ${morada.numeroPorta || ''}, ${morada.codigoPostal || ''} ${morada.localidade || ''}`.trim();
   }
 }

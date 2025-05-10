@@ -63,4 +63,8 @@ export class PedidoService {
   getPedido(id: string): Observable<Pedido> {
     return this.http.get<Pedido>(`${this.apiUrl}/${id}`);
   }
+
+  getUltimoPedidoAceiteDoMotorista(motoristaId: string) {
+    return this.http.get<Pedido>(`/api/pedidos/ultimo-aceite/${motoristaId}`);
+  }
 }
