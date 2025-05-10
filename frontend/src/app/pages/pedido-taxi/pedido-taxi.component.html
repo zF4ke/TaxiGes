@@ -3,11 +3,13 @@
     <mat-card-header>
       <mat-card-title>Solicitar Táxi</mat-card-title>
     </mat-card-header>
+
     <mat-card-content>
       <form [formGroup]="pedidoForm" (ngSubmit)="onSubmit()">
 
         <!-- Dados do Cliente -->
-        <div formGroupName="cliente">
+        <h3>Dados do Cliente</h3>
+        <div formGroupName="cliente" class="form-grid">
           <mat-form-field appearance="outline">
             <mat-label>NIF</mat-label>
             <input matInput formControlName="nif" maxlength="9">
@@ -41,7 +43,7 @@
 
         <!-- Localização Atual -->
         <h3>Localização Atual</h3>
-        <div formGroupName="localizacaoAtual">
+        <div formGroupName="localizacaoAtual" class="form-grid">
           <mat-form-field appearance="outline">
             <mat-label>Rua</mat-label>
             <input matInput formControlName="rua">
@@ -68,8 +70,18 @@
         </div>
 
         <!-- Destino -->
-        <h3>Destino</h3>
-        <div formGroupName="destino">
+        <div class="destino-row">
+          <h3>Destino</h3>
+          <!-- Botão do mapa -->
+          <div class="botao-mapa">
+            <button mat-stroked-button color="primary" type="button" (click)="abrirSelecaoMapa()">
+              <mat-icon>place</mat-icon>
+              Selecionar no mapa
+            </button>
+          </div>
+        </div>
+        <div formGroupName="destino" class="form-grid">
+
           <mat-form-field appearance="outline">
             <mat-label>Rua</mat-label>
             <input matInput formControlName="rua">
@@ -95,13 +107,6 @@
           </mat-form-field>
         </div>
 
-        <!-- Botão do mapa -->
-        <button mat-stroked-button color="primary" type="button" (click)="abrirSelecaoMapa()">
-          Selecionar destino no mapa
-        </button>
-
-        <br>
-        <br>
 
         <!-- Componente do mapa -->
         <app-mapa-selecionar-destino
@@ -110,20 +115,22 @@
         </app-mapa-selecionar-destino>
 
         <!-- Conforto e Pessoas -->
-        <mat-form-field appearance="outline">
-          <mat-label>Nível de Conforto</mat-label>
-          <mat-select formControlName="nivelConforto">
-            <mat-option *ngFor="let c of niveisConforto" [value]="c">{{ c }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="pedidoForm.get('nivelConforto')?.hasError('required')">Nível de conforto obrigatório</mat-error>
-        </mat-form-field>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Nível de Conforto</mat-label>
+            <mat-select formControlName="nivelConforto">
+              <mat-option *ngFor="let c of niveisConforto" [value]="c">{{ c }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="pedidoForm.get('nivelConforto')?.hasError('required')">Nível de conforto obrigatório</mat-error>
+          </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Número de Pessoas</mat-label>
-          <input matInput type="number" formControlName="numeroPessoas" min="1">
-          <mat-error *ngIf="pedidoForm.get('numeroPessoas')?.hasError('required')">Obrigatório</mat-error>
-          <mat-error *ngIf="pedidoForm.get('numeroPessoas')?.hasError('min')">Mínimo 1 pessoa</mat-error>
-        </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Número de Pessoas</mat-label>
+            <input matInput type="number" formControlName="numeroPessoas" min="1">
+            <mat-error *ngIf="pedidoForm.get('numeroPessoas')?.hasError('required')">Obrigatório</mat-error>
+            <mat-error *ngIf="pedidoForm.get('numeroPessoas')?.hasError('min')">Mínimo 1 pessoa</mat-error>
+          </mat-form-field>
+        </div>
 
         <!-- Ações -->
         <div class="actions">

@@ -1,123 +1,66 @@
-.detalhe-container {
+/* Centraliza o formulário */
+.form-container {
   display: flex;
   justify-content: center;
-  padding: 24px;
+  align-items: flex-start;
+  padding: 32px;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  box-sizing: border-box;
 }
 
-.pedido-card {
+/* Card responsivo */
+mat-card {
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
+  padding: 16px;
 }
 
-.avatar-icon {
-  background-color: #e0f7fa;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Cabeçalhos de seções */
+h3 {
+  margin-top: 24px;
+  font-size: 1.2rem;
+  color: #333;
 }
 
-.avatar-icon mat-icon {
-  font-size: 24px;
-  color: #00796b;
-}
-
-.status {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.status.pendente {
-  background-color: #fff8e1;
-  color: #f57c00;
-}
-
-.status.aceite {
-  background-color: #e8f5e9;
-  color: #388e3c;
-}
-
-.status.cancelado {
-  background-color: #ffebee;
-  color: #d32f2f;
-}
-
-.info-grid {
+/* Grid de inputs */
+.form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 16px;
+}
+
+/* Ajuste fino para campos */
+mat-form-field {
+  width: 100%;
+}
+
+/* Ações no final */
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+/* Botão para mapa */
+button[mat-stroked-button][color="primary"] {
   margin-top: 16px;
 }
 
-.info-item {
+/* Erros */
+mat-error {
+  font-size: 0.75rem;
+}
+
+.destino-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
 }
 
-.info-item mat-icon {
-  color: #616161;
+.botao-mapa button mat-icon {
+  margin-right: 4px;
 }
 
-.label {
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: #424242;
-}
-
-.map-placeholder {
-  margin-top: 24px;
-  padding: 40px;
-  border: 2px dashed #bdbdbd;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #757575;
-}
-
-.map-placeholder mat-icon {
-  margin-right: 8px;
-}
-
-mat-card-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 16px;
-  justify-content: flex-end;
-}
-
-/* Estimativas */
-.estimativas {
-  border-top: 1px dashed #ccc;
-  margin-top: 24px;
-  padding-top: 16px;
-}
-
-.estimativas .info-item mat-icon {
-  color: #2e7d32;
-}
-
-/* Motorista atribuído */
-.motorista-box {
-  margin-top: 24px;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fafafa;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.rejeitar-btn {
-  margin-top: 8px;
-}
-
-.rejeitar-btn .rejeitar-icon {
-  color: #d32f2f !important;
-}

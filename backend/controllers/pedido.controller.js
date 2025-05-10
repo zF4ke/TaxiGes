@@ -4,7 +4,25 @@ const Motorista = require('../models/motorista.model');
 // Listar todos os pedidos
 exports.getAllPedidos = async (req, res) => {
   try {
-    const pedidos = await Pedido.find();
+    // const pedidos = await Pedido.find()
+    //   .populate('motoristaSelecionado', 'pessoa')
+    //   .populate('motoristasRejeitados', 'pessoa');
+    // res.json(pedidos);
+
+    const { status, motoristaId } = req.query;
+    const filter = {};
+    if (status) {
+      filter.status = status;
+    }
+    // motoristaId nao esta no motoristasRejeitados
+    if (motoristaId) {
+      filter.motoristasRejeitados = { $ne: motoristaId };
+    }
+
+    const pedidos = await Pedido.find(filter)
+      .populate('motoristaSelecionado', 'pessoa')
+      .populate('motoristasRejeitados', 'pessoa');
+
     res.json(pedidos);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -25,7 +43,9 @@ exports.createPedido = async (req, res) => {
 // Obter um pedido por ID
 exports.getPedidoById = async (req, res) => {
   try {
-    const pedido = await Pedido.findById(req.params.id);
+    const pedido = await Pedido.findById(req.params.id)
+      .populate('motoristaSelecionado', 'pessoa')
+      .populate('motoristasRejeitados', 'pessoa');
     if (!pedido) return res.status(404).json({ message: 'Pedido não encontrado' });
     res.json(pedido);
   } catch (err) {
@@ -126,7 +146,11 @@ exports.rejeitarMotorista = async (req, res) => {
     // Remove o motorista selecionado se for o mesmo
     if (pedido.motoristaSelecionado && pedido.motoristaSelecionado._id.toString() === motoristaId) {
       pedido.motoristaSelecionado = null;
-      pedido.status = 'rejeitado'; 
+      pedido.status = 'pendente';
+      pedido.motoristasRejeitados.push({
+        _id: motoristaId
+      });
+
       await pedido.save();
       return res.json(pedido);
     } else {

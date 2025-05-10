@@ -33,11 +33,13 @@ const pedidoSchema = new mongoose.Schema({
         default: 'pendente'
     },
     motoristaSelecionado: {
-        _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Motorista' },
-        pessoa: { 
-            type: Object 
-        }
-    }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Motorista'
+    },
+    motoristasRejeitados: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Motorista'
+    }],
 }, { timestamps: true });
 
 pedidoSchema.index({ createdAt: -1 });
