@@ -5,5 +5,22 @@
     <p><strong>Preço final:</strong> {{ precoFinal }} €</p>
     <p><strong>Quilómetros percorridos:</strong> {{ kmPercorridos }} km</p>
     <button mat-raised-button color="primary" routerLink="/">Voltar ao início</button>
+    <button mat-raised-button color="accent" (click)="mostrarFormularioFim = true">
+      Registar fim da viagem
+    </button>
+
+    <form *ngIf="mostrarFormularioFim" [formGroup]="fimForm" (ngSubmit)="onSubmitFimViagem()">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Morada de fim</mat-label>
+        <input matInput formControlName="moradaFim" />
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Hora de fim</mat-label>
+        <input matInput formControlName="horaFim" type="datetime-local" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit" [disabled]="fimForm.invalid">
+        Guardar fim da viagem
+      </button>
+    </form>
   </mat-card-content>
 </mat-card>
