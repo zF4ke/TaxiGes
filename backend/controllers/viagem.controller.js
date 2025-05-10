@@ -124,6 +124,7 @@ exports.createViagem = async (req, res) => {
 
     const viagem = new Viagem({
         ...dados,
+        cliente: dados.cliente,
         numeroSequencia: novoNumeroSequencia,
         quilometrosPercorridos: km,
         inicio,

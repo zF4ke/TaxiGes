@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
 import { MotoristaService } from '../../services/motorista.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-travel-registe',
@@ -15,7 +16,8 @@ export class TravelRegisteComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private pedidoService: PedidoService,
-    private motoristaService: MotoristaService
+    private motoristaService: MotoristaService,
+    private location: Location
   ) {
     this.travelForm = this.fb.group({
       origem: ['', Validators.required],
@@ -67,5 +69,9 @@ export class TravelRegisteComponent implements OnInit {
   formatarMorada(morada: any): string {
     if (!morada) return '';
     return `${morada.rua || ''} ${morada.numeroPorta || ''}, ${morada.codigoPostal || ''} ${morada.localidade || ''}`.trim();
+  }
+
+  voltarAtras(): void {
+    this.location.back();
   }
 }

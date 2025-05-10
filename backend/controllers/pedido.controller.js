@@ -61,7 +61,7 @@ exports.getUltimoPedidoAceiteByMotorista = async (req, res) => {
     const motoristaId = req.params.motoristaId;
     const pedido = await Pedido.findOne({
       motorista: motoristaId,
-      estado: 'aceite'
+      estado: 'aceito'
     }).sort({ updatedAt: -1 }); 
 
     if (!pedido) return res.status(404).json({ message: 'Nenhum pedido aceite encontrado para este motorista.' });
@@ -83,7 +83,6 @@ exports.aceitarPedido = async (req, res) => {
     const motorista = await Motorista.findById(motoristaId);
     if (!motorista) return res.status(404).json({ message: 'Motorista não encontrado.' });
 
-    // Corrige o status para o valor permitido no schema
     pedido.status = 'aceito';
     pedido.motoristaSelecionado = {
       _id: motorista._id,
@@ -94,6 +93,20 @@ exports.aceitarPedido = async (req, res) => {
     res.json(pedido);
   } catch (err) {
     console.error('Erro ao aceitar pedido:', err); 
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.cancelarPedido = async (req, res) => {
+  try {
+    const pedido = await Pedido.findByIdAndUpdate(
+      req.params.id,
+      { status: 'cancelado' },
+      { new: true }
+    );
+    if (!pedido) return res.status(404).json({ message: 'Pedido não encontrado' });
+    res.json(pedido);
+  } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
