@@ -76,6 +76,11 @@ exports.createViagem = async (req, res) => {
   try {
     const dados = req.body;
 
+    // RIA 19: O número de pessoas tem de ser pelo menos 1
+    if (!dados.numeroPessoas || dados.numeroPessoas < 1) {
+      throw new Error('O número de pessoas tem de ser pelo menos 1.');
+    }
+
     // Coordenadas do motorista (se não vierem do frontend, usar FCUL)
     const motoristaCoords = dados.motoristaCoords || { lat: 38.756734, lon: -9.155412 };
 
@@ -101,7 +106,9 @@ exports.createViagem = async (req, res) => {
       coordsDestino.lat,
       coordsDestino.lon
     );
-    if (km <= 0) throw new Error("Distância inválida");
+
+    // RIA 20: Os quilómetros percorridos têm de ser positivos
+    if (km <= 0) throw new Error("Distância inválida: os quilómetros percorridos têm de ser positivos.");
 
     // Hora de início: agora + tempo estimado de chegada
     const inicio = new Date(Date.now() + tempoEstimadoChegadaTaxi * 60000);
@@ -112,15 +119,31 @@ exports.createViagem = async (req, res) => {
     // Hora de fim: início + tempo total da viagem
     const fim = new Date(inicio.getTime() + tempoTotalMinutos * 60000);
 
+    // RIA 5: O início de um período tem de ser anterior ao seu fim
+    if (inicio >= fim) {
+      throw new Error('O início do período tem de ser anterior ao fim.');
+    }
+
+    // RIA 2: O período da viagem tem de estar contido no período do turno
+    if (!dados.turno || !dados.turno.inicio || !dados.turno.fim) {
+      throw new Error('Informação do turno em falta.');
+    }
+    const turnoInicio = new Date(dados.turno.inicio);
+    const turnoFim = new Date(dados.turno.fim);
+    if (inicio < turnoInicio || fim > turnoFim) {
+      throw new Error('O período da viagem tem de estar contido no período do turno.');
+    }
+
+    // RIA 18: As viagens de um turno vão do número de sequência 1 em diante
+    const ultimaViagem = await Viagem.findOne({ "turno._id": dados.turno._id }).sort({ numeroSequencia: -1 });
+    const novoNumeroSequencia = ultimaViagem ? ultimaViagem.numeroSequencia + 1 : 1;
+
     // Cálculo do custo
     const custoTotal = await calcularPrecoViagem({
         tipo: dados.turno.tipoCarro,
         inicio,
         fim
     });
-
-    const ultimaViagem = await Viagem.findOne().sort({ numeroSequencia: -1 });
-    const novoNumeroSequencia = ultimaViagem ? ultimaViagem.numeroSequencia + 1 : 1;
 
     const viagem = new Viagem({
         ...dados,
@@ -161,16 +184,6 @@ exports.getViagemById = async (req, res) => {
   }
 };
 
-// Atualizar uma viagem por ID
-exports.updateViagemById = async (req, res) => {
-  try {
-    const viagem = await Viagem.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!viagem) return res.status(404).json({ message: 'Viagem não encontrada' });
-    res.json(viagem);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
 
 // Apagar uma viagem por ID
 exports.deleteViagemById = async (req, res) => {

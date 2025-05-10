@@ -67,4 +67,8 @@ export class PedidoService {
   getUltimoPedidoAceiteDoMotorista(motoristaId: string) {
     return this.http.get<Pedido>(`/api/pedidos/ultimo-aceite/${motoristaId}`);
   }
+
+  deletePedido(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

@@ -96,11 +96,15 @@ export class PedidoTaxiComponent implements OnInit {
     }
 
     const formValue = { ...this.pedidoForm.value };
+    formValue.cliente = {
+    pessoa: {
+      nome: formValue.cliente.nome.trim(),
+      nif: formValue.cliente.nif.trim(),
+      genero: formValue.cliente.genero,
+      anoNascimento: formValue.cliente.anoNascimento
+    }
+  };
 
-    formValue.cliente = { pessoa: { ...formValue.cliente } };
-
-    formValue.cliente.pessoa.morada = { ...formValue.localizacaoAtual };
-    formValue.cliente.pessoa.nome = formValue.cliente.pessoa.nome.trim();
     formValue.localizacaoAtual.localidade = formValue.localizacaoAtual.localidade.trim();
     formValue.destino.rua = formValue.destino.rua.trim();
     formValue.destino.localidade = formValue.destino.localidade.trim();
@@ -109,9 +113,6 @@ export class PedidoTaxiComponent implements OnInit {
     }
     if (formValue.destino.numeroPorta) {
       formValue.destino.numeroPorta = formValue.destino.numeroPorta.trim();
-    }
-    if (formValue.cliente.pessoa.morada.numeroPorta) {
-      formValue.cliente.pessoa.morada.numeroPorta = formValue.cliente.pessoa.morada.numeroPorta.trim();
     }
 
     this.pedidoService.createPedido(formValue).subscribe({

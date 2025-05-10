@@ -31,6 +31,12 @@ const pedidoSchema = new mongoose.Schema({
         type: String,
         enum: PEDIDO_STATUS,
         default: 'pendente'
+    },
+    motoristaSelecionado: {
+        _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Motorista' },
+        pessoa: { 
+            type: Object 
+        }
     }
 }, { timestamps: true });
 

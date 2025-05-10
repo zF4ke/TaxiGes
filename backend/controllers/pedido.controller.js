@@ -60,9 +60,9 @@ exports.getUltimoPedidoAceiteByMotorista = async (req, res) => {
   try {
     const motoristaId = req.params.motoristaId;
     const pedido = await Pedido.findOne({
-      motorista: motoristaId,
-      estado: 'aceito'
-    }).sort({ updatedAt: -1 }); 
+      status: 'aceite',
+      'motoristaSelecionado._id': new mongoose.Types.ObjectId(motoristaId)
+    }).sort({ updatedAt: -1 });
 
     if (!pedido) return res.status(404).json({ message: 'Nenhum pedido aceite encontrado para este motorista.' });
     res.json(pedido);
@@ -83,7 +83,7 @@ exports.aceitarPedido = async (req, res) => {
     const motorista = await Motorista.findById(motoristaId);
     if (!motorista) return res.status(404).json({ message: 'Motorista não encontrado.' });
 
-    pedido.status = 'aceito';
+    pedido.status = 'aceite';
     pedido.motoristaSelecionado = {
       _id: motorista._id,
       pessoa: motorista.pessoa
@@ -106,6 +106,28 @@ exports.cancelarPedido = async (req, res) => {
     );
     if (!pedido) return res.status(404).json({ message: 'Pedido não encontrado' });
     res.json(pedido);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.rejeitarMotorista = async (req, res) => {
+  try {
+    const pedidoId = req.params.id;
+    const { motoristaId } = req.body;
+
+    const pedido = await Pedido.findById(pedidoId);
+    if (!pedido) return res.status(404).json({ message: 'Pedido não encontrado.' });
+
+    // Remove o motorista selecionado se for o mesmo
+    if (pedido.motoristaSelecionado && pedido.motoristaSelecionado._id.toString() === motoristaId) {
+      pedido.motoristaSelecionado = null;
+      pedido.status = 'rejeitado'; 
+      await pedido.save();
+      return res.json(pedido);
+    } else {
+      return res.status(400).json({ message: 'Motorista não corresponde ao selecionado.' });
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

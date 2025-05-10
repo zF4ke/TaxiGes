@@ -31,6 +31,16 @@
         </mat-form-field>
 
         <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Quilómetros Percorridos</mat-label>
+          <input matInput formControlName="kmPercorridos" type="number" readonly />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Preço Final (€)</mat-label>
+          <input matInput formControlName="precoFinal" type="number" readonly />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
           <mat-label>Observações</mat-label>
           <textarea matInput formControlName="observacoes" rows="1"></textarea>
         </mat-form-field>
@@ -39,7 +49,6 @@
           <button mat-raised-button color="primary" type="submit" [disabled]="travelForm.invalid">
             Registar Viagem
           </button>
-          <button mat-button type="button" (click)="onReset()">Limpar</button>
           <button mat-button type="button" (click)="voltarAtras()">
             Voltar atrás
           </button>

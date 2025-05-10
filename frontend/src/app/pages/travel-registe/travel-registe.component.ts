@@ -20,32 +20,45 @@ export class TravelRegisteComponent implements OnInit {
     private location: Location
   ) {
     this.travelForm = this.fb.group({
-      origem: ['', Validators.required],
-      destino: ['', Validators.required],
-      data: ['', Validators.required],
-      hora: ['', Validators.required],
-      passageiros: [1, [Validators.required, Validators.min(1)]],
-      observacoes: ['']
-    });
+    origem: [{ value: '', disabled: true }],
+    destino: [{ value: '', disabled: true }],
+    data: [{ value: '', disabled: true }],
+    hora: [{ value: '', disabled: true }],
+    passageiros: [1, [Validators.required, Validators.min(1)]],
+    observacoes: [''],
+    kmPercorridos: [{ value: '', disabled: true }],
+    precoFinal: [{ value: '', disabled: true }],    
+  });
   }
 
   ngOnInit() {
-    const motorista = this.motoristaService.getMotoristaLogado();
-    if (motorista && motorista._id) {
-      this.pedidoService.getUltimoPedidoAceiteDoMotorista(motorista._id).subscribe(pedidoAceite => {
-        if (pedidoAceite) {
-            const agora = new Date();
-            this.travelForm.patchValue({
-             origem: this.formatarMorada(pedidoAceite.localizacaoAtual),
-             destino: this.formatarMorada(pedidoAceite.destino),
-             data: agora.toISOString().substring(0, 10),
-             hora: agora.toTimeString().substring(0, 5),
-             passageiros: pedidoAceite.numeroPessoas || 1
+  const motorista = this.motoristaService.getMotoristaLogado();
+  const agora = new Date();
+
+  this.travelForm.patchValue({
+    data: agora.toISOString().substring(0, 10),
+    hora: agora.toTimeString().substring(0, 5)
+  });
+
+  if (motorista && motorista._id) {
+    this.pedidoService.getUltimoPedidoAceiteDoMotorista(motorista._id).subscribe(pedidoAceite => {
+      console.log('Pedido aceite recebido:', pedidoAceite);
+      if (pedidoAceite) {
+        this.travelForm.patchValue({
+          origem: this.formatarMorada(pedidoAceite.localizacaoAtual),
+          destino: this.formatarMorada(pedidoAceite.destino),
+          passageiros: pedidoAceite.numeroPessoas || 1
         });
-        }
-      });
-    }
+      } else {
+        console.warn('Nenhum pedido aceite encontrado para este motorista.');
+      }
+    }, err => {
+      console.error('Erro ao obter pedido aceite:', err);
+    });
+  } else {
+    console.warn('Motorista não autenticado.');
   }
+}
 
   get f() {
     return this.travelForm.controls;

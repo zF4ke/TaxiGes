@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const pedidoController = require('../controllers/pedido.controller');
-const Pedido = require('../models/pedido.model'); 
 
 // List all pedidos
 router.get('/', pedidoController.getAllPedidos);
@@ -26,6 +25,9 @@ router.get('/ultimo-aceite/:motoristaId', pedidoController.getUltimoPedidoAceite
 
 // Cancelar um pedido por ID
 router.put('/:id/cancelar', pedidoController.cancelarPedido);
+
+// Rejeitar motorista de um pedido
+router.put('/:id/rejeitar-motorista', pedidoController.rejeitarMotorista);
 
 
 module.exports = router;
