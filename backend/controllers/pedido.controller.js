@@ -58,18 +58,16 @@ exports.deletePedidoById = async (req, res) => {
 // Obter o último pedido aceite por motorista
 exports.getUltimoPedidoAceiteByMotorista = async (req, res) => {
   try {
-    const motorista = await Motorista.findById(motoristaId);
+    const motoristaId = req.params.motoristaId;
     const pedido = await Pedido.findOne({
       status: 'aceite',
-      motoristaSelecionado: {
-        _id: motorista._id,
-        pessoa: motorista.pessoa
-      }
+      'motoristaSelecionado._id': motoristaId
     }).sort({ updatedAt: -1 });
 
     if (!pedido) return res.status(404).json({ message: 'Nenhum pedido aceite encontrado para este motorista.' });
     res.json(pedido);
   } catch (err) {
+    console.error('Erro no getUltimoPedidoAceiteByMotorista:', err);
     res.status(500).json({ message: err.message });
   }
 };

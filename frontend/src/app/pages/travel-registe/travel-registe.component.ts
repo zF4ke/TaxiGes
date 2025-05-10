@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PedidoService } from '../../services/pedido.service';
 import { MotoristaService } from '../../services/motorista.service';
+import { TravelService } from '../../services/travel.service';
+import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
 @Component({
@@ -17,7 +19,9 @@ export class TravelRegisteComponent implements OnInit {
     private fb: FormBuilder,
     private pedidoService: PedidoService,
     private motoristaService: MotoristaService,
-    private location: Location
+    private travelService: TravelService,
+    private location: Location,
+    private router: Router
   ) {
     this.travelForm = this.fb.group({
     origem: [{ value: '', disabled: true }],
@@ -69,9 +73,15 @@ export class TravelRegisteComponent implements OnInit {
     if (this.travelForm.invalid) {
       return;
     }
-    console.log('Viagem registada:', this.travelForm.value);
-    this.travelForm.reset();
-    this.submitted = false;
+    this.travelService.criarViagem(this.travelForm.getRawValue()).subscribe({
+      next: (res) => {
+        this.router.navigate(['/viagem/resumo', res._id], {
+          state: { precoFinal: res.precoFinal, kmPercorridos: res.kmPercorridos }
+        });
+      },
+      error: () => {
+      }
+    });
   }
 
   onReset() {

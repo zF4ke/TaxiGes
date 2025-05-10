@@ -38,6 +38,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MotoristaPedidoDetalheComponent } from './pages/motorista-pedido-detalhe/motorista-pedido-detalhe.component';
 import { MapaSelecionarDestinoComponent } from './pages/mapa-selecionar-destino/mapa-selecionar-destino.component';
 import { TravelRegisteComponent } from './pages/travel-registe/travel-registe.component';
+import {TravelResumeComponent} from './pages/travel-resume/travel-resume.component';
 
 
 const routes: Routes = [
@@ -56,6 +57,7 @@ const routes: Routes = [
   { path: 'pedido/:id', component: PedidoDetalheComponent },
   { path: 'motorista/pedido/:id', component: MotoristaPedidoDetalheComponent },
   { path: 'travel-registe', component: TravelRegisteComponent },
+  { path: 'viagem/resumo/:id', component: TravelResumeComponent },
   { path: '**', redirectTo: '' }
 ];
 
@@ -77,7 +79,8 @@ const routes: Routes = [
     PedidoDetalheComponent,
     MotoristaPedidoDetalheComponent,
     MapaSelecionarDestinoComponent,
-    TravelRegisteComponent 
+    TravelRegisteComponent,
+    TravelResumeComponent
   ],
   imports: [
     BrowserModule,
