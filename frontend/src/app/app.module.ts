@@ -38,7 +38,8 @@ import { PedidoDetalheComponent } from './pages/pedido-detalhe/pedido-detalhe.co
 import { MatDividerModule } from '@angular/material/divider';
 import { MotoristaPedidoDetalheComponent } from './pages/motorista-pedido-detalhe/motorista-pedido-detalhe.component';
 import { MapaSelecionarDestinoComponent } from './pages/mapa-selecionar-destino/mapa-selecionar-destino.component';
-
+import { RequisitarTaxiTurnoComponent } from './pages/requisitar-taxi-turno/requisitar-taxi-turno.component';
+import { ListTurnosComponent } from './pages/list-turnos/list-turnos.component';
 
 const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -56,6 +57,8 @@ const routes: Routes = [
   { path: 'pedidos', component: ListPedidosComponent },
   { path: 'pedido/:id', component: PedidoDetalheComponent },
   { path: 'motorista/pedido/:id', component: MotoristaPedidoDetalheComponent },
+  { path: 'requisitar-taxi-turno', component: RequisitarTaxiTurnoComponent },
+  { path: 'list-turnos', component:ListTurnosComponent},
   { path: '**', redirectTo: '' }
 ];
 
@@ -77,7 +80,9 @@ const routes: Routes = [
     ListPedidosComponent,
     PedidoDetalheComponent,
     MotoristaPedidoDetalheComponent,
-    MapaSelecionarDestinoComponent
+    MapaSelecionarDestinoComponent,
+    RequisitarTaxiTurnoComponent,
+    ListTurnosComponent,
   ],
   imports: [
     BrowserModule,

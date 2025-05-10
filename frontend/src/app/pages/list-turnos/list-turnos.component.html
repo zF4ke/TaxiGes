@@ -1,0 +1,35 @@
+<div class="list-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Meus Turnos</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+      <table mat-table [dataSource]="turnos" class="mat-elevation-z8" *ngIf="!isLoading && turnos.length > 0">
+        <ng-container matColumnDef="inicio">
+          <th mat-header-cell *matHeaderCellDef> Início </th>
+          <td mat-cell *matCellDef="let turno"> {{ turno.inicio | date:'short' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fim">
+          <th mat-header-cell *matHeaderCellDef> Fim </th>
+          <td mat-cell *matCellDef="let turno"> {{ turno.fim | date:'short' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="taxi">
+          <th mat-header-cell *matHeaderCellDef> Táxi </th>
+          <td mat-cell *matCellDef="let turno">
+            {{ turno.taxi.marca }} {{ turno.taxi.modelo }} ({{ turno.taxi.conforto }})
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['inicio', 'fim', 'taxi']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['inicio', 'fim', 'taxi'];"></tr>
+      </table>
+
+      <div *ngIf="!isLoading && turnos.length === 0">
+        <p>Não existem turnos cadastrados.</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

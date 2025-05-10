@@ -3,11 +3,11 @@
     <h3>Bem-vindo, {{ motorista.nome }}!</h3>
     <p>(NIF: {{ motorista.nif }})</p>
     <div class="actions-grid">
-      <button class="action-button" (click)="navigateTo('requisitar-taxi')">
+      <button class="action-button" routerLink="/requisitar-taxi-turno">
         Requisitar Táxi para Turno
       </button>
-      <button class="action-button" routerLink="/pedidos">
-        Ver Pedidos de Táxi
+      <button class="action-button" routerLink="/list-turnos">
+        Ver os meus turnos
       </button>
       <button class="action-button" (click)="navigateTo('registar-viagem')">
         Registar Viagem com Clientes

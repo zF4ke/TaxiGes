@@ -56,6 +56,10 @@ turnoSchema.path('fim').validate(function(value) {
 // RIA 8: evitar sobreposição de turnos do mesmo motorista ou táxi
 turnoSchema.pre('validate', async function(next) {
     try {
+        if (!this.motorista || !this.motorista._id || !this.taxi || !this.taxi._id) {
+            return next(new Error('Motorista ou Táxi não definidos corretamente.'));
+        }
+
         const Turno = mongoose.models.Turno || mongoose.model('Turno', turnoSchema);
         const overlap = await Turno.findOne({
             _id: { $ne: this._id },
