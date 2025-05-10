@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-const { pessoaSchema } = require('./pessoa.schema');
+const { pessoaSimplesSchema } = require('./pessoaSimples.schema');
 
 const clienteSchema = new mongoose.Schema({
     pessoa: {
-        type: pessoaSchema,
+        type: pessoaSimplesSchema,
         required: true
     }
 }, { timestamps: true });

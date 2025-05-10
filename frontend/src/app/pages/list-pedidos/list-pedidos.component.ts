@@ -45,7 +45,10 @@ export class ListPedidosComponent implements OnInit, OnDestroy {
 
   accept(id: string): void {
     const motorista = this.motoristaService.getMotoristaLogado();
-    if (!motorista) return;
+    if (!motorista) {
+      this.snackBar.open('Motorista não autenticado.', 'Fechar', { duration: 2000 });
+      return;
+    }
 
     this.pedidoService.acceptPedido(id, motorista._id).subscribe({
       next: pedido => {
@@ -57,6 +60,16 @@ export class ListPedidosComponent implements OnInit, OnDestroy {
   }
 
 
+  deletePedido(id: string): void {
+    this.pedidoService.deletePedido(id).subscribe({
+      next: () => {
+        this.snackBar.open('Pedido eliminado.', 'Fechar', { duration: 2000 });
+        // Atualiza a lista localmente sem recarregar tudo
+        this.pedidos = this.pedidos.filter(p => p._id !== id);
+      },
+      error: () => this.snackBar.open('Erro ao eliminar pedido.', 'Fechar', { duration: 2000 })
+    });
+  }
 
   viewDetails(id: string): void {
     this.router.navigate(['/pedido', id]);

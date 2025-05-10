@@ -10,9 +10,7 @@ import { Router } from '@angular/router';
 })
 export class AddPriceComponent implements OnInit {
   priceForm: FormGroup;
-  tipoConforto: string[] = ['básico', 'luxuoso'];
-  canAddPrice = true; 
-  tipoError: string | null = null;
+  errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -20,44 +18,35 @@ export class AddPriceComponent implements OnInit {
     private router: Router
   ) {
     this.priceForm = this.fb.group({
-      precoPorMinuto: [null, [Validators.required, Validators.min(0.01)]],
-      tipo: ['', [Validators.required]],
+      precoBasico: [null, [Validators.required, Validators.min(0)]],
+      precoLuxo: [null, [Validators.required, Validators.min(0)]],
       agravamento: [null, [Validators.required, Validators.min(0)]]
     });
   }
 
   ngOnInit(): void {
-    this.checkExistingPrices();
-  }
-
-  checkExistingPrices(): void {
+    // Se quiser carregar valores existentes para edição:
     this.precoService.getPrecos().subscribe({
-      next: (prices) => {
-        const tiposExistentes = prices.map((preco: any) => preco.tipo);
-
-        this.tipoConforto = this.tipoConforto.filter(tipo => !tiposExistentes.includes(tipo));
-        this.canAddPrice = this.tipoConforto.length > 0;; 
+      next: (precos) => {
+        if (precos.length > 0) {
+          this.priceForm.patchValue(precos[0]);
+        }
       },
       error: (err) => {
-        console.error('Erro ao verificar preços existentes:', err);
+        console.error('Erro ao carregar preços existentes:', err);
       }
     });
   }
 
   onSubmit(): void {
-
     if (this.priceForm.valid) {
-      this.precoService.addPrice(this.priceForm.value).subscribe({
+      this.precoService.saveOrUpdatePreco(this.priceForm.value).subscribe({
         next: () => {
-          console.log('Preço adicionado com sucesso!');
-          this.router.navigate(['/list-prices']);
+          this.router.navigate(['/list-price']);
         },
         error: (err) => {
-            if (err.status === 400) {
-                this.tipoError = err.error.error || 'Erro ao adicionar preço.';
-              } else {
-                console.error('Erro ao adicionar preço:', err);
-              }
+          this.errorMessage = 'Erro ao salvar preço.';
+          console.error('Erro ao salvar preço:', err);
         }
       });
     }

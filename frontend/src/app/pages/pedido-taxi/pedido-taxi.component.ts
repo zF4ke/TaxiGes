@@ -96,8 +96,15 @@ export class PedidoTaxiComponent implements OnInit {
     }
 
     const formValue = { ...this.pedidoForm.value };
-    formValue.cliente.nome = formValue.cliente.nome.trim();
-    formValue.localizacaoAtual.rua = formValue.localizacaoAtual.rua.trim();
+    formValue.cliente = {
+    pessoa: {
+      nome: formValue.cliente.nome.trim(),
+      nif: formValue.cliente.nif.trim(),
+      genero: formValue.cliente.genero,
+      anoNascimento: formValue.cliente.anoNascimento
+    }
+  };
+
     formValue.localizacaoAtual.localidade = formValue.localizacaoAtual.localidade.trim();
     formValue.destino.rua = formValue.destino.rua.trim();
     formValue.destino.localidade = formValue.destino.localidade.trim();

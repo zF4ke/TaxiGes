@@ -24,5 +24,5 @@ module.exports = {
         'Peugeot': ['508', '308', '408']
     },
     TAXI_COMFORT: ['básico', 'luxuoso'],
-    PEDIDO_STATUS: ['pendente', 'aceito', 'rejeitado', 'cancelado'],  
+    PEDIDO_STATUS: ['pendente', 'aceite', 'rejeitado', 'cancelado'],  
 };

@@ -63,4 +63,12 @@ export class PedidoService {
   getPedido(id: string): Observable<Pedido> {
     return this.http.get<Pedido>(`${this.apiUrl}/${id}`);
   }
+
+  getUltimoPedidoAceiteDoMotorista(motoristaId: string) {
+    return this.http.get<Pedido>(`${this.apiUrl}/ultimo-aceite/${motoristaId}`);
+  }
+
+  deletePedido(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }

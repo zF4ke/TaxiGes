@@ -26,7 +26,6 @@ import { AddTaxiComponent } from './pages/add-taxi/add-taxi.component';
 import { ListTaxisComponent } from './pages/list-taxis/list-taxis.component';
 import { ListPriceComponent } from './pages/list-price/list-price.component';
 import { AddPriceComponent } from './pages/add-price/add-price.component';
-import { UpdatePriceComponent } from './pages/update-price/update-price.component';
 import { SimulateTravelComponent } from './pages/simulate-travel/simulate-travel.component';
 import { AddMotoristaComponent } from './pages/add-motorista/add-motorista.component';
 import { ListMotoristaComponent } from './pages/list-motorista/list-motorista.component';
@@ -40,6 +39,9 @@ import { MotoristaPedidoDetalheComponent } from './pages/motorista-pedido-detalh
 import { MapaSelecionarDestinoComponent } from './pages/mapa-selecionar-destino/mapa-selecionar-destino.component';
 import { RequisitarTaxiTurnoComponent } from './pages/requisitar-taxi-turno/requisitar-taxi-turno.component';
 import { ListTurnosComponent } from './pages/list-turnos/list-turnos.component';
+import { TravelRegisteComponent } from './pages/travel-registe/travel-registe.component';
+import {TravelResumeComponent} from './pages/travel-resume/travel-resume.component';
+
 
 const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -47,7 +49,6 @@ const routes: Routes = [
   { path: 'list-taxis', component: ListTaxisComponent },
   { path: 'list-prices', component: ListPriceComponent },
   { path: 'add-price', component: AddPriceComponent },
-  { path: 'update-price/:id', component: UpdatePriceComponent},
   { path: 'simulate-travel', component: SimulateTravelComponent},
   { path: 'add-motorista', component: AddMotoristaComponent },
   { path: 'list-motoristas', component: ListMotoristaComponent },
@@ -59,6 +60,8 @@ const routes: Routes = [
   { path: 'motorista/pedido/:id', component: MotoristaPedidoDetalheComponent },
   { path: 'requisitar-taxi-turno', component: RequisitarTaxiTurnoComponent },
   { path: 'list-turnos', component:ListTurnosComponent},
+  { path: 'travel-registe', component: TravelRegisteComponent },
+  { path: 'viagem/resumo/:id', component: TravelResumeComponent },
   { path: '**', redirectTo: '' }
 ];
 
@@ -70,7 +73,6 @@ const routes: Routes = [
     ListTaxisComponent,
     ListPriceComponent, 
     AddPriceComponent,
-    UpdatePriceComponent,
     SimulateTravelComponent,
     AddMotoristaComponent,
     ListMotoristaComponent,
@@ -83,6 +85,8 @@ const routes: Routes = [
     MapaSelecionarDestinoComponent,
     RequisitarTaxiTurnoComponent,
     ListTurnosComponent,
+    TravelRegisteComponent,
+    TravelResumeComponent
   ],
   imports: [
     BrowserModule,
