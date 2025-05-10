@@ -53,6 +53,13 @@
               matTooltip="Ver detalhes">
               <mat-icon>info</mat-icon>
             </button>
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deletePedido(p._id!)"
+              matTooltip="Eliminar pedido">
+              <mat-icon>delete</mat-icon>
+            </button>
           </td>
         </ng-container>
 
