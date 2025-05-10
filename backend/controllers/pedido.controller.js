@@ -58,10 +58,13 @@ exports.deletePedidoById = async (req, res) => {
 // Obter o último pedido aceite por motorista
 exports.getUltimoPedidoAceiteByMotorista = async (req, res) => {
   try {
-    const motoristaId = req.params.motoristaId;
+    const motorista = await Motorista.findById(motoristaId);
     const pedido = await Pedido.findOne({
       status: 'aceite',
-      'motoristaSelecionado._id': new mongoose.Types.ObjectId(motoristaId)
+      motoristaSelecionado: {
+        _id: motorista._id,
+        pessoa: motorista.pessoa
+      }
     }).sort({ updatedAt: -1 });
 
     if (!pedido) return res.status(404).json({ message: 'Nenhum pedido aceite encontrado para este motorista.' });
@@ -89,6 +92,9 @@ exports.aceitarPedido = async (req, res) => {
       pessoa: motorista.pessoa
     };
     await pedido.save();
+
+    // Log para ver o campo motoristaSelecionado
+    console.log('Pedido atualizado:', pedido);
 
     res.json(pedido);
   } catch (err) {

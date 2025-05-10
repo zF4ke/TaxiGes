@@ -32,19 +32,22 @@ export class PedidoDetalheComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
   this.pedidoId = this.route.snapshot.paramMap.get('id')!;
 
-  interval(5000).pipe(
-    takeUntil(this.destroy$),
-    switchMap(() => this.pedidoService.getPedido(this.pedidoId))
-  ).subscribe(p => this.processarPedido(p));
-
-  // Aqui fazes o log do pedido recebido
+  // Faz o GET inicial
   this.pedidoService.getPedido(this.pedidoId)
     .pipe(takeUntil(this.destroy$))
     .subscribe(pedido => {
-      console.log('Pedido recebido:', pedido); // <-- Aqui vês a estrutura real
+      console.log('Pedido recebido:', pedido);
       this.processarPedido(pedido);
     });
-}
+
+  // Atualiza de 5 em 5 segundos
+    interval(5000).pipe(
+      takeUntil(this.destroy$),
+      switchMap(() => this.pedidoService.getPedido(this.pedidoId))
+    ).subscribe(pedido => {
+      this.processarPedido(pedido);
+    });
+  }
 
   private processarPedido(p: Pedido): void {
     this.pedido = p;
