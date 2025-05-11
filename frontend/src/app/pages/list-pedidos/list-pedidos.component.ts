@@ -60,17 +60,26 @@ export class ListPedidosComponent implements OnInit, OnDestroy {
   carregarPedidos(motoristaId: string): void {
     this.sub = this.pedidoService.watchPedidosPendentesComFiltro(motoristaId)
       .subscribe({
-        next: async data => {
+        next: (data) => {
           console.log('Pedidos recebidos:', data);
-          for (const pedido of data) {
-            const coords = await this.geocodingService.geocode(pedido.localizacaoAtual).toPromise();
-            if (coords) {
-              pedido['distanciaKm'] = haversineKm(this.motoristaCoords, coords);
-            } else {
-              pedido['distanciaKm'] = Number.MAX_VALUE;
+          // Show pedidos immediately
+          this.pedidos = data;
+          
+          // Calculate distances in parallel
+          Promise.all(data.map(async pedido => {
+            if (!pedido['distanciaKm']) { // Only calculate if not already calculated
+              const coords = await this.geocodingService.geocode(pedido.localizacaoAtual).toPromise();
+              if (coords) {
+                pedido['distanciaKm'] = haversineKm(this.motoristaCoords, coords);
+              } else {
+                pedido['distanciaKm'] = 999999;
+              }
             }
-          }
-          this.pedidos = data.sort((a, b) => (a['distanciaKm'] || 0) - (b['distanciaKm'] || 0));
+            return pedido;
+          })).then(pedidosComDistancia => {
+            // Update the list with calculated distances and sort
+            this.pedidos = pedidosComDistancia.sort((a, b) => (a['distanciaKm'] || 0) - (b['distanciaKm'] || 0));
+          });
         },
         error: () => this.snackBar.open('Erro ao carregar pedidos.', 'Fechar', { duration: 3000 })
       });

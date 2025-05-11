@@ -14,9 +14,13 @@
         <!-- Distância -->
         <ng-container matColumnDef="distancia">
           <th mat-header-cell *matHeaderCellDef>Distância</th>
-          <td mat-cell *matCellDef="let p">
-            <mat-icon class="dist-icon">straighten</mat-icon>
-            {{ p['distanciaKm'] | number:'1.1-1' }} km
+          <td mat-cell *matCellDef="let pedido">
+            <ng-container *ngIf="pedido['distanciaKm'] !== undefined; else calculating">
+              {{pedido['distanciaKm'] | number:'1.1-1'}} km
+            </ng-container>
+            <ng-template #calculating>
+              <mat-spinner diameter="20"></mat-spinner>
+            </ng-template>
           </td>
         </ng-container>
 
