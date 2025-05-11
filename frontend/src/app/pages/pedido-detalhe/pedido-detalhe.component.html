@@ -17,16 +17,14 @@
 
     <mat-card-content>
       <div class="info-grid">
-        <!-- Cliente -->
         <div class="info-item">
           <mat-icon>person</mat-icon>
           <div>
             <div class="label">Cliente</div>
-            <div>{{ pedido.cliente.pessoa.nome }} ({{ pedido.cliente.pessoa.nif }})</div>
+            <div>{{ pedido.cliente.pessoa.nome }}</div>
           </div>
         </div>
 
-        <!-- Origem -->
         <div class="info-item">
           <mat-icon>place</mat-icon>
           <div>
@@ -35,7 +33,6 @@
           </div>
         </div>
 
-        <!-- Destino -->
         <div class="info-item">
           <mat-icon>flag</mat-icon>
           <div>
@@ -43,78 +40,34 @@
             <div>{{ pedido.destino.rua }}, {{ pedido.destino.localidade }}</div>
           </div>
         </div>
-
-        <!-- Conforto -->
-        <div class="info-item">
-          <mat-icon>weekend</mat-icon>
-          <div>
-            <div class="label">Conforto</div>
-            <div>{{ pedido.nivelConforto }}</div>
-          </div>
-        </div>
-
-        <!-- Nº Pessoas -->
-        <div class="info-item">
-          <mat-icon>people</mat-icon>
-          <div>
-            <div class="label">Pessoas</div>
-            <div>{{ pedido.numeroPessoas }}</div>
-          </div>
-        </div>
       </div>
 
-      <!-- Estimativas -->
-      <div class="info-grid estimativas" *ngIf="distanciaKm && tempoEstimadoMin && custoEstimado">
-        <div class="info-item">
-          <mat-icon color="primary">straighten</mat-icon>
-          <div>
-            <div class="label">Distância</div>
-            <div>{{ distanciaKm }} km</div>
-          </div>
-        </div>
+      <mat-divider class="my-3"></mat-divider>
 
-        <div class="info-item">
-          <mat-icon color="accent">schedule</mat-icon>
-          <div>
-            <div class="label">Tempo Estimado</div>
-            <div>{{ tempoEstimadoMin }} min</div>
-          </div>
-        </div>
-
-        <div class="info-item">
-          <mat-icon color="warn">payments</mat-icon>
-          <div>
-            <div class="label">Custo Estimado</div>
-            <div>{{ custoEstimado | currency: 'EUR' }}</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Motorista atribuído -->
-      <div *ngIf="pedido.status === 'aceite' && pedido.motoristaSelecionado" class="info-item motorista-box">
-        <mat-icon>badge</mat-icon>
+      <!-- Motorista Selecionado -->
+      <div *ngIf="pedido.motoristaSelecionado" class="info-item motorista-box">
+        <mat-icon>directions_car</mat-icon>
         <div>
-          <div class="label">Motorista Atribuído</div>
+          <div class="label">Motorista Selecionado</div>
           <div>{{ pedido.motoristaSelecionado.pessoa.nome }} ({{ pedido.motoristaSelecionado.pessoa.nif }})</div>
-          <button mat-stroked-button color="warn" (click)="onRejeitarMotorista()" class="rejeitar-btn">
-            <mat-icon class="rejeitar-icon">thumb_down</mat-icon>
-            Rejeitar Motorista
-          </button>
-        </div>
-      </div>
 
-      <!-- Mapa -->
-      <div class="map-placeholder">
-        <mat-icon>map</mat-icon>
-        <span>Mapa da rota (a implementar)</span>
+          <div class="motorista-acoes">
+            <button mat-raised-button color="primary" class="aceitar-btn btn" (click)="onConfirmarMotorista()">
+              <mat-icon class="aceitar-icon">check</mat-icon>
+              Aceitar Motorista
+            </button>
+            <button mat-raised-button color="warn" class="rejeitar-btn btn" (click)="onRejeitarMotorista()">
+              <mat-icon class="rejeitar-icon">close</mat-icon>
+              Rejeitar Motorista
+            </button>
+          </div>
+        </div>
       </div>
     </mat-card-content>
 
     <mat-card-actions align="end">
-      <button mat-stroked-button color="warn"
-              (click)="onCancelar()"
-              [disabled]="pedido.status !== 'pendente'">
-        <mat-icon>cancel_schedule_send</mat-icon>
+      <button mat-raised-button color="warn" (click)="onCancelar()" [disabled]="pedido.status !== 'pendente'">
+        <mat-icon>cancel</mat-icon>
         Cancelar Pedido
       </button>
       <button mat-raised-button color="primary" routerLink="/">

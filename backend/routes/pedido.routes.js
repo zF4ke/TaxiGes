@@ -8,8 +8,8 @@ router.get('/', pedidoController.getAllPedidos);
 // Create a new pedido
 router.post('/', pedidoController.createPedido);
 
-// Aceitar um pedido 
-router.put('/:id/aceitar', pedidoController.aceitarPedido);
+// Selecionar um pedido 
+router.put('/:id/selecionar', pedidoController.selecionarPedido);
 
 // Get a specific pedido by ID
 router.get('/:id', pedidoController.getPedidoById);
@@ -29,5 +29,7 @@ router.put('/:id/cancelar', pedidoController.cancelarPedido);
 // Rejeitar motorista de um pedido
 router.put('/:id/rejeitar-motorista', pedidoController.rejeitarMotorista);
 
+// Cliente aceita ou rejeita motorista
+router.put('/:id/aceitar-motorista', pedidoController.aceitarMotorista);
 
 module.exports = router;

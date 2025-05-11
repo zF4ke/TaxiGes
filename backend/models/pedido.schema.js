@@ -17,6 +17,17 @@ const pedidoSchema = new mongoose.Schema({
         type: moradaSchema,
         required: true
     },
+    distanciaKm: {
+        type: Number,
+    },
+    motoristaCoords: {
+        lat: {
+            type: Number,
+        },
+        lon: {
+            type: Number,
+        }
+    },
     nivelConforto: {
         type: String,
         required: true,
@@ -41,6 +52,11 @@ const pedidoSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Motorista'
     }],
+    clienteAceitouMotorista: {
+        type: Boolean,
+        default: false,
+        required: true
+    },
 }, { timestamps: true });
 
 pedidoSchema.index({ createdAt: -1 });

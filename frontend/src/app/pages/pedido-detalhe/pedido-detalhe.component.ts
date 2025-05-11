@@ -1,12 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Pedido } from '../../models/pedido.model';
 import { PedidoService } from '../../services/pedido.service';
-import { Subscription, interval, Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { Pedido } from '../../models/pedido.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { haversineKm, Coordenadas } from '../../utils/haversine.util';
-import { GeocodingService } from 'src/app/services/geocoding.service';
+import { interval, Subject } from 'rxjs';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { TravelService } from 'src/app/services/travel.service';
 
 @Component({
   selector: 'app-pedido-detalhe',
@@ -15,87 +14,109 @@ import { GeocodingService } from 'src/app/services/geocoding.service';
 })
 export class PedidoDetalheComponent implements OnInit, OnDestroy {
   pedido?: Pedido;
-  distanciaKm?: number;
-  tempoEstimadoMin?: number;
-  custoEstimado?: number;
   private pedidoId!: string;
-  private destroy$ = new Subject<void>();
+  private viagemCriada = false;
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private pedidoService: PedidoService,
+    private viagemService: TravelService,
     private snackBar: MatSnackBar,
-    private geocodingService: GeocodingService
+    private router: Router
   ) {}
 
+  private destroy$ = new Subject<void>();
+
   ngOnInit(): void {
-  this.pedidoId = this.route.snapshot.paramMap.get('id')!;
+    this.pedidoId = this.route.snapshot.paramMap.get('id')!;
+    this.loadPedido();
 
-  // Faz o GET inicial
-  this.pedidoService.getPedido(this.pedidoId)
-    .pipe(takeUntil(this.destroy$))
-    .subscribe(pedido => {
-      console.log('Pedido recebido:', pedido);
-      this.processarPedido(pedido);
-    });
-
-  // Atualiza de 5 em 5 segundos
     interval(5000).pipe(
       takeUntil(this.destroy$),
       switchMap(() => this.pedidoService.getPedido(this.pedidoId))
-    ).subscribe(pedido => {
-      this.processarPedido(pedido);
+    ).subscribe({
+      next: (p) => {
+        this.pedido = p;
+        this.verificarCriacaoViagem();
+      },
+      error: err => this.snackBar.open('Erro ao atualizar pedido', 'Fechar', { duration: 3000 })
     });
   }
 
-  private processarPedido(p: Pedido): void {
-    this.pedido = p;
+  private verificarCriacaoViagem(): void {
+    if (
+      this.pedido &&
+      this.pedido.status === 'aceite' &&
+      !this.viagemCriada &&
+      this.pedido.motoristaSelecionado &&
+      this.pedido.cliente //&&
+      //this.pedido['turno']
+    ) {
+      const viagemData = {
+        cliente: this.pedido.cliente._id,
+        //turno: this.pedido['turno'],
+        moradaInicio: this.pedido.localizacaoAtual,
+        moradaFim: this.pedido.destino,
+        numeroPessoas: this.pedido.numeroPessoas,
+        motoristaCoords: this.pedido['motoristaCoords'] || { lat: 38.756734, lon: -9.155412 }
+      };
 
-    this.geocodingService.geocode(p.localizacaoAtual).subscribe(origCoords => {
-      if (!origCoords) return;
-
-      this.geocodingService.geocode(p.destino).subscribe(destCoords => {
-        if (!destCoords) return;
-
-        const from: Coordenadas = { latitude: origCoords.latitude, longitude: origCoords.longitude };
-        const to: Coordenadas = { latitude: destCoords.latitude, longitude: destCoords.longitude };
-
-        this.distanciaKm = parseFloat(haversineKm(from, to).toFixed(2));
-        this.tempoEstimadoMin = Math.round(this.distanciaKm * 4);
-        this.custoEstimado = parseFloat((0.5 * this.distanciaKm + 3).toFixed(2));
-
-        console.log('Distância:', this.distanciaKm, 'km');
-        console.log('Tempo estimado:', this.tempoEstimadoMin, 'min');
-        console.log('Custo estimado:', this.custoEstimado, '€');
+      this.viagemService.criarViagem(viagemData).subscribe({
+        next: (viagem: any) => {
+          this.viagemCriada = true;
+          this.snackBar.open('Viagem iniciada!', 'Fechar', { duration: 3000 });
+          this.router.navigate(['/viagem/resumo', viagem._id]);
+        },
+        error: err => this.snackBar.open('Erro ao iniciar viagem', 'Fechar', { duration: 3000 })
       });
-    });
+    }
   }
-
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  onCancelar(): void {
-    if (!this.pedidoId) return;
-    this.pedidoService.cancelPedido(this.pedidoId).subscribe(() => {
-      this.router.navigate(['/']);
+  private loadPedido() {
+    this.pedidoService.getPedido(this.pedidoId).subscribe({
+      next: p => {this.pedido = p;console.log(this.pedido)},
+      error: err => this.snackBar.open('Erro ao carregar pedido', 'Fechar', { duration: 3000 })
     });
   }
 
-  onRejeitarMotorista(): void {
-    if (!this.pedido || !this.pedido._id || !this.pedido.motoristaSelecionado?._id) return;
+  onConfirmarMotorista() {
+    if (!this.pedido) return;
+    this.pedidoService.aceitarMotorista(this.pedido._id!).subscribe({
+      next: viagem => {
+        this.snackBar.open('Motorista confirmado!', 'Fechar', { duration: 3000 });
+        this.router.navigate(['/viagem-detalhe', viagem._id]);
+      },
+      error: err => this.snackBar.open('Erro ao confirmar motorista', 'Fechar', { duration: 3000 })
+    });
+  }
 
-    this.pedidoService.rejeitarMotorista(this.pedido._id, this.pedido.motoristaSelecionado._id).subscribe({
-      next: pedidoAtualizado => {
-        this.pedido = pedidoAtualizado;
-        this.snackBar.open('Motorista rejeitado com sucesso.', 'Fechar', { duration: 3000 });
+  onRejeitarMotorista() {
+    if (!this.pedido || !this.pedido.motoristaSelecionado) return;
+    this.pedidoService.rejeitarMotorista(this.pedido._id!, this.pedido.motoristaSelecionado._id).subscribe({
+      next: () => {
+        this.snackBar.open('Motorista rejeitado.', 'Fechar', { duration: 3000 });
+        this.loadPedido();
+      },
+      error: err => this.snackBar.open('Erro ao rejeitar motorista', 'Fechar', { duration: 3000 })
+    });
+  }
+
+  onCancelar(): void {
+    if (!this.pedido?._id) return;
+
+    this.pedidoService.cancelPedido(this.pedido._id).subscribe({
+      next: () => {
+        this.snackBar.open('Pedido cancelado com sucesso.', 'Fechar', { duration: 3000 });
+        this.router.navigate(['/']);
       },
       error: err => {
-        console.error(err);
-        this.snackBar.open('Erro ao rejeitar motorista.', 'Fechar', { duration: 3000 });
+        console.error('Erro ao cancelar pedido:', err);
+        this.snackBar.open('Erro ao cancelar pedido.', 'Fechar', { duration: 3000 });
       }
     });
   }

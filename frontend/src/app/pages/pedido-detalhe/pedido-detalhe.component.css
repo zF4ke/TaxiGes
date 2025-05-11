@@ -61,6 +61,7 @@
 
 .info-item mat-icon {
   color: #616161;
+  padding: 10px;
 }
 
 .label {
@@ -69,18 +70,36 @@
   color: #424242;
 }
 
-.map-placeholder {
+/* Motorista Selecionado */
+.motorista-box {
   margin-top: 24px;
-  padding: 40px;
-  border: 2px dashed #bdbdbd;
+  padding: 16px;
+  border: 1px solid #90caf9;
+  border-radius: 8px;
+  background-color: #e3f2fd;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #757575;
+  align-items: flex-start;
+  gap: 12px;
 }
 
-.map-placeholder mat-icon {
-  margin-right: 8px;
+.motorista-box mat-icon {
+  color: #1976d2;
+  margin-top: 4px;
+}
+
+.motorista-acoes {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.rejeitar-btn .rejeitar-icon {
+  color: white;
+}
+
+.aceitar-btn .aceitar-icon {
+  color: white;
 }
 
 mat-card-actions {
@@ -91,22 +110,7 @@ mat-card-actions {
   justify-content: flex-end;
 }
 
-/* NOVO: estilização da secção de motorista atribuído */
-.motorista-box {
-  margin-top: 24px;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fafafa;
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.rejeitar-btn {
-  margin-top: 8px;
-}
-
-.rejeitar-btn .rejeitar-icon {
-  color: #d32f2f !important;
+.my-3 {
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
