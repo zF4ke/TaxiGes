@@ -1,10 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PedidoService } from '../../services/pedido.service';
-import { MotoristaService } from '../../services/motorista.service';
-import { TravelService } from '../../services/travel.service';
-import { TurnoService } from '../../services/turno.service';
-import { Router } from '@angular/router';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ViagemService } from '../../services/viagem.service';
 import { Location } from '@angular/common';
 
 @Component({
@@ -14,119 +11,55 @@ import { Location } from '@angular/common';
 })
 export class TravelRegisteComponent implements OnInit {
   travelForm: FormGroup;
-  submitted = false;
-  pedidoAceite: any; // Guarda o pedido aceite para usar cliente/turno se necessário
+  viagem: any;
 
   constructor(
     private fb: FormBuilder,
-    private pedidoService: PedidoService,
-    private motoristaService: MotoristaService,
-    private travelService: TravelService,
+    private viagemService: ViagemService,
+    private route: ActivatedRoute,
     private location: Location,
-    private turnoService: TurnoService,
     private router: Router
-
   ) {
     this.travelForm = this.fb.group({
       origem: [{ value: '', disabled: true }],
       destino: [{ value: '', disabled: true }],
       data: [{ value: '', disabled: true }],
       hora: [{ value: '', disabled: true }],
-      passageiros: [1, [Validators.required, Validators.min(1)]],
-      kmPercorridos: [{ value: '', disabled: true }],
-      precoFinal: [{ value: '', disabled: true }]
+      passageiros: [{ value: '', disabled: true }]
     });
   }
 
   ngOnInit() {
-    const motorista = this.motoristaService.getMotoristaLogado();
-    const agora = new Date();
-
-    this.travelForm.patchValue({
-      data: agora.toISOString().substring(0, 10),
-      hora: agora.toTimeString().substring(0, 5)
-    });
-
-    if (motorista && motorista._id) {
-      this.pedidoService.getUltimoPedidoAceiteDoMotorista(motorista._id).subscribe(pedidoAceite => {
-        console.log('Pedido aceite recebido:', pedidoAceite);
-        if (pedidoAceite) {
-          this.pedidoAceite = pedidoAceite; 
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.viagemService.getViagemById(id).subscribe({
+        next: viagem => {
+          console.log('Viagem recebida:', viagem);
+          this.viagem = viagem;
           this.travelForm.patchValue({
-            origem: this.formatarMorada(pedidoAceite.localizacaoAtual),
-            destino: this.formatarMorada(pedidoAceite.destino),
-            passageiros: pedidoAceite.numeroPessoas || 1
-          });
-        } else {
-          console.warn('Nenhum pedido aceite encontrado para este motorista.');
-        }
-      }, err => {
-        console.error('Erro ao obter pedido aceite:', err);
-      });
-    } else {
-      console.warn('Motorista não autenticado.');
-    }
-  }
-
-  get f() {
-    return this.travelForm.controls;
-  }
-
-  onSubmit() {
-  this.submitted = true;
-  if (this.travelForm.invalid) {
-    return;
-  }
-
-  const form = this.travelForm.getRawValue();
-  const motorista = this.motoristaService.getMotoristaLogado();
-
-  if (!motorista || !motorista._id) {
-    alert('Motorista não autenticado.');
-    return;
-  }
-
-  this.turnoService.getTurnoAtivo(motorista._id).subscribe({
-    next: (turno) => {
-      if (!turno) {
-        alert('Nenhum turno ativo encontrado para este motorista.');
-        return;
-      }
-
-      const dados = {
-        moradaInicio: form.origem,
-        moradaFim: form.destino,
-        numeroPessoas: form.passageiros,
-        cliente: this.pedidoAceite?.cliente,
-        turno: turno
-      };
-
-      this.travelService.criarViagem(dados).subscribe({
-        next: (res) => {
-          this.router.navigate(['/viagem/resumo', res._id], {
-            state: { 
-              destino: form.destino,
-              precoFinal: res.precoFinal ?? res.preco,
-              kmPercorridos: res.kmPercorridos ?? res.quilometrosPercorridos
-            }
+            origem: this.formatarMorada(viagem.localInicio),
+            destino: this.formatarMorada(viagem.localFim),
+            data: viagem.inicio ? new Date(viagem.inicio).toISOString().substring(0, 10) : '',
+            hora: viagem.inicio ? new Date(viagem.inicio).toTimeString().substring(0, 5) : '',
+            passageiros: viagem.numeroPessoas
           });
         },
-        error: (err) => {
-          console.error('Erro ao criar viagem:', err);
-          alert('Ocorreu um erro ao registar a viagem. Por favor, tente novamente.');
-        }
-      });
-    },
-        error: (err) => {
-          console.error('Erro ao obter turno ativo:', err);
-          alert('Ocorreu um erro ao obter o turno do motorista.');
+        error: () => {
+          alert('Erro ao carregar dados da viagem.');
         }
       });
     }
+  }
 
-  onReset() {
-    this.travelForm.reset();
-    this.submitted = false;
+  onRegistarEntrada() {
+    if (!this.viagem?._id) return;
+    this.viagemService.registarEntradaPassageiros(this.viagem._id, { horaEntrada: new Date() }).subscribe({
+      next: () => {
+        alert('Entrada dos passageiros registada!');
+        this.router.navigate(['/viagem/resumo', this.viagem._id]);
+      },
+      error: () => alert('Erro ao registar entrada dos passageiros.')
+    });
   }
 
   formatarMorada(morada: any): string {

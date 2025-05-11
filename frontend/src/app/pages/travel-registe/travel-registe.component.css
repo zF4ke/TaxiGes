@@ -18,3 +18,16 @@ mat-form-field.full-width {
   margin-top: 16px;
   justify-content: flex-end;
 }
+
+.status.por-iniciar {
+  background-color: #fff59d !important; 
+  color: #fbc02d;
+}
+.status.iniciada {
+  background-color: #ffcc80 !important; 
+  color: #f57c00;
+}
+.status.finalizada {
+  background-color: #a5d6a7 !important; 
+  color: #388e3c;
+}

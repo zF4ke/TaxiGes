@@ -80,4 +80,8 @@ export class PedidoService {
       motoristaCoords
     });
   }
+
+  getAllPedidos(): Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(this.apiUrl);
+  }
 }

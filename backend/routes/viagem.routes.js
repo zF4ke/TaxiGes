@@ -14,4 +14,6 @@ router.get('/:id', viagemController.getViagemById);
 // Delete a viagem by ID
 router.delete('/:id', viagemController.deleteViagemById);
 
+router.patch('/:id/entrada', viagemController.registarEntradaPassageiros);
+
 module.exports = router;

@@ -1,5 +1,4 @@
 const Viagem = require('../models/viagem.model');
-const fetch = require('node-fetch');
 
 // Funções auxiliares
 function construirEndereco(morada) {
@@ -115,6 +114,7 @@ exports.createViagem = async (req, res) => {
 
     // Tempo total da viagem (em minutos)
     const tempoTotalMinutos = km * 4;
+    console.log('Tempo total da viagem (minutos):', tempoTotalMinutos);
 
     // Hora de fim: início + tempo total da viagem
     const fim = new Date(inicio.getTime() + tempoTotalMinutos * 60000);
@@ -130,12 +130,15 @@ exports.createViagem = async (req, res) => {
     }
     const turnoInicio = new Date(dados.turno.inicio);
     const turnoFim = new Date(dados.turno.fim);
+
     if (inicio < turnoInicio || fim > turnoFim) {
       throw new Error('O período da viagem tem de estar contido no período do turno.');
     }
 
+    const turnoId = dados.turno._id || dados.turno;
+
     // RIA 18: As viagens de um turno vão do número de sequência 1 em diante
-    const ultimaViagem = await Viagem.findOne({ "turno._id": dados.turno._id }).sort({ numeroSequencia: -1 });
+    const ultimaViagem = await Viagem.findOne({ turno: turnoId }).sort({ numeroSequencia: -1 });
     const novoNumeroSequencia = ultimaViagem ? ultimaViagem.numeroSequencia + 1 : 1;
 
     // Cálculo do custo
@@ -144,20 +147,25 @@ exports.createViagem = async (req, res) => {
         inicio,
         fim
     });
+    console.log('Valor final da viagem (€):', custoTotal);
 
-    const viagem = new Viagem({
-        ...dados,
-        cliente: dados.cliente,
-        numeroSequencia: novoNumeroSequencia,
-        quilometrosPercorridos: km,
-        inicio,
-        fim,
-        preco: custoTotal
+    const novaViagem = new Viagem({
+      numeroSequencia: novoNumeroSequencia,
+      cliente: dados.cliente,
+      turno: turnoId,
+      inicio: inicio,
+      fim: fim,      
+      localInicio: dados.moradaInicio,
+      localFim: dados.moradaFim,
+      numeroPessoas: dados.numeroPessoas,
+      quilometrosPercorridos: km, 
+      preco: custoTotal,
+      status: 'por iniciar'
     });
-
-    await viagem.save();
-    res.status(201).json(viagem);
+    await novaViagem.save();
+    res.status(201).json(novaViagem);
   } catch (err) {
+    console.error('Erro ao criar viagem:', err);
     res.status(400).json({ message: err.message });
   }
 };
@@ -193,5 +201,18 @@ exports.deleteViagemById = async (req, res) => {
     res.json({ message: 'Viagem removida com sucesso' });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+exports.registarEntradaPassageiros = async (req, res) => {
+  try {
+    const viagem = await Viagem.findByIdAndUpdate(
+      req.params.id,
+      { status: 'iniciada', horaEntrada: req.body.horaEntrada },
+      { new: true }
+    );
+    res.json(viagem);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 };

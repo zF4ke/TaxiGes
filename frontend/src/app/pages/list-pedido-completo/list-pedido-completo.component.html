@@ -1,0 +1,65 @@
+<div class="list-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Todos os Pedidos</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <table mat-table [dataSource]="pedidos" class="mat-elevation-z8">
+
+        <!-- Nº Pessoas -->
+        <ng-container matColumnDef="numeroPessoas">
+          <th mat-header-cell *matHeaderCellDef>Nº Pessoas</th>
+          <td mat-cell *matCellDef="let p">{{ p.numeroPessoas }}</td>
+        </ng-container>
+
+        <!-- Origem -->
+        <ng-container matColumnDef="localizacaoAtual">
+          <th mat-header-cell *matHeaderCellDef>Origem</th>
+          <td mat-cell *matCellDef="let p">
+            {{ p.localizacaoAtual?.rua || p.localizacaoAtual }}, {{ p.localizacaoAtual?.localidade || '' }}
+          </td>
+        </ng-container>
+
+        <!-- Destino -->
+        <ng-container matColumnDef="destino">
+          <th mat-header-cell *matHeaderCellDef>Destino</th>
+          <td mat-cell *matCellDef="let p">
+            {{ p.destino?.rua || p.destino }}, {{ p.destino?.localidade || '' }}
+          </td>
+        </ng-container>
+
+        <!-- Status -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let p">{{ p.status }}</td>
+        </ng-container>
+
+        <!-- Cliente -->
+        <ng-container matColumnDef="cliente">
+          <th mat-header-cell *matHeaderCellDef>Cliente</th>
+          <td mat-cell *matCellDef="let p">{{ p.cliente?.pessoa?.nome || '---' }}</td>
+        </ng-container>
+
+        <!-- Ações -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let p">
+            <button mat-icon-button color="accent" (click)="viewDetails(p._id!)" matTooltip="Ver detalhes">
+              <mat-icon>info</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="eliminarPedido(p._id!)" matTooltip="Eliminar pedido">
+                <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['numeroPessoas','localizacaoAtual','destino','status','cliente','actions']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['numeroPessoas','localizacaoAtual','destino','status','cliente','actions'];"></tr>
+      </table>
+
+      <div *ngIf="pedidos.length === 0" class="no-data">
+        Não há pedidos registados.
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

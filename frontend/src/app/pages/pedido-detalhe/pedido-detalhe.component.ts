@@ -17,6 +17,7 @@ export class PedidoDetalheComponent implements OnInit, OnDestroy {
   pedido?: Pedido;
   private pedidoId!: string;
   private viagemCriada = false;
+  motoristaConfirmado = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -60,20 +61,28 @@ export class PedidoDetalheComponent implements OnInit, OnDestroy {
           return;
         }
         const viagemData = {
-          cliente: this.pedido!.cliente._id,
-          turno: turno._id,
-          moradaInicio: this.pedido!.localizacaoAtual,
-          moradaFim: this.pedido!.destino,
-          numeroPessoas: this.pedido!.numeroPessoas,
-          motoristaCoords: this.pedido!['motoristaCoords'] || { lat: 38.756734, lon: -9.155412 }
-        };
+        cliente: this.pedido!.cliente._id,
+        turno: {
+          _id: turno._id,
+          inicio: turno.inicio,
+          fim: turno.fim,
+          tipoCarro: turno.tipoCarro 
+        },
+        moradaInicio: this.pedido!.localizacaoAtual,
+        moradaFim: this.pedido!.destino,
+        numeroPessoas: this.pedido!.numeroPessoas,
+        motoristaCoords: this.pedido!['motoristaCoords'] || { lat: 38.756734, lon: -9.155412 }
+      };
 
-        this.viagemService.criarViagem(viagemData).subscribe({
-          next: (viagem: any) => {
-            this.viagemCriada = true;
-            this.snackBar.open('Viagem iniciada!', 'Fechar', { duration: 3000 });
-            this.router.navigate(['/viagem/resumo', viagem._id]);
-          },
+      console.log('Dados enviados para criar viagem:', viagemData);
+
+      this.viagemService.criarViagem(viagemData).subscribe({
+        next: (viagem: any) => {
+          console.log('Viagem criada:', viagem);
+          this.viagemCriada = true;
+          this.snackBar.open('Viagem iniciada!', 'Fechar', { duration: 3000 });
+          this.router.navigate(['/travel-registe', viagem._id]);
+        },
           error: err => this.snackBar.open('Erro ao iniciar viagem', 'Fechar', { duration: 3000 })
         });
       },
@@ -99,6 +108,7 @@ export class PedidoDetalheComponent implements OnInit, OnDestroy {
     this.pedidoService.aceitarMotorista(this.pedido._id!).subscribe({
       next: () => {
         this.snackBar.open('Motorista confirmado!', 'Fechar', { duration: 3000 });
+        this.motoristaConfirmado = true;
         this.verificarCriacaoViagem();
       },
       error: err => this.snackBar.open('Erro ao confirmar motorista', 'Fechar', { duration: 3000 })

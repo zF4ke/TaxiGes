@@ -51,15 +51,9 @@
           <div class="label">Motorista Selecionado</div>
           <div>{{ pedido.motoristaSelecionado.pessoa.nome }} ({{ pedido.motoristaSelecionado.pessoa.nif }})</div>
 
-          <div class="motorista-acoes">
-            <button mat-raised-button color="primary" class="aceitar-btn btn" (click)="onConfirmarMotorista()">
-              <mat-icon class="aceitar-icon">check</mat-icon>
-              Aceitar Motorista
-            </button>
-            <button mat-raised-button color="warn" class="rejeitar-btn btn" (click)="onRejeitarMotorista()">
-              <mat-icon class="rejeitar-icon">close</mat-icon>
-              Rejeitar Motorista
-            </button>
+          <div *ngIf="!motoristaConfirmado">
+            <button mat-raised-button color="primary" (click)="onConfirmarMotorista()">Aceitar Motorista</button>
+            <button mat-raised-button color="warn" (click)="onRejeitarMotorista()">Rejeitar Motorista</button>
           </div>
         </div>
       </div>

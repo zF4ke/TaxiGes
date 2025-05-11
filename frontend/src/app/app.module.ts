@@ -42,6 +42,8 @@ import { RequisitarTaxiTurnoComponent } from './pages/requisitar-taxi-turno/requ
 import { ListTurnosComponent } from './pages/list-turnos/list-turnos.component';
 import { TravelRegisteComponent } from './pages/travel-registe/travel-registe.component';
 import {TravelResumeComponent} from './pages/travel-resume/travel-resume.component';
+import { ListPedidoCompletoComponent } from './pages/list-pedido-completo/list-pedido-completo.component';
+
 
 
 const routes: Routes = [
@@ -61,8 +63,9 @@ const routes: Routes = [
   { path: 'motorista/pedido/:id', component: MotoristaPedidoDetalheComponent },
   { path: 'requisitar-taxi-turno', component: RequisitarTaxiTurnoComponent },
   { path: 'list-turnos', component:ListTurnosComponent},
-  { path: 'travel-registe', component: TravelRegisteComponent },
+  { path: 'travel-registe/:id', component: TravelRegisteComponent },
   { path: 'viagem/resumo/:id', component: TravelResumeComponent },
+  { path: 'todos-pedidos', component: ListPedidoCompletoComponent },
   { path: '**', redirectTo: '' }
 ];
 
@@ -87,6 +90,7 @@ const routes: Routes = [
     RequisitarTaxiTurnoComponent,
     ListTurnosComponent,
     TravelRegisteComponent,
+    ListPedidoCompletoComponent,
     TravelResumeComponent
   ],
   imports: [

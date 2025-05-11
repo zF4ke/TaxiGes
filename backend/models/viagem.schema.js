@@ -69,7 +69,12 @@ const viagemSchema = new mongoose.Schema({
         type: Number,
         required: true,
         min: [0, 'O preço deve ser positivo.']
-    }
+    },
+    status: {
+        type: String,
+        enum: ['por iniciar', 'iniciada', 'finalizada'],
+        default: 'por iniciar'
+    },
 }, { timestamps: true });
 
 viagemSchema.index({ createdAt: -1 });

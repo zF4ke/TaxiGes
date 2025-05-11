@@ -1,0 +1,33 @@
+.form-container {
+  max-width: 400px;
+  margin: 40px auto;
+}
+
+mat-card {
+  padding: 16px;
+}
+
+mat-form-field.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.button-group {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  justify-content: flex-end;
+}
+
+.status.por-iniciar {
+  background-color: #fff59d !important; 
+  color: #fbc02d;
+}
+.status.iniciada {
+  background-color: #ffcc80 !important; 
+  color: #f57c00;
+}
+.status.finalizada {
+  background-color: #a5d6a7 !important; 
+  color: #388e3c;
+}

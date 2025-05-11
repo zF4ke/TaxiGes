@@ -1,9 +1,17 @@
 <mat-card>
   <mat-card-title>Resumo da Viagem</mat-card-title>
   <mat-card-content>
-    <p><strong>Destino:</strong> {{ destino }}</p>
-    <p><strong>Preço final:</strong> {{ precoFinal }} €</p>
-    <p><strong>Quilómetros percorridos:</strong> {{ kmPercorridos }} km</p>
+    <div class="viagem-resumo">
+      <p><strong>Destino:</strong> {{ viagem?.localFim?.rua }}, {{ viagem?.localFim?.localidade }}</p>
+      <p><strong>Preço final:</strong> {{ viagem?.preco | number:'1.2-2' }} €</p>
+      <p><strong>Quilómetros percorridos:</strong> {{ viagem?.quilometrosPercorridos | number:'1.2-2' }} km</p>
+      <p>
+          <strong>Estado:</strong>
+          <span class="status" [ngClass]="viagem?.status?.replace(' ', '-')">
+            {{ viagem?.status || '---' }}
+          </span>
+        </p>
+      </div>
     <button mat-raised-button color="primary" routerLink="/">Voltar ao início</button>
     <button mat-raised-button color="accent" (click)="mostrarFormularioFim = true">
       Registar fim da viagem
