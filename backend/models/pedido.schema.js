@@ -5,7 +5,8 @@ const { TAXI_COMFORT, PEDIDO_STATUS } = require('../utils/constants');
 
 const pedidoSchema = new mongoose.Schema({
     cliente: {
-        type: clienteSchema,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Cliente',
         required: true
     },
     localizacaoAtual: {

@@ -1,16 +1,16 @@
 const mongoose = require('mongoose');
-const { motoristaSchema } = require('./motorista.schema');
-const { taxiSchema } = require('./taxi.schema');
 
 const turnoSchema = new mongoose.Schema({
     motorista: {
-        type: motoristaSchema,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Motorista',
         required: true,
     },
     taxi: {
-        type: taxiSchema,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Taxi',
         required: true,
-    }, 
+    },
     inicio: {
         type: Date,
         required: true,
@@ -56,10 +56,6 @@ turnoSchema.path('fim').validate(function(value) {
 // RIA 8: evitar sobreposição de turnos do mesmo motorista ou táxi
 turnoSchema.pre('validate', async function(next) {
     try {
-        if (!this.motorista || !this.motorista._id || !this.taxi || !this.taxi._id) {
-            return next(new Error('Motorista ou Táxi não definidos corretamente.'));
-        }
-
         const Turno = mongoose.models.Turno || mongoose.model('Turno', turnoSchema);
         const overlap = await Turno.findOne({
             _id: { $ne: this._id },
