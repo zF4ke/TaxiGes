@@ -40,7 +40,7 @@ export class PedidoDetalheComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (p) => {
         this.pedido = p;
-        this.verificarCriacaoViagem();
+        //this.verificarCriacaoViagem();
       },
       error: err => this.snackBar.open('Erro ao atualizar pedido', 'Fechar', { duration: 3000 })
     });

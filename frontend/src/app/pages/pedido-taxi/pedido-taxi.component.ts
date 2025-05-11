@@ -53,10 +53,17 @@ export class PedidoTaxiComponent implements OnInit {
       numeroPessoas: [1, [Validators.required, Validators.min(1)]]
     });
 
+    console.log('PedidoTaxiComponent inicializado.');
+    console.log('geolocation:', navigator.geolocation);
+    console.log('currentPosition:', navigator.geolocation?.getCurrentPosition((pos) => {
+      console.log('Posição atual:', pos.coords.latitude, pos.coords.longitude);
+    }));
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         pos => {
           const { latitude, longitude } = pos.coords;
+          console.log('Localização atual:', latitude, longitude);
+          console.log('A ir buscar morada...');
           this.geocodingService.reverseGeocode(latitude, longitude).subscribe({
             next: data => {
               this.pedidoForm.patchValue({

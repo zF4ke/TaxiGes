@@ -33,6 +33,14 @@ export class ListPedidosComponent implements OnInit, OnDestroy {
       return;
     }
 
+    console.log('Motorista logado:', motorista);
+    console.log('geolocation:', navigator.geolocation);
+    console.log('currentPosition:', navigator.geolocation?.getCurrentPosition((pos) => {
+      console.log('Posição atual:', pos.coords.latitude, pos.coords.longitude);
+    }));
+    console.log('A carregar pedidos...');
+    this.motoristaCoords = { latitude: 38.756734, longitude: -9.155412 }; // fallback
+    this.carregarPedidos(motorista._id);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         this.motoristaCoords = {
@@ -53,6 +61,7 @@ export class ListPedidosComponent implements OnInit, OnDestroy {
     this.sub = this.pedidoService.watchPedidosPendentesComFiltro(motoristaId)
       .subscribe({
         next: async data => {
+          console.log('Pedidos recebidos:', data);
           for (const pedido of data) {
             const coords = await this.geocodingService.geocode(pedido.localizacaoAtual).toPromise();
             if (coords) {
