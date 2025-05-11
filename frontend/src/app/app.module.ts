@@ -20,6 +20,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
 import { AppComponent } from './app.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 import { AddTaxiComponent } from './pages/add-taxi/add-taxi.component';
@@ -100,6 +101,7 @@ const routes: Routes = [
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
+    MatMenuModule,
     MatTableModule,
     MatSnackBarModule,
     MatProgressBarModule,

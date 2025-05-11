@@ -1,37 +1,42 @@
 <mat-toolbar color="primary">
-  <button mat-button routerLink="/">TaxiGes</button>
+  <button mat-icon-button [matMenuTriggerFor]="appMenu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <mat-menu #appMenu="matMenu">
+    <button mat-menu-item routerLink="/add-taxi">Adicionar Táxi</button>
+    <button mat-menu-item routerLink="/list-taxis">Ver Taxis</button>
+    <button mat-menu-item routerLink="/add-motorista">Adicionar Motorista</button>
+    <button mat-menu-item routerLink="/list-motoristas">Ver Motoristas</button>
+    <button mat-menu-item routerLink="/add-price">Adicionar Preço</button>
+    <button mat-menu-item routerLink="/list-prices">Ver Preços</button>
+    <button mat-menu-item routerLink="/pedido-taxi">Pedir Táxi</button>
+    <button mat-menu-item routerLink="/pedidos">Ver Pedidos</button>
+    <button mat-menu-item routerLink="/simulate-travel">Simular Viagem</button>
+  </mat-menu>
+
+  <button mat-button routerLink="/" class="app-name-button">TaxiGes</button>
+
   <span class="spacer"></span>
 
-  <button mat-button routerLink="/list-taxis" matTooltip="Ver lista de táxis">
-    <mat-icon>local_taxi</mat-icon> Táxis
-  </button>
-  <!-- <button mat-button routerLink="/add-taxi" matTooltip="Adicionar novo táxi">
-    <mat-icon>add_circle_outline</mat-icon> Novo Táxi
-  </button> -->
-  <button mat-button routerLink="/list-prices">
-    <mat-icon>list</mat-icon>
-    Lista de Preços
-  </button>
+  <ng-container *ngIf="!motoristaService.isLoggedIn">
+    <button mat-button routerLink="/motorista-login">
+      <mat-icon>login</mat-icon> Login
+    </button>
+  </ng-container>
 
-  <button mat-button routerLink="/list-motoristas" matTooltip="Ver lista de motoristas">
-    <mat-icon>people</mat-icon> Motoristas
-  </button>
-  <!-- <button mat-button routerLink="/add-motorista" matTooltip="Adicionar novo motorista">
-    <mat-icon>person_add</mat-icon> Novo Motorista
-  </button> -->
-  <button mat-button routerLink="/simulate-travel" matTooltip="Simular preço de viagem">
-    <mat-icon>calculate</mat-icon> Simular Viagem
-  </button>
-
-  <button mat-button routerLink="/pedido-taxi" matTooltip="Solicitar um táxi">
-    <mat-icon>local_taxi</mat-icon> Pedir Táxi
-  </button>
-  
-  <button mat-button routerLink="/pedidos" matTooltip="Ver pedidos de táxi">
-    <mat-icon>list</mat-icon> Pedidos
-  </button>
+  <ng-container *ngIf="motoristaService.isLoggedIn">
+    <button mat-button [matMenuTriggerFor]="userActionsMenu">
+      <mat-icon>account_circle</mat-icon>
+      {{ nomeMotoristaLogado || 'Utilizador' }}
+    </button>
+    <mat-menu #userActionsMenu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        Logout
+      </button>
+    </mat-menu>
+  </ng-container>
 
 </mat-toolbar>
 
 <router-outlet></router-outlet>
-
