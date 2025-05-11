@@ -1,7 +1,5 @@
 const Viagem = require('../models/viagem.model');
 const Turno = require('../models/turno.model');    
-const Cliente = require('../models/cliente.model');
-const Taxi = require('../models/taxi.model')
 const fetch = require('node-fetch');
 
 // Funções auxiliares
