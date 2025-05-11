@@ -1,4 +1,7 @@
 const Viagem = require('../models/viagem.model');
+const Turno = require('../models/turno.model');    
+const Cliente = require('../models/cliente.model');
+const Taxi = require('../models/taxi.model')
 const fetch = require('node-fetch');
 
 // Funções auxiliares
@@ -193,5 +196,64 @@ exports.deleteViagemById = async (req, res) => {
     res.json({ message: 'Viagem removida com sucesso' });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+exports.findViagensByMotorista = async (req, res) => {
+  try {
+    const motoristaIdDaRota = req.params.motoristaId;
+
+    if (!motoristaIdDaRota || !motoristaIdDaRota.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ message: 'ID do motorista inválido ou em falta.' });
+    }
+    const turnosDoMotorista = await Turno.find({ motorista: motoristaIdDaRota }).select('_id motorista');
+
+    if (!turnosDoMotorista || turnosDoMotorista.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    const idsDosTurnos = turnosDoMotorista.map(turno => turno._id);
+    const viagensDoMotorista = await Viagem.find({ turno: { $in: idsDosTurnos } })
+      .populate({
+          path: 'turno',
+          model: Turno,
+          select: 'motorista' 
+      })
+      .sort({ inicio: -1 }); 
+    const viagensFormatadas = viagensDoMotorista.map(v => {
+      const viagemObj = v.toObject(); 
+
+      let motoristaIdParaFrontend = motoristaIdDaRota;
+      if (viagemObj.turno && viagemObj.turno.motorista) {
+        motoristaIdParaFrontend = viagemObj.turno.motorista.toString();
+      }
+
+      const pedidoIdParaFrontend = viagemObj.pedidoId || "N/D"; 
+
+      let statusDaViagem = 'desconhecido';
+      const agora = new Date();
+      if (viagemObj.fim && new Date(viagemObj.fim) < agora) {
+        statusDaViagem = 'concluida';
+      } else if (viagemObj.inicio && new Date(viagemObj.inicio) <= agora) {
+        statusDaViagem = 'ativa';
+      } else if (viagemObj.inicio) {
+        statusDaViagem = 'agendada';
+      }
+
+      return {
+        _id: viagemObj._id.toString(),
+        motoristaId: motoristaIdParaFrontend,
+        pedidoId: pedidoIdParaFrontend, 
+        dataHoraInicio: viagemObj.inicio ? new Date(viagemObj.inicio).toISOString() : "N/D",
+        dataHoraFim: viagemObj.fim ? new Date(viagemObj.fim).toISOString() : undefined, 
+        status: statusDaViagem,
+      };
+    });
+
+    res.status(200).json(viagensFormatadas);
+
+  } catch (error) {
+    console.error("Erro no backend ao buscar viagens do motorista:", error);
+    res.status(500).json({ message: "Ocorreu um erro no servidor ao tentar buscar as viagens.", details: error.message });
   }
 };

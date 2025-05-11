@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
@@ -42,7 +43,7 @@ import { RequisitarTaxiTurnoComponent } from './pages/requisitar-taxi-turno/requ
 import { ListTurnosComponent } from './pages/list-turnos/list-turnos.component';
 import { TravelRegisteComponent } from './pages/travel-registe/travel-registe.component';
 import {TravelResumeComponent} from './pages/travel-resume/travel-resume.component';
-
+import { MotoristaMinhasViagensComponent } from './pages/motorista-minhas-viagens/motorista-minhas-viagens.component';
 
 const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -54,6 +55,7 @@ const routes: Routes = [
   { path: 'add-motorista', component: AddMotoristaComponent },
   { path: 'list-motoristas', component: ListMotoristaComponent },
   { path: 'motorista-login', component: MotoristaLoginComponent },
+  { path: 'motorista-minhas-viagens', component: MotoristaMinhasViagensComponent },
   { path: 'motorista-dashboard', component: MotoristaDashboardComponent },
   { path: 'pedido-taxi', component: PedidoTaxiComponent },
   { path: 'pedidos', component: ListPedidosComponent },
@@ -86,8 +88,9 @@ const routes: Routes = [
     MapaSelecionarDestinoComponent,
     RequisitarTaxiTurnoComponent,
     ListTurnosComponent,
+    MotoristaMinhasViagensComponent,
     TravelRegisteComponent,
-    TravelResumeComponent
+    TravelResumeComponent,
   ],
   imports: [
     BrowserModule,
@@ -108,7 +111,7 @@ const routes: Routes = [
     MatDatepickerModule,
     MatNativeDateModule,
     MatSlideToggleModule,
-    
+    CommonModule,
     MatSelectModule,
     MatDividerModule,
     FormsModule
