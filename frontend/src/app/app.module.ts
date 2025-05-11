@@ -20,6 +20,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
+import { MatMenuModule } from '@angular/material/menu';
 import { AppComponent } from './app.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 import { AddTaxiComponent } from './pages/add-taxi/add-taxi.component';
@@ -37,6 +38,8 @@ import { PedidoDetalheComponent } from './pages/pedido-detalhe/pedido-detalhe.co
 import { MatDividerModule } from '@angular/material/divider';
 import { MotoristaPedidoDetalheComponent } from './pages/motorista-pedido-detalhe/motorista-pedido-detalhe.component';
 import { MapaSelecionarDestinoComponent } from './pages/mapa-selecionar-destino/mapa-selecionar-destino.component';
+import { RequisitarTaxiTurnoComponent } from './pages/requisitar-taxi-turno/requisitar-taxi-turno.component';
+import { ListTurnosComponent } from './pages/list-turnos/list-turnos.component';
 import { TravelRegisteComponent } from './pages/travel-registe/travel-registe.component';
 import {TravelResumeComponent} from './pages/travel-resume/travel-resume.component';
 
@@ -56,6 +59,8 @@ const routes: Routes = [
   { path: 'pedidos', component: ListPedidosComponent },
   { path: 'pedido/:id', component: PedidoDetalheComponent },
   { path: 'motorista/pedido/:id', component: MotoristaPedidoDetalheComponent },
+  { path: 'requisitar-taxi-turno', component: RequisitarTaxiTurnoComponent },
+  { path: 'list-turnos', component:ListTurnosComponent},
   { path: 'travel-registe', component: TravelRegisteComponent },
   { path: 'viagem/resumo/:id', component: TravelResumeComponent },
   { path: '**', redirectTo: '' }
@@ -79,6 +84,8 @@ const routes: Routes = [
     PedidoDetalheComponent,
     MotoristaPedidoDetalheComponent,
     MapaSelecionarDestinoComponent,
+    RequisitarTaxiTurnoComponent,
+    ListTurnosComponent,
     TravelRegisteComponent,
     TravelResumeComponent
   ],
@@ -94,6 +101,7 @@ const routes: Routes = [
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
+    MatMenuModule,
     MatTableModule,
     MatSnackBarModule,
     MatProgressBarModule,

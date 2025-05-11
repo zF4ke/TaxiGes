@@ -11,12 +11,23 @@ const viagemSchema = new mongoose.Schema({
         // ou quando estamos a criar a viagem
     },
     cliente: {
-        type: clienteSchema,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Cliente',
         required: true
     },
     turno: {
-        type: turnoSchema,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Turno',
+        required: true,
+        validate: {
+            validator: async function (value) {
+                const Turno = mongoose.models.Turno || mongoose.model('Turno', turnoSchema);
+                const turno = await Turno.findById(value);
+                if (!turno) return false;
+                return this.inicio >= turno.inicio && this.fim <= turno.fim;
+            },
+            message: 'A viagem deve estar dentro do intervalo do turno.'
+        }
     },
     inicio: {
         type: Date,

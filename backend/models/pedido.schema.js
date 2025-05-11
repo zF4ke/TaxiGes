@@ -5,7 +5,8 @@ const { TAXI_COMFORT, PEDIDO_STATUS } = require('../utils/constants');
 
 const pedidoSchema = new mongoose.Schema({
     cliente: {
-        type: clienteSchema,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Cliente',
         required: true
     },
     localizacaoAtual: {
@@ -15,6 +16,17 @@ const pedidoSchema = new mongoose.Schema({
     destino: {
         type: moradaSchema,
         required: true
+    },
+    distanciaKm: {
+        type: Number,
+    },
+    motoristaCoords: {
+        lat: {
+            type: Number,
+        },
+        lon: {
+            type: Number,
+        }
     },
     nivelConforto: {
         type: String,
@@ -33,11 +45,18 @@ const pedidoSchema = new mongoose.Schema({
         default: 'pendente'
     },
     motoristaSelecionado: {
-        _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Motorista' },
-        pessoa: { 
-            type: Object 
-        }
-    }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Motorista'
+    },
+    motoristasRejeitados: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Motorista'
+    }],
+    clienteAceitouMotorista: {
+        type: Boolean,
+        default: false,
+        required: true
+    },
 }, { timestamps: true });
 
 pedidoSchema.index({ createdAt: -1 });

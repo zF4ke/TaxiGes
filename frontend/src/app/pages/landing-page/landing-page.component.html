@@ -68,15 +68,20 @@
 
   <mat-card class="simulation-card">
     <mat-card-header>
-      <mat-card-title>Simulação de Viagens</mat-card-title>
-      <mat-card-subtitle>Calcule o preço estimado de uma viagem</mat-card-subtitle>
+      <mat-card-title>Ferramentas de Viagem</mat-card-title>
+    <mat-card-subtitle>Simule custos ou registe os detalhes das suas viagens</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <p>Simule o preço de uma viagem com base no tipo de táxi e horário.</p>
+      <p>Clientes podem estimar o custo de uma viagem. Motoristas podem registar as viagens realizadas.</p>
     </mat-card-content>
     <mat-card-actions>
       <button mat-raised-button color="primary" routerLink="/simulate-travel">
-        <mat-icon>calculate</mat-icon> Simular Viagem
+        <mat-icon>calculate</mat-icon>
+        Simular Viagem
+      </button>
+      <button mat-raised-button color="accent" routerLink="/travel-registe">
+      <mat-icon>edit_road</mat-icon>
+        Registar Viagem
       </button>
     </mat-card-actions>
   </mat-card>

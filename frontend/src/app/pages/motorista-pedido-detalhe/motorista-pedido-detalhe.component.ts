@@ -28,7 +28,7 @@ export class MotoristaPedidoDetalheComponent implements OnInit {
           this.pedido = data;
           this.isLoading = false;
         },
-        error: err => {
+        error: (err: any) => {
           this.snackBar.open('Erro ao carregar pedido.', 'Fechar', { duration: 3000 });
           this.router.navigate(['/list-pedidos']);
         }

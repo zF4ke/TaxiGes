@@ -1,16 +1,16 @@
 const mongoose = require('mongoose');
-const { motoristaSchema } = require('./motorista.schema');
-const { taxiSchema } = require('./taxi.schema');
 
 const turnoSchema = new mongoose.Schema({
     motorista: {
-        type: motoristaSchema,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Motorista',
         required: true,
     },
     taxi: {
-        type: taxiSchema,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Taxi',
         required: true,
-    }, 
+    },
     inicio: {
         type: Date,
         required: true,

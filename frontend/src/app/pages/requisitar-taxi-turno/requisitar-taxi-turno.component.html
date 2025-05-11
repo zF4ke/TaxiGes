@@ -1,0 +1,75 @@
+<div class="list-container">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Requisitar Táxi para Turno</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="turnoForm" (ngSubmit)="onSubmit()">
+          <!-- Campo para Início do Turno -->
+          <mat-form-field appearance="outline">
+            <mat-label>Início do Turno</mat-label>
+            <input matInput type="datetime-local" formControlName="inicio">
+            <mat-error *ngIf="turnoForm.get('inicio')?.hasError('required')">
+              Início é obrigatório
+            </mat-error>
+          </mat-form-field>
+  
+          <!-- Campo para Fim do Turno -->
+          <mat-form-field appearance="outline">
+            <mat-label>Fim do Turno</mat-label>
+            <input matInput type="datetime-local" formControlName="fim">
+            <mat-error *ngIf="turnoForm.get('fim')?.hasError('required')">
+              Fim é obrigatório
+            </mat-error>
+            <mat-error *ngIf="turnoForm.get('fim')?.hasError('fimInvalido')">
+                {{ turnoForm.get('fim')?.getError('fimInvalido') }}
+              </mat-error>
+              <mat-error *ngIf="turnoForm.get('fim')?.hasError('duracaoInvalida')">
+                {{ turnoForm.get('fim')?.getError('duracaoInvalida') }}
+              </mat-error>
+          </mat-form-field>
+  
+          <div class="actions">
+            <button mat-raised-button color="primary" type="submit" [disabled]="!turnoForm.valid">
+              Ver Táxis Disponíveis
+            </button>
+          </div>
+        </form>
+  
+        <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+  
+        <table mat-table [dataSource]="taxisDisponiveis" class="mat-elevation-z8" *ngIf="!isLoading && taxisDisponiveis.length > 0">
+          <ng-container matColumnDef="marca">
+            <th mat-header-cell *matHeaderCellDef> Marca </th>
+            <td mat-cell *matCellDef="let taxi"> {{taxi.marca}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="modelo">
+            <th mat-header-cell *matHeaderCellDef> Modelo </th>
+            <td mat-cell *matCellDef="let taxi"> {{taxi.modelo}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="conforto">
+            <th mat-header-cell *matHeaderCellDef> Nível de Conforto </th>
+            <td mat-cell *matCellDef="let taxi"> {{taxi.conforto}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="acoes">
+            <th mat-header-cell *matHeaderCellDef> Ações </th>
+            <td mat-cell *matCellDef="let taxi">
+              <button mat-raised-button color="accent" (click)="requisitarTaxi(taxi._id)">
+                Requisitar
+              </button>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+  
+        <div class="no-data" *ngIf="!isLoading && taxisDisponiveis.length === 0">
+          <p>Não existem táxis disponíveis para o período selecionado.</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>

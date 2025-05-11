@@ -9,12 +9,17 @@ export interface Pedido {
   cliente: Cliente;
   localizacaoAtual: Morada;
   destino: Morada;
+  distanciaKm: number;
   nivelConforto: NivelConforto;
   numeroPessoas: number;
   status?: PedidoStatus;
   motoristaSelecionado?: {
     _id: string;
     pessoa: Pessoa;
+  };
+  motoristaCoords?: {
+    lat: number;
+    lon: number;
   };
   motoristasRejeitados?: string[];
   createdAt?: Date;

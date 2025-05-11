@@ -2,9 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Pedido } from '../../models/pedido.model';
 import { PedidoService } from '../../services/pedido.service';
 import { MotoristaService } from '../../services/motorista.service';
+import { GeocodingService } from '../../services/geocoding.service';
 import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { haversineKm, Coordenadas } from 'src/app/utils/haversine.util';
 
 @Component({
   selector: 'app-list-pedidos',
@@ -14,10 +16,12 @@ import { Router } from '@angular/router';
 export class ListPedidosComponent implements OnInit, OnDestroy {
   pedidos: Pedido[] = [];
   private sub!: Subscription;
+  motoristaCoords!: Coordenadas;
 
   constructor(
     private pedidoService: PedidoService,
     private motoristaService: MotoristaService,
+    private geocodingService: GeocodingService,
     private snackBar: MatSnackBar,
     private router: Router
   ) {}
@@ -29,13 +33,39 @@ export class ListPedidosComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.sub = this.pedidoService.watchPedidosPendentesComFiltro(motorista._id)
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        this.motoristaCoords = {
+          latitude: pos.coords.latitude,
+          longitude: pos.coords.longitude
+        };
+        this.carregarPedidos(motorista._id);
+      },
+      (err) => {
+        console.warn('Erro ao obter localização:', err);
+        this.motoristaCoords = { latitude: 38.756734, longitude: -9.155412 }; // fallback
+        this.carregarPedidos(motorista._id);
+      }
+    );
+  }
+
+  carregarPedidos(motoristaId: string): void {
+    this.sub = this.pedidoService.watchPedidosPendentesComFiltro(motoristaId)
       .subscribe({
-        next: data => this.pedidos = data,
+        next: async data => {
+          for (const pedido of data) {
+            const coords = await this.geocodingService.geocode(pedido.localizacaoAtual).toPromise();
+            if (coords) {
+              pedido['distanciaKm'] = haversineKm(this.motoristaCoords, coords);
+            } else {
+              pedido['distanciaKm'] = Number.MAX_VALUE;
+            }
+          }
+          this.pedidos = data.sort((a, b) => (a['distanciaKm'] || 0) - (b['distanciaKm'] || 0));
+        },
         error: () => this.snackBar.open('Erro ao carregar pedidos.', 'Fechar', { duration: 3000 })
       });
   }
-
 
   ngOnDestroy(): void {
     if (this.sub) {
@@ -50,7 +80,7 @@ export class ListPedidosComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.pedidoService.acceptPedido(id, motorista._id).subscribe({
+    this.pedidoService.selecionarPedido(id, motorista._id, this.motoristaCoords).subscribe({
       next: pedido => {
         this.snackBar.open('Pedido aceite.', 'Fechar', { duration: 2000 });
         this.router.navigate(['/motorista/pedido', pedido._id]);
@@ -59,12 +89,10 @@ export class ListPedidosComponent implements OnInit, OnDestroy {
     });
   }
 
-
   deletePedido(id: string): void {
     this.pedidoService.deletePedido(id).subscribe({
       next: () => {
         this.snackBar.open('Pedido eliminado.', 'Fechar', { duration: 2000 });
-        // Atualiza a lista localmente sem recarregar tudo
         this.pedidos = this.pedidos.filter(p => p._id !== id);
       },
       error: () => this.snackBar.open('Erro ao eliminar pedido.', 'Fechar', { duration: 2000 })

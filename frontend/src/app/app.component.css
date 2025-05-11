@@ -1,7 +1,25 @@
 .spacer {
-  flex: 1;
+  flex: 1 1 auto;
 }
 
-mat-toolbar {
-  margin-bottom: 20px;
+.app-name-button.mat-button {
+  margin-left: 16px;
+  padding: 0;
+  min-width: auto;
+  font-size: 20px; 
+  font-weight: normal; 
+  line-height: normal;
+  text-transform: none;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: inherit; 
+}
+
+.app-name-button.mat-button:hover {
+  background: rgba(255, 255, 255, 0.08); 
+}
+
+mat-toolbar button[mat-button] mat-icon {
+  margin-right: 6px;
 }

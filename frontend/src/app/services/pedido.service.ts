@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, interval, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Pedido } from '../models/pedido.model';
+import { Viagem } from '../models/viagem.model';
 
 @Injectable({ providedIn: 'root' })
 export class PedidoService {
@@ -39,11 +40,8 @@ export class PedidoService {
     );
   }
 
-  /**
-   * Aceita um pedido de táxi (US7).
-   */
-  acceptPedido(id: string, motoristaId: string): Observable<Pedido> {
-    return this.http.put<Pedido>(`${this.apiUrl}/${id}/aceitar`, { motoristaId });
+  getPedidosPendentesComFiltro(motoristaId: string): Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(`${this.apiUrl}?status=pendente&motoristaId=${motoristaId}`);
   }
 
   rejeitarMotorista(pedidoId: string, motoristaId: string): Observable<Pedido> {
@@ -68,7 +66,18 @@ export class PedidoService {
     return this.http.get<Pedido>(`${this.apiUrl}/ultimo-aceite/${motoristaId}`);
   }
 
+  aceitarMotorista(pedidoId: string): Observable<Pedido> {
+    return this.http.put<Pedido>(`${this.apiUrl}/${pedidoId}/aceitar-motorista`, {});
+  }
+
   deletePedido(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  selecionarPedido(pedidoId: string, motoristaId: string, motoristaCoords: any): Observable<Pedido> {
+    return this.http.put<Pedido>(`${this.apiUrl}/${pedidoId}/selecionar-motorista`, {
+      motoristaId,
+      motoristaCoords
+    });
   }
 }

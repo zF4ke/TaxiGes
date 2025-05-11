@@ -1,0 +1,26 @@
+.list-container {
+    padding: 20px;
+  }
+  
+  mat-card {
+    margin-top: 20px;
+  }
+  
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  
+  mat-progress-bar {
+    margin-bottom: 20px;
+  }
+  
+  .no-data {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .no-data p {
+    font-size: 1.1em;
+    color: rgba(0, 0, 0, 0.54);
+  }
