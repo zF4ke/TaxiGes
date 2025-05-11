@@ -40,19 +40,19 @@ export class ListPedidosComponent implements OnInit, OnDestroy {
     }));
     console.log('A carregar pedidos...');
     this.motoristaCoords = { latitude: 38.756734, longitude: -9.155412 }; // fallback
-    this.carregarPedidos(motorista._id);
+    this.carregarPedidosFiltradosPorTurno(motorista._id);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         this.motoristaCoords = {
           latitude: pos.coords.latitude,
           longitude: pos.coords.longitude
         };
-        this.carregarPedidos(motorista._id);
+        this.carregarPedidosFiltradosPorTurno(motorista._id);
       },
       (err) => {
         console.warn('Erro ao obter localização:', err);
         this.motoristaCoords = { latitude: 38.756734, longitude: -9.155412 }; // fallback
-        this.carregarPedidos(motorista._id);
+        this.carregarPedidosFiltradosPorTurno(motorista._id);
       }
     );
   }
@@ -74,6 +74,19 @@ export class ListPedidosComponent implements OnInit, OnDestroy {
         },
         error: () => this.snackBar.open('Erro ao carregar pedidos.', 'Fechar', { duration: 3000 })
       });
+  }
+
+  carregarPedidosFiltradosPorTurno(motoristaId: string): void {
+    this.pedidoService.getPedidosFiltradosPorTurno(motoristaId).subscribe({
+      next: (pedidos) => {
+        console.log('Pedidos filtrados por turno recebidos:', pedidos);
+        this.pedidos = pedidos;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar pedidos filtrados:', err);
+        this.snackBar.open('Erro ao carregar pedidos.', 'Fechar', { duration: 3000 });
+      }
+    });
   }
 
   ngOnDestroy(): void {
