@@ -39,7 +39,7 @@ export class PedidoDetalheComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (p) => {
         this.pedido = p;
-        this.verificarCriacaoViagem();
+        //this.verificarCriacaoViagem();
       },
       error: err => this.snackBar.open('Erro ao atualizar pedido', 'Fechar', { duration: 3000 })
     });
@@ -99,7 +99,7 @@ export class PedidoDetalheComponent implements OnInit, OnDestroy {
     this.pedidoService.aceitarMotorista(this.pedido._id!).subscribe({
       next: () => {
         this.snackBar.open('Motorista confirmado!', 'Fechar', { duration: 3000 });
-        this.verificarCriacaoViagem();
+        //this.verificarCriacaoViagem();
       },
       error: err => this.snackBar.open('Erro ao confirmar motorista', 'Fechar', { duration: 3000 })
     });

@@ -45,7 +45,7 @@
       <mat-divider class="my-3"></mat-divider>
 
       <!-- Motorista Selecionado -->
-      <div *ngIf="pedido.motoristaSelecionado" class="info-item motorista-box">
+      <div *ngIf="pedido.motoristaSelecionado && this.pedido.status !== 'aceite'" class="info-item motorista-box">
         <mat-icon>directions_car</mat-icon>
         <div>
           <div class="label">Motorista Selecionado</div>

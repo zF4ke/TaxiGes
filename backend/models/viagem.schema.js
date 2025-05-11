@@ -13,6 +13,11 @@ const viagemSchema = new mongoose.Schema({
         ref: 'Cliente',
         required: true
     },
+    pedido: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Pedido',
+        required: true
+    },
     turno: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Turno',

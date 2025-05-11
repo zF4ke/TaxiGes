@@ -36,7 +36,7 @@ export class GeocodingService {
 
     return this.http.get<any[]>(url).pipe(
       map(results => {
-        if (results.length === 0) throw new Error('Endereço não encontrado');
+        if (results.length === 0) return {} as Coordenadas;
         return {
           latitude: parseFloat(results[0].lat),
           longitude: parseFloat(results[0].lon)
