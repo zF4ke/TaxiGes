@@ -1,0 +1,67 @@
+<div class="container mt-4 mb-5 component-container">
+  <div class="d-flex justify-content-between align-items-center mb-3 page-header">
+    <h2 class="page-title">Minhas Viagens</h2>
+    <button mat-icon-button color="primary"
+            (click)="motoristaLogado && motoristaLogado._id ? loadMinhasViagens(motoristaLogado._id) : null"
+            [disabled]="isLoading || !motoristaLogado"
+            aria-label="Atualizar lista de viagens" matTooltip="Atualizar lista">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
+
+  <mat-progress-bar mode="indeterminate" *ngIf="isLoading" color="primary" class="mb-3"></mat-progress-bar>
+
+  <div *ngIf="!isLoading && (!viagens || viagens.length === 0)" class="alert alert-info text-center mt-4" role="alert">
+    <mat-icon class="me-2 align-middle icon-info">info_outline</mat-icon>
+    Ainda não realizou nenhuma viagem ou não foram encontradas viagens associadas.
+  </div>
+
+  <div *ngIf="!isLoading && viagens && viagens.length > 0" class="table-responsive mat-elevation-z2">
+    <table mat-table [dataSource]="viagens" class="table table-hover viagens-table">
+
+      <ng-container matColumnDef="_id">
+        <th mat-header-cell *matHeaderCellDef> ID Viagem </th>
+        <td mat-cell *matCellDef="let viagem"> {{viagem._id}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="motoristaId">
+        <th mat-header-cell *matHeaderCellDef> ID Motorista </th>
+        <td mat-cell *matCellDef="let viagem"> {{viagem.motoristaId}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="pedidoId">
+        <th mat-header-cell *matHeaderCellDef> ID Pedido </th>
+        <td mat-cell *matCellDef="let viagem"> {{viagem.pedidoId}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="dataHoraInicio">
+        <th mat-header-cell *matHeaderCellDef> Data Início </th>
+        <td mat-cell *matCellDef="let viagem"> {{ formatDate(viagem.dataHoraInicio) }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="dataHoraFim">
+        <th mat-header-cell *matHeaderCellDef> Data Fim </th>
+        <td mat-cell *matCellDef="let viagem"> {{ formatDate(viagem.dataHoraFim) }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef class="text-center"> Estado </th>
+        <td mat-cell *matCellDef="let viagem" class="text-center">
+          <span class="badge"
+                [ngClass]="{
+                  'bg-success': viagem.status === 'concluida',
+                  'bg-primary': viagem.status === 'ativa',
+                  'bg-danger': viagem.status === 'cancelada',
+                  'bg-info': viagem.status === 'agendada',
+                  'bg-secondary': !viagem.status || viagem.status === 'desconhecido'
+                }">
+            {{ (viagem.status | titlecase) || 'Desconhecido' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['_id', 'motoristaId', 'pedidoId', 'dataHoraInicio', 'dataHoraFim', 'status']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['_id', 'motoristaId', 'pedidoId', 'dataHoraInicio', 'dataHoraFim', 'status'];"></tr>
+    </table>
+  </div>
+</div>

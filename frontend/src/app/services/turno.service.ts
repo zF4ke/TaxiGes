@@ -22,7 +22,12 @@ export class TurnoService {
     return this.http.get<any[]>(`${this.apiUrl}/motorista/${motoristaId}`);
   }
 
+  checkMotoristaTurno(motoristaId: string, inicio: string, fim: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/check-motorista-turno`, { motoristaId, inicio, fim });
+  }
+  
   getTurnoAtivo(motoristaId: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/ativo/${motoristaId}`);
   }
+
 }

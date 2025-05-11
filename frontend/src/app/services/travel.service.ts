@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Viagem } from '../models/viagem.model';
 
 @Injectable({ providedIn: 'root' })
 export class TravelService {
@@ -14,5 +15,9 @@ export class TravelService {
 
   getViagem(id: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
+  getViagensPorMotorista(motoristaId: string): Observable<Viagem[]> {
+    return this.http.get<Viagem[]>(`${this.apiUrl}/motorista/${motoristaId}`);
   }
 }

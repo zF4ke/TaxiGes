@@ -15,5 +15,7 @@ router.get('/:id', viagemController.getViagemById);
 router.delete('/:id', viagemController.deleteViagemById);
 
 router.patch('/:id/entrada', viagemController.registarEntradaPassageiros);
+// A URL será: GET /api/viagens/motorista/:motoristaId
+router.get('/motorista/:motoristaId', viagemController.findViagensByMotorista);
 
 module.exports = router;
