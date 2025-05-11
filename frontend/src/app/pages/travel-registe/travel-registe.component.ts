@@ -93,6 +93,11 @@ export class TravelRegisteComponent implements OnInit {
         return;
       }
 
+      if (!this.pedidoAceite) {
+        alert('Nenhum pedido aceite encontrado.');
+        return;
+      }
+
       const dados = {
         moradaInicio: form.origem,
         moradaFim: form.destino,
@@ -100,6 +105,11 @@ export class TravelRegisteComponent implements OnInit {
         cliente: this.pedidoAceite?.cliente,
         turno: turno
       };
+
+      console.log('Dados da viagem:', dados);
+      console.log('Motorista:', motorista);
+      console.log('Turno:', turno);
+      console.log('Pedido aceite:', this.pedidoAceite);
 
       this.travelService.criarViagem(dados).subscribe({
         next: (res) => {

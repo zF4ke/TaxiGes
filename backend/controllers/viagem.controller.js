@@ -165,10 +165,22 @@ exports.createViagem = async (req, res) => {
         fim
     });
 
+    console.log(`Dados da viagem:`, {
+      ...dados,
+      inicio,
+      fim,
+      custoTotal
+    });
+
     // encontrar pedido deste motorista, cujo status é aceite
+    const motoristaId = dados.turno.motorista;
+    console.log(`Motorista ID: ${motoristaId}`);
+    console.log(`dados.turno.motorista: ${dados.turno.motorista}`);
+    console.log(`dados.turno.motorista._._id: ${dados.turno.motorista._id}`);
+
     const pedido = await Pedido.findOne({
-        status: 'aceite',
-        'motoristaSelecionado._id': dados.motorista._id,
+      status: 'aceite',
+      'motoristaSelecionado._id': motoristaId
     }).sort({ updatedAt: -1 });
 
     if (!pedido) {
