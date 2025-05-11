@@ -19,4 +19,7 @@ router.get('/motorista/:motoristaId', turnoController.getTurnosByMotoristaId);
 
 router.get('/taxis-disponiveis', turnoController.getAvailableTaxis);
 
+//Obter turno do motorista
+router.get('/ativo/:motoristaId', turnoController.getTurnoAtivo);
+
 module.exports = router;

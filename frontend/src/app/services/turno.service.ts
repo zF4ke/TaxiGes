@@ -21,4 +21,8 @@ export class TurnoService {
   getTurnosByMotorista(motoristaId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/motorista/${motoristaId}`);
   }
+
+  getTurnoAtivo(motoristaId: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/ativo/${motoristaId}`);
+  }
 }

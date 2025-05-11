@@ -7,8 +7,6 @@ const viagemSchema = new mongoose.Schema({
     numeroSequencia: {
         type: Number,
         required:true
-        // Verificar depois se E melhor fazer aqui o calculo do numero de seq
-        // ou quando estamos a criar a viagem
     },
     cliente: {
         type: mongoose.Schema.Types.ObjectId,

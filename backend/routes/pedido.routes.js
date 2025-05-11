@@ -9,7 +9,7 @@ router.get('/', pedidoController.getAllPedidos);
 router.post('/', pedidoController.createPedido);
 
 // Selecionar um pedido 
-router.put('/:id/selecionar', pedidoController.selecionarPedido);
+router.put('/:id/selecionar-motorista', pedidoController.selecionarPedido);
 
 // Get a specific pedido by ID
 router.get('/:id', pedidoController.getPedidoById);

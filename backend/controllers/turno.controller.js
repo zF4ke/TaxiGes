@@ -72,6 +72,7 @@ exports.getAvailableTaxis = async (req, res) => {
 };
 
 exports.getTurnosByMotoristaId = async (req, res) => {
+  console.log('getTurnosByMotoristaId chamado!', req.params.motoristaId);
   try {
     const { motoristaId } = req.params;
 
@@ -79,7 +80,7 @@ exports.getTurnosByMotoristaId = async (req, res) => {
       return res.status(400).json({ message: 'Motorista ID é obrigatório.' });
     }
 
-    const turnos = await Turno.find({ 'motorista._id': motoristaId })
+    const turnos = await Turno.find({ motorista: motoristaId })
       .sort({ inicio: 1 }) // Ordena ascendentemente por data do inicio do pedido
       .populate('taxi', 'marca modelo conforto')
       .exec();
@@ -88,5 +89,23 @@ exports.getTurnosByMotoristaId = async (req, res) => {
   } catch (err) {
     console.error('Erro ao buscar turnos do motorista:', err);
     res.status(500).json({ message: 'Erro ao buscar turnos do motorista.' });
+  }
+};
+
+exports.getTurnoAtivo = async (req, res) => {
+  try {
+    const motoristaId = req.params.motoristaId;
+    const agora = new Date();
+    const turno = await Turno.findOne({
+      motorista: motoristaId,
+      inicio: { $lte: agora },
+      fim: { $gte: agora }
+    });
+    if (!turno) {
+      return res.status(404).json({ message: 'Nenhum turno ativo encontrado.' });
+    }
+    res.json(turno);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };

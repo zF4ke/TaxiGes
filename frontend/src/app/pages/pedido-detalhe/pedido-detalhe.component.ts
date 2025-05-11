@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PedidoService } from '../../services/pedido.service';
 import { Pedido } from '../../models/pedido.model';
+import { TurnoService } from '../../services/turno.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { interval, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -22,6 +23,7 @@ export class PedidoDetalheComponent implements OnInit, OnDestroy {
     private pedidoService: PedidoService,
     private viagemService: TravelService,
     private snackBar: MatSnackBar,
+    private turnoService: TurnoService,
     private router: Router
   ) {}
 
@@ -44,33 +46,41 @@ export class PedidoDetalheComponent implements OnInit, OnDestroy {
   }
 
   private verificarCriacaoViagem(): void {
-    if (
-      this.pedido &&
-      this.pedido.status === 'aceite' &&
-      !this.viagemCriada &&
-      this.pedido.motoristaSelecionado &&
-      this.pedido.cliente //&&
-      //this.pedido['turno']
-    ) {
-      const viagemData = {
-        cliente: this.pedido.cliente._id,
-        //turno: this.pedido['turno'],
-        moradaInicio: this.pedido.localizacaoAtual,
-        moradaFim: this.pedido.destino,
-        numeroPessoas: this.pedido.numeroPessoas,
-        motoristaCoords: this.pedido['motoristaCoords'] || { lat: 38.756734, lon: -9.155412 }
-      };
+  if (
+    this.pedido &&
+    this.pedido.status === 'aceite' &&
+    !this.viagemCriada &&
+    this.pedido.motoristaSelecionado &&
+    this.pedido.cliente
+  ) {
+    this.turnoService.getTurnoAtivo(this.pedido.motoristaSelecionado._id).subscribe({
+      next: (turno) => {
+        if (!turno) {
+          this.snackBar.open('Nenhum turno ativo encontrado para este motorista.', 'Fechar', { duration: 3000 });
+          return;
+        }
+        const viagemData = {
+          cliente: this.pedido!.cliente._id,
+          turno: turno._id,
+          moradaInicio: this.pedido!.localizacaoAtual,
+          moradaFim: this.pedido!.destino,
+          numeroPessoas: this.pedido!.numeroPessoas,
+          motoristaCoords: this.pedido!['motoristaCoords'] || { lat: 38.756734, lon: -9.155412 }
+        };
 
-      this.viagemService.criarViagem(viagemData).subscribe({
-        next: (viagem: any) => {
-          this.viagemCriada = true;
-          this.snackBar.open('Viagem iniciada!', 'Fechar', { duration: 3000 });
-          this.router.navigate(['/viagem/resumo', viagem._id]);
-        },
-        error: err => this.snackBar.open('Erro ao iniciar viagem', 'Fechar', { duration: 3000 })
-      });
-    }
+        this.viagemService.criarViagem(viagemData).subscribe({
+          next: (viagem: any) => {
+            this.viagemCriada = true;
+            this.snackBar.open('Viagem iniciada!', 'Fechar', { duration: 3000 });
+            this.router.navigate(['/viagem/resumo', viagem._id]);
+          },
+          error: err => this.snackBar.open('Erro ao iniciar viagem', 'Fechar', { duration: 3000 })
+        });
+      },
+      error: err => this.snackBar.open('Erro ao obter turno do motorista', 'Fechar', { duration: 3000 })
+    });
   }
+}
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -87,9 +97,9 @@ export class PedidoDetalheComponent implements OnInit, OnDestroy {
   onConfirmarMotorista() {
     if (!this.pedido) return;
     this.pedidoService.aceitarMotorista(this.pedido._id!).subscribe({
-      next: viagem => {
+      next: () => {
         this.snackBar.open('Motorista confirmado!', 'Fechar', { duration: 3000 });
-        this.router.navigate(['/viagem-detalhe', viagem._id]);
+        this.verificarCriacaoViagem();
       },
       error: err => this.snackBar.open('Erro ao confirmar motorista', 'Fechar', { duration: 3000 })
     });
