@@ -49,6 +49,22 @@ exports.createTurno = async (req, res) => {
   }
 };
 
+exports.getTurnoById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const turno = await Turno.findById(id)
+      .populate('motorista', 'nome')
+      .populate('taxi');
+    if (!turno) {
+      return res.status(404).json({ message: 'Turno não encontrado.' });
+    }
+    res.status(200).json(turno);
+  } catch (err) {
+    console.error('Erro ao buscar turno:', err.message);
+    res.status(500).json({ message: `Erro ao buscar turno: ${err.message}` });
+  }
+};
+
 exports.getAvailableTaxis = async (req, res) => {
   const { inicio, fim } = req.query;
 

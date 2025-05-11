@@ -37,7 +37,7 @@ const viagemSchema = new mongoose.Schema({
         required: true,
         validate: {
             validator: function (value) {
-                return value < this.fim;
+                return value <= this.fim;
             },
             message: 'O início da viagem deve ser anterior ao fim.'
         }
@@ -47,17 +47,17 @@ const viagemSchema = new mongoose.Schema({
         required: true,
         validate: {
             validator: function (value) {
-                return value > this.inicio;
+                return value >= this.inicio;
             },
             message: 'O fim da viagem deve ser posterior ao início.'
         }
     },
     localInicio: {
-        type: moradaSchema,
+        type: String,
         required: true
     },
     localFim: {
-        type: moradaSchema,
+        type: String,
         required: true
     },
     numeroPessoas: {

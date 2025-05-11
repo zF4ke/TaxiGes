@@ -1,0 +1,35 @@
+.resumo-container {
+    padding: 20px;
+  }
+  
+  .resumo-card {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  
+  .info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .label {
+    font-weight: bold;
+  }
+  
+  .my-3 {
+    margin: 24px 0;
+  }
+  
+  .full-width {
+    width: 100%;
+    margin-top: 10px;
+  }
+  

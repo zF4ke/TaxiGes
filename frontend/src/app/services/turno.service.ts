@@ -30,4 +30,8 @@ export class TurnoService {
     return this.http.get<any>(`${this.apiUrl}/ativo/${motoristaId}`);
   }
 
+  getTurno(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
 }

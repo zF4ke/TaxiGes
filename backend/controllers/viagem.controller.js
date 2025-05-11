@@ -17,31 +17,31 @@ function construirEndereco(morada) {
 }
 
 async function obterCoordenadas(morada) {
-  try {
-    const endereco = construirEndereco(morada);
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(endereco)}&format=json&limit=1`;
+  // try {
+  //   const endereco = construirEndereco(morada);
+  //   const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(endereco)}&format=json&limit=1`;
 
-    const response = await fetch(url, {
-      headers: { 'User-Agent': 'TaxiApp/1.0 (grupo@app.com)' }
-    });
+  //   const response = await fetch(url, {
+  //     headers: { 'User-Agent': 'TaxiApp/1.0 (grupo@app.com)' }
+  //   });
 
-    if (!response.ok) throw new Error("Erro ao aceder ao Nominatim");
+  //   if (!response.ok) throw new Error("Erro ao aceder ao Nominatim");
 
-    const resultados = await response.json();
-    if (resultados.length === 0) throw new Error("Morada não encontrada");
+  //   const resultados = await response.json();
+  //   if (resultados.length === 0) throw new Error("Morada não encontrada");
 
-    return {
-      lat: parseFloat(resultados[0].lat),
-      lon: parseFloat(resultados[0].lon)
-    };
-  } catch (error) {
-    console.error("Erro ao obter coordenadas:", error);
+  //   return {
+  //     lat: parseFloat(resultados[0].lat),
+  //     lon: parseFloat(resultados[0].lon)
+  //   };
+  // } catch (error) {
+  //   console.error("Erro ao obter coordenadas:", error);
     return {
       // fcul
       lat: 38.756734,
       lon: -9.155412	
     }
-  }
+  // }
 }
 
 async function calcularPrecoViagem({ tipo, inicio, fim }) {
@@ -180,23 +180,29 @@ exports.createViagem = async (req, res) => {
 
     const pedido = await Pedido.findOne({
       status: 'aceite',
-      'motoristaSelecionado._id': motoristaId
+      motoristaSelecionado: motoristaId
     }).sort({ updatedAt: -1 });
 
     if (!pedido) {
         return res.status(404).json({ message: 'Pedido não encontrado ou não aceite.' });
     }
 
+    console.log(`Inicio: ${inicio}`);
+    console.log(`Fim: ${fim}`);
+    console.log(`Fim > Inicio: ${fim > inicio}`);
+
     const viagem = new Viagem({
-        ...dados,
+        localInicio: dados.moradaInicio,
+        localFim: dados.moradaFim,
         turno: dados.turno._id,
-        cliente: dados.cliente._id,
-        pedidoId: pedido._id,
+        cliente: dados.cliente,
+        pedido: pedido._id,
         numeroSequencia: novoNumeroSequencia,
         quilometrosPercorridos: km,
-        inicio,
-        fim,
-        preco: custoTotal
+        inicio: inicio,
+        fim: fim,
+        preco: custoTotal,
+        numeroPessoas: dados.numeroPessoas,
     });
 
     await viagem.save();
@@ -269,7 +275,9 @@ exports.findViagensByMotorista = async (req, res) => {
         motoristaIdParaFrontend = viagemObj.turno.motorista.toString();
       }
 
-      const pedidoIdParaFrontend = viagemObj.pedidoId || "N/D"; 
+      console.log("ViagemObj:", viagemObj.pedido._id);
+
+      const pedidoIdParaFrontend = viagemObj.pedido._id || "N/D"; 
 
       let statusDaViagem = 'desconhecido';
       const agora = new Date();

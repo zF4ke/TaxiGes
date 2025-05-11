@@ -106,9 +106,12 @@ exports.deletePedidoById = async (req, res) => {
 exports.getUltimoPedidoAceiteByMotorista = async (req, res) => {
   try {
     const motoristaId = req.params.motoristaId;
+
+    console.log('motoristaId:', motoristaId);
+
     const pedido = await Pedido.findOne({
       status: 'aceite',
-      'motoristaSelecionado._id': motoristaId
+      motoristaSelecionado: motoristaId
     }).sort({ updatedAt: -1 });
 
     if (!pedido) return res.status(404).json({ message: 'Nenhum pedido aceite encontrado para este motorista.' });

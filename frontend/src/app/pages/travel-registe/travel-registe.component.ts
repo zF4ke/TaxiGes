@@ -113,11 +113,16 @@ export class TravelRegisteComponent implements OnInit {
 
       this.travelService.criarViagem(dados).subscribe({
         next: (res) => {
+          console.log('Viagem criada com sucesso:', res);
+
           this.router.navigate(['/viagem/resumo', res._id], {
             state: { 
-              destino: form.destino,
-              precoFinal: res.precoFinal ?? res.preco,
-              kmPercorridos: res.kmPercorridos ?? res.quilometrosPercorridos
+              // destino: form.destino,
+              // precoFinal: res.precoFinal ?? res.preco,
+              // kmPercorridos: res.kmPercorridos ?? res.quilometrosPercorridos
+              viagem: res,
+              cliente: this.pedidoAceite.cliente,
+              turno: turno
             }
           });
         },
