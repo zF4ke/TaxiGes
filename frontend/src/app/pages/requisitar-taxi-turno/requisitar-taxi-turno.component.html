@@ -12,6 +12,12 @@
             <mat-error *ngIf="turnoForm.get('inicio')?.hasError('required')">
               Início é obrigatório
             </mat-error>
+            <mat-error *ngIf="turnoForm.get('inicio')?.hasError('inicioInvalido')">
+              {{ turnoForm.get('inicio')?.getError('inicioInvalido') }}
+            </mat-error>
+            <mat-error *ngIf="turnoForm.get('inicio')?.hasError('motoristaTurnoInvalido')">
+              {{ turnoForm.get('inicio')?.getError('motoristaTurnoInvalido') }}
+            </mat-error>
           </mat-form-field>
   
           <!-- Campo para Fim do Turno -->
@@ -22,11 +28,11 @@
               Fim é obrigatório
             </mat-error>
             <mat-error *ngIf="turnoForm.get('fim')?.hasError('fimInvalido')">
-                {{ turnoForm.get('fim')?.getError('fimInvalido') }}
-              </mat-error>
-              <mat-error *ngIf="turnoForm.get('fim')?.hasError('duracaoInvalida')">
-                {{ turnoForm.get('fim')?.getError('duracaoInvalida') }}
-              </mat-error>
+              {{ turnoForm.get('fim')?.getError('fimInvalido') }}
+            </mat-error>
+            <mat-error *ngIf="turnoForm.get('fim')?.hasError('duracaoInvalido')">
+              {{ turnoForm.get('fim')?.getError('duracaoInvalido') }}
+            </mat-error>
           </mat-form-field>
   
           <div class="actions">
@@ -72,4 +78,4 @@
         </div>
       </mat-card-content>
     </mat-card>
-  </div>
+</div>

@@ -10,6 +10,20 @@ exports.createTurno = async (req, res) => {
       return res.status(400).json({ message: 'Campos obrigatórios: inicio, fim, taxiId, motoristaId.' });
     }
 
+    const inicioDate = new Date(inicio);
+    const fimDate = new Date(fim);
+
+    const turnoTaxiExistente = await Turno.findOne({
+      taxi: taxiId,
+      $or: [
+        { inicio: { $lt: fimDate }, fim: { $gt: inicioDate } },
+      ],
+    });
+
+    if (turnoTaxiExistente) {
+      return res.status(400).json({ message: 'O táxi já está reservado para este período.' });
+    }
+
     const taxi = await Taxi.findById(taxiId);
     if (!taxi) {
         return res.status(404).json({ message: 'Táxi não encontrado.' });
@@ -21,8 +35,8 @@ exports.createTurno = async (req, res) => {
     }
 
     const novoTurno = new Turno({
-      inicio: new Date(inicio),
-      fim: new Date(fim),
+      inicio: inicioDate,
+      fim: fimDate,
       motorista,
       taxi
     });
@@ -39,29 +53,39 @@ exports.getAvailableTaxis = async (req, res) => {
   const { inicio, fim } = req.query;
 
   if (!inicio || !fim) {
-    return res.status(400).json({ message: 'Parâmetros "inicio" e "fim" são obrigatórios.' });
+    return res.status(400).json({ message: 'Parametros "inicio" e "fim" são obrigatórios.' });
+  }
+
+  const inicioDate = new Date(inicio);
+  const fimDate = new Date(fim);
+  const agora = new Date();
+
+  if (inicioDate <= agora) {
+    return res.status(400).json({ message: 'O inicio do turno deve ser posterior a hora atual.' });
+  }
+
+  if (fimDate <= inicioDate) {
+    return res.status(400).json({ message: 'O fim do turno deve ser posterior ao inicio.' });
+  }
+
+  const duracaoMs = fimDate.getTime() - inicioDate.getTime();
+  if (duracaoMs > 8 * 60 * 60 * 1000) {
+    return res.status(400).json({ message: 'A duração do turno não pode exceder 8 horas.' });
   }
 
   try {
-    const taxisIndisponiveis = await Turno.aggregate([
-      {
-        $match: {
-          $or: [
-            { inicio: { $lt: new Date(fim) }, fim: { $gt: new Date(inicio) } },
-          ],
-        },
-      },
-      {
-        $group: {
-          _id: '$taxi._id', // Agrupa pelos IDs dos táxis
-        },
-      },
-    ]).exec();
+    const turnosIndisponiveis = await Turno.find({
+      $or: [
+        { inicio: { $lt: fimDate }, fim: { $gt: inicioDate } },
+      ],
+    }).select('taxi');
 
-    const indisponiveisIds = taxisIndisponiveis.map((t) => t._id);
+    const indisponiveisIds = turnosIndisponiveis.map((turno) => turno.taxi.toString());
 
     const taxisDisponiveis = await Taxi.find({
       _id: { $nin: indisponiveisIds },
+      marca: { $exists: true, $ne: '' },
+      modelo: { $exists: true, $ne: '' },
     });
 
     res.status(200).json(taxisDisponiveis);
@@ -89,6 +113,35 @@ exports.getTurnosByMotoristaId = async (req, res) => {
   } catch (err) {
     console.error('Erro ao buscar turnos do motorista:', err);
     res.status(500).json({ message: 'Erro ao buscar turnos do motorista.' });
+  }
+};
+
+exports.checkMotoristaTurno = async (req, res) => {
+  const { motoristaId, inicio, fim } = req.body;
+
+  if (!motoristaId || !inicio || !fim) {
+    return res.status(400).json({ message: 'Campos obrigatórios: motoristaId, inicio, fim.' });
+  }
+
+  const inicioDate = new Date(inicio);
+  const fimDate = new Date(fim);
+
+  try {
+    const turnoExistente = await Turno.findOne({
+      motorista: motoristaId,
+      $or: [
+        { inicio: { $lt: fimDate }, fim: { $gt: inicioDate } }, // Sobreposição de horários
+      ],
+    });
+
+    if (turnoExistente) {
+      return res.status(400).json({ message: 'O motorista já tem um turno marcado para este período.' });
+    }
+
+    res.status(200).json({ message: 'Disponível' });
+  } catch (err) {
+    console.error('Erro ao verificar turno do motorista:', err.message);
+    res.status(500).json({ message: 'Erro ao verificar turno do motorista.' });
   }
 };
 
