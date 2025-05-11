@@ -8,7 +8,6 @@ const turnoController = require('../controllers/turno.controller');
 // Create a new turno
 router.post('/', turnoController.createTurno);
 
-router.get('/:id', turnoController.getTurnoById);
 
 // Check if the driver is available for a specific shift
 router.post('/check-motorista-turno', turnoController.checkMotoristaTurno);
@@ -26,5 +25,7 @@ router.get('/taxis-disponiveis', turnoController.getAvailableTaxis);
 
 //Obter turno do motorista
 router.get('/ativo/:motoristaId', turnoController.getTurnoAtivo);
+
+router.get('/:id', turnoController.getTurnoById);
 
 module.exports = router;
