@@ -61,8 +61,9 @@ export class AddTaxiComponent implements OnInit {
           });
           this.router.navigate(['/list-taxis']);
         },
-        error: (error) => {
-          this.snackBar.open('Erro ao adicionar táxi: ' + error.message, 'Fechar', {
+        error: (err) => {
+          const message = err.error?.message || err.message || 'Ocorreu um erro desconhecido.';
+          this.snackBar.open('Erro ao adicionar táxi: ' + message, 'Fechar', {
             duration: 3000
           });
         }
