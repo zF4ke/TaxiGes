@@ -1,6 +1,8 @@
+const mongoose = require('mongoose');
 const Pedido = require('../models/pedido.model');
 const Motorista = require('../models/motorista.model');
 const Cliente = require('../models/cliente.model');
+const Turno = require('../models/turno.model');
 
 // Listar todos os pedidos
 exports.getAllPedidos = async (req, res) => {
@@ -28,6 +30,52 @@ exports.getAllPedidos = async (req, res) => {
     res.json(pedidos);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getPedidosFiltradosPorTurno = async (req, res) => {
+  try {
+    const { motoristaId } = req.query;
+    console.log('[getPedidosFiltradosPorTurno] Motorista ID recebido:', motoristaId);
+
+    // Validar se o motoristaId é um ObjectId válido
+    if (!motoristaId || !mongoose.Types.ObjectId.isValid(motoristaId)) {
+      console.error('[getPedidosFiltradosPorTurno] ID do motorista inválido:', motoristaId);
+      return res.status(400).json({ message: 'ID do motorista inválido ou não fornecido.' });
+    }
+
+    // Buscar o turno ativo do motorista
+    const agora = new Date();
+    console.log('[getPedidosFiltradosPorTurno] Data e hora atual:', agora);
+
+    const turnoAtivo = await Turno.findOne({
+      motorista: motoristaId,
+      inicio: { $lte: agora },
+      fim: { $gte: agora }
+    });
+
+    if (!turnoAtivo) {
+      console.warn('[getPedidosFiltradosPorTurno] Nenhum turno ativo encontrado para o motorista:', motoristaId);
+      return res.status(400).json({ message: 'Nenhum turno ativo encontrado para o motorista.' });
+    }
+
+    console.log('[getPedidosFiltradosPorTurno] Turno ativo encontrado:', turnoAtivo);
+
+    // Filtrar pedidos dentro do turno ativo
+    const pedidos = await Pedido.find({
+      status: 'pendente',
+      createdAt: { $gte: turnoAtivo.inicio, $lte: turnoAtivo.fim }
+    })
+      .populate('cliente', 'pessoa')
+      .populate('motoristaSelecionado', 'pessoa')
+      .populate('motoristasRejeitados', 'pessoa');
+
+    console.log('[getPedidosFiltradosPorTurno] Pedidos encontrados:', pedidos);
+
+    res.json(pedidos);
+  } catch (err) {
+    console.error('[getPedidosFiltradosPorTurno] Erro ao buscar pedidos filtrados por turno:', err);
+    res.status(500).json({ message: 'Erro ao buscar pedidos.' });
   }
 };
 

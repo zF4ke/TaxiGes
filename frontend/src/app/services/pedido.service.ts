@@ -44,6 +44,10 @@ export class PedidoService {
     return this.http.get<Pedido[]>(`${this.apiUrl}?status=pendente&motoristaId=${motoristaId}`);
   }
 
+  getPedidosFiltradosPorTurno(motoristaId: string): Observable<Pedido[]> {
+    return this.http.get<Pedido[]>(`${this.apiUrl}/filtrados-por-turno?motoristaId=${motoristaId}`);
+  }
+
   rejeitarMotorista(pedidoId: string, motoristaId: string): Observable<Pedido> {
     return this.http.put<Pedido>(`${this.apiUrl}/${pedidoId}/rejeitar-motorista`, { motoristaId });
   }

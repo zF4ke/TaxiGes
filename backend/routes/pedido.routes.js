@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const pedidoController = require('../controllers/pedido.controller');
 
+// Get pedidos que incedem em turnos de motoristas
+router.get('/filtrados-por-turno', pedidoController.getPedidosFiltradosPorTurno);
+
 // List all pedidos
 router.get('/', pedidoController.getAllPedidos);
 
@@ -31,5 +34,6 @@ router.put('/:id/rejeitar-motorista', pedidoController.rejeitarMotorista);
 
 // Cliente aceita ou rejeita motorista
 router.put('/:id/aceitar-motorista', pedidoController.aceitarMotorista);
+
 
 module.exports = router;
