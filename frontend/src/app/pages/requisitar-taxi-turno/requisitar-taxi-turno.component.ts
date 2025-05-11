@@ -63,9 +63,9 @@ export class RequisitarTaxiTurnoComponent implements OnInit {
       const dataAtual = new Date();
       const dataInicio = new Date(inicio);
       
-      if (dataInicio <= dataAtual) {
-        return { inicioInvalido: 'A data de inicio deve ser posterior a data atual' }; 
-      }
+      // if (dataInicio <= dataAtual) {
+      //   return { inicioInvalido: 'A data de inicio deve ser posterior a data atual' }; 
+      // }
 
       return null;
     };
