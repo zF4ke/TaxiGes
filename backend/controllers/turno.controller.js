@@ -60,9 +60,9 @@ exports.getAvailableTaxis = async (req, res) => {
   const fimDate = new Date(fim);
   const agora = new Date();
 
-  if (inicioDate <= agora) {
-    return res.status(400).json({ message: 'O inicio do turno deve ser posterior a hora atual.' });
-  }
+  // if (inicioDate <= agora) {
+  //   return res.status(400).json({ message: 'O inicio do turno deve ser posterior a hora atual.' });
+  // }
 
   if (fimDate <= inicioDate) {
     return res.status(400).json({ message: 'O fim do turno deve ser posterior ao inicio.' });

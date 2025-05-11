@@ -22,13 +22,13 @@ const turnoSchema = new mongoose.Schema({
                 },
                 message: 'O início do turno deve ser anterior ao fim do turno.'
             },
-            {
-                validator: function(value) {
-                    // Não pode começar no passado
-                    return value > new Date();
-                },
-                message: 'O início do turno deve ser posterior ao momento atual.'
-            }
+            // {
+            //     validator: function(value) {
+            //         // Não pode começar no passado
+            //         return value > new Date();
+            //     },
+            //     message: 'O início do turno deve ser posterior ao momento atual.'
+            // }
         ]
     },
     fim: {

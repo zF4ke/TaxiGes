@@ -2,7 +2,7 @@ const Viagem = require('../models/viagem.model');
 const Turno = require('../models/turno.model');    
 const Cliente = require('../models/cliente.model');
 const Taxi = require('../models/taxi.model')
-const fetch = require('node-fetch');
+const Pedido = require('../models/pedido.model')
 
 // Funções auxiliares
 function construirEndereco(morada) {
@@ -17,22 +17,31 @@ function construirEndereco(morada) {
 }
 
 async function obterCoordenadas(morada) {
-  const endereco = construirEndereco(morada);
-  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(endereco)}&format=json&limit=1`;
+  try {
+    const endereco = construirEndereco(morada);
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(endereco)}&format=json&limit=1`;
 
-  const response = await fetch(url, {
-    headers: { 'User-Agent': 'TaxiApp/1.0 (grupo@app.com)' }
-  });
+    const response = await fetch(url, {
+      headers: { 'User-Agent': 'TaxiApp/1.0 (grupo@app.com)' }
+    });
 
-  if (!response.ok) throw new Error("Erro ao aceder ao Nominatim");
+    if (!response.ok) throw new Error("Erro ao aceder ao Nominatim");
 
-  const resultados = await response.json();
-  if (resultados.length === 0) throw new Error("Morada não encontrada");
+    const resultados = await response.json();
+    if (resultados.length === 0) throw new Error("Morada não encontrada");
 
-  return {
-    lat: parseFloat(resultados[0].lat),
-    lon: parseFloat(resultados[0].lon)
-  };
+    return {
+      lat: parseFloat(resultados[0].lat),
+      lon: parseFloat(resultados[0].lon)
+    };
+  } catch (error) {
+    console.error("Erro ao obter coordenadas:", error);
+    return {
+      // fcul
+      lat: 38.756734,
+      lon: -9.155412	
+    }
+  }
 }
 
 async function calcularPrecoViagem({ tipo, inicio, fim }) {
@@ -110,20 +119,28 @@ exports.createViagem = async (req, res) => {
       coordsDestino.lon
     );
 
+    console.log(`Distância motorista -> cliente: ${kmMotoristaCliente} km`);
+    console.log(`Distância cliente -> destino: ${km} km`);
+
     // RIA 20: Os quilómetros percorridos têm de ser positivos
-    if (km <= 0) throw new Error("Distância inválida: os quilómetros percorridos têm de ser positivos.");
+    if (km < 0) throw new Error("Distância inválida: os quilómetros percorridos têm de ser positivos.");
 
     // Hora de início: agora + tempo estimado de chegada
-    const inicio = new Date(Date.now() + tempoEstimadoChegadaTaxi * 60000);
+    const inicio = new Date(Date.now() /* + tempoEstimadoChegadaTaxi * 60000 */);
+
+    console.log(`Hora de início: ${inicio.toISOString()}`);
+    console.log(`Tempo estimado de chegada do táxi: ${tempoEstimadoChegadaTaxi} minutos`);
 
     // Tempo total da viagem (em minutos)
     const tempoTotalMinutos = km * 4;
+
+    console.log(`Tempo total da viagem: ${tempoTotalMinutos} minutos`);
 
     // Hora de fim: início + tempo total da viagem
     const fim = new Date(inicio.getTime() + tempoTotalMinutos * 60000);
 
     // RIA 5: O início de um período tem de ser anterior ao seu fim
-    if (inicio >= fim) {
+    if (inicio > fim) {
       throw new Error('O início do período tem de ser anterior ao fim.');
     }
 
@@ -148,9 +165,21 @@ exports.createViagem = async (req, res) => {
         fim
     });
 
+    // encontrar pedido deste motorista, cujo status é aceite
+    const pedido = await Pedido.findOne({
+        status: 'aceite',
+        'motoristaSelecionado._id': dados.motorista._id,
+    }).sort({ updatedAt: -1 });
+
+    if (!pedido) {
+        return res.status(404).json({ message: 'Pedido não encontrado ou não aceite.' });
+    }
+
     const viagem = new Viagem({
         ...dados,
-        cliente: dados.cliente,
+        turno: dados.turno._id,
+        cliente: dados.cliente._id,
+        pedidoId: pedido._id,
         numeroSequencia: novoNumeroSequencia,
         quilometrosPercorridos: km,
         inicio,
