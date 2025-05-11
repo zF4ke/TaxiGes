@@ -57,11 +57,10 @@ export class ListPedidosComponent implements OnInit, OnDestroy {
     );
   }
 
-  carregarPedidos(motoristaId: string): void {
-    this.sub = this.pedidoService.watchPedidosPendentesComFiltro(motoristaId)
-      .subscribe({
-        next: (data) => {
-          console.log('Pedidos recebidos:', data);
+  carregarPedidosFiltradosPorTurno(motoristaId: string): void {
+    this.pedidoService.getPedidosFiltradosPorTurno(motoristaId).subscribe({
+      next: (data) => {
+        console.log('Pedidos recebidos:', data);
           // Show pedidos immediately
           this.pedidos = data;
           
@@ -80,16 +79,6 @@ export class ListPedidosComponent implements OnInit, OnDestroy {
             // Update the list with calculated distances and sort
             this.pedidos = pedidosComDistancia.sort((a, b) => (a['distanciaKm'] || 0) - (b['distanciaKm'] || 0));
           });
-        },
-        error: () => this.snackBar.open('Erro ao carregar pedidos.', 'Fechar', { duration: 3000 })
-      });
-  }
-
-  carregarPedidosFiltradosPorTurno(motoristaId: string): void {
-    this.pedidoService.getPedidosFiltradosPorTurno(motoristaId).subscribe({
-      next: (pedidos) => {
-        console.log('Pedidos filtrados por turno recebidos:', pedidos);
-        this.pedidos = pedidos;
       },
       error: (err) => {
         console.error('Erro ao carregar pedidos filtrados:', err);
