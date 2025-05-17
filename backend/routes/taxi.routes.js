@@ -8,4 +8,7 @@ router.get('/', taxiController.getAllTaxis);
 // Create new taxi
 router.post('/', taxiController.createTaxi);
 
+// Delete taxi by ID
+router.delete('/:id', taxiController.deleteTaxiById);
+
 module.exports = router;

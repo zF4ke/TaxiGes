@@ -1,3 +1,4 @@
+const Turno = require('../models/turno.model');
 const Taxi = require('../models/taxi.model');
 
 // --- Listar todos os Táxis ---
@@ -46,5 +47,26 @@ exports.createTaxi = async (req, res) => {
 
         // Outros erros
         return res.status(500).json({ message: 'Erro interno ao criar o táxi.' });
+    }
+};
+
+exports.deleteTaxiById = async (req, res) => {
+    try {
+        const taxiId = req.params.id;
+
+        // Verifica se existe algum turno associado a este táxi
+        const turno = await Turno.findOne({ taxi: taxiId });
+        if (turno) {
+            return res.status(400).json({ message: 'Não é possível remover: táxi já foi requisitado para um turno.' });
+        }
+
+        const taxi = await Taxi.findByIdAndDelete(taxiId);
+        if (!taxi) {
+            return res.status(404).json({ message: 'Táxi não encontrado.' });
+        }
+
+        res.json({ message: 'Táxi removido com sucesso.' });
+    } catch (err) {
+        res.status(500).json({ message: 'Erro interno ao remover táxi.' });
     }
 };

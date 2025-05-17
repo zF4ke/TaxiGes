@@ -18,4 +18,8 @@ export class TaxiService {
   addTaxi(taxi: Taxi): Observable<Taxi> {
     return this.http.post<Taxi>(this.apiUrl, taxi);
   }
+
+  deleteTaxi(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }
