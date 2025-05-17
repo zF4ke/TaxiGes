@@ -9,15 +9,19 @@ export class TravelService {
 
   constructor(private http: HttpClient) {}
 
-  criarViagem(dados: any): Observable<any> {
+  criarViagem(dados: any): Observable<Viagem> {
     return this.http.post<any>(`${this.apiUrl}`, dados);
   }
 
-  getViagem(id: string): Observable<any> {
+  getViagem(id: string): Observable<Viagem> {
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
   getViagensPorMotorista(motoristaId: string): Observable<Viagem[]> {
     return this.http.get<Viagem[]>(`${this.apiUrl}/motorista/${motoristaId}`);
+  }
+
+  updateFimViagem(id: string, fim: string, localFim: string): Observable<Viagem> {
+    return this.http.patch<Viagem>(`${this.apiUrl}/${id}/fim`, { fim, localFim });
   }
 }

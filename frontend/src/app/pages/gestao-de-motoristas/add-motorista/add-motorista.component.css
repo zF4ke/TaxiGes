@@ -1,0 +1,77 @@
+.form-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  mat-card {
+    max-width: 600px; 
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 16px;
+  }
+  
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 10px; 
+  }
+  
+  .actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+    justify-content: flex-end;
+  }
+  
+  .address-group {
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 16px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .address-title {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .actions button mat-icon {
+    margin-right: 8px;
+  }
+  
+  /* Spinner as suffix in mat-form-field */
+mat-form-field .mat-spinner.mat-form-field-suffix {
+  position: absolute;
+  right: 0.75em;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.localidade-spinner-suffix {
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+}
+
+mat-form-field .mat-spinner {
+  width: 20px !important;
+  height: 20px !important;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Optionally, reduce spinner opacity if you want it less intrusive */
+mat-form-field .mat-spinner svg {
+  opacity: 0.8;
+}

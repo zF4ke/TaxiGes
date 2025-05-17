@@ -1,8 +1,11 @@
-import { PessoaSimples } from './pessoa-simples.model';
+import { Genero } from "./constants";
 
 export interface Cliente {
-  _id?: string;
-  pessoa: PessoaSimples;
-  createdAt?: Date;
-  updatedAt?: Date;
+    _id: string;
+    nome: string;
+    nif: string;
+    genero: Genero;
+    anoNascimento: number;
+    createdAt?: Date;
+    updatedAt?: Date;
 }

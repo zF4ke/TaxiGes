@@ -53,8 +53,9 @@ exports.getTurnoById = async (req, res) => {
   try {
     const { id } = req.params;
     const turno = await Turno.findById(id)
-      .populate('motorista', 'nome')
+      .populate('motorista')
       .populate('taxi');
+
     if (!turno) {
       return res.status(404).json({ message: 'Turno não encontrado.' });
     }
@@ -122,7 +123,8 @@ exports.getTurnosByMotoristaId = async (req, res) => {
 
     const turnos = await Turno.find({ motorista: motoristaId })
       .sort({ inicio: 1 }) // Ordena ascendentemente por data do inicio do pedido
-      .populate('taxi', 'marca modelo conforto')
+      .populate('motorista')
+      .populate('taxi')
       .exec();
 
     res.status(200).json(turnos);
@@ -169,7 +171,9 @@ exports.getTurnoAtivo = async (req, res) => {
       motorista: motoristaId,
       inicio: { $lte: agora },
       fim: { $gte: agora }
-    });
+    }).populate('motorista')
+      .populate('taxi');
+      
     if (!turno) {
       return res.status(404).json({ message: 'Nenhum turno ativo encontrado.' });
     }

@@ -3,6 +3,7 @@ const Turno = require('../models/turno.model');
 const Cliente = require('../models/cliente.model');
 const Taxi = require('../models/taxi.model')
 const Pedido = require('../models/pedido.model')
+const Preco = require('../models/preco.model')
 
 // Funções auxiliares
 function construirEndereco(morada) {
@@ -16,36 +17,42 @@ function construirEndereco(morada) {
   return partes.filter(Boolean).join(', ');
 }
 
-async function obterCoordenadas(morada) {
-  // try {
-  //   const endereco = construirEndereco(morada);
-  //   const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(endereco)}&format=json&limit=1`;
+async function obterCoordenadas(morada, transform = true) {
+  try {
+    let endereco
+    if (transform) {
+      endereco = construirEndereco(morada);
+    } else {
+      endereco = morada;
+    }
+  
+    console.log("Obtendo coordenadas para:", endereco);
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(endereco)}&format=json&limit=1`;
 
-  //   const response = await fetch(url, {
-  //     headers: { 'User-Agent': 'TaxiApp/1.0 (grupo@app.com)' }
-  //   });
+    const response = await fetch(url, {
+      headers: { 'User-Agent': 'TaxiApp/1.0 (grupo@app.com)' }
+    });
 
-  //   if (!response.ok) throw new Error("Erro ao aceder ao Nominatim");
+    if (!response.ok) throw new Error("Erro ao aceder ao Nominatim");
 
-  //   const resultados = await response.json();
-  //   if (resultados.length === 0) throw new Error("Morada não encontrada");
+    const resultados = await response.json();
+    if (resultados.length === 0) throw new Error("Morada não encontrada");
 
-  //   return {
-  //     lat: parseFloat(resultados[0].lat),
-  //     lon: parseFloat(resultados[0].lon)
-  //   };
-  // } catch (error) {
-  //   console.error("Erro ao obter coordenadas:", error);
+    return {
+      lat: parseFloat(resultados[0].lat),
+      lon: parseFloat(resultados[0].lon)
+    };
+  } catch (error) {
+    console.error("Erro ao obter coordenadas:", error);
     return {
       // fcul
       lat: 38.756734,
       lon: -9.155412	
     }
-  // }
+  }
 }
 
 async function calcularPrecoViagem({ tipo, inicio, fim }) {
-  const Preco = require('../models/preco.model');
   const preco = await Preco.findOne();
   if (!preco) throw new Error('Tabela de preços não encontrada');
 
@@ -87,18 +94,31 @@ function haversine(lat1, lon1, lat2, lon2) {
 exports.createViagem = async (req, res) => {
   try {
     const dados = req.body;
+    const motoristaId = dados.turno.motorista;
+
+    const pedido = await Pedido.findOne({
+      status: 'aceite',
+      motoristaSelecionado: motoristaId
+    }).sort({ updatedAt: -1 })
+      .populate('cliente')
+      .populate('motoristaSelecionado')
+      .populate('motoristasRejeitados');
+
+    if (!pedido) {
+        return res.status(404).json({ message: 'Pedido não encontrado ou não aceite.' });
+    }
 
     // RIA 19: O número de pessoas tem de ser pelo menos 1
-    if (!dados.numeroPessoas || dados.numeroPessoas < 1) {
+    if (!pedido.numeroPessoas || pedido.numeroPessoas < 1) {
       throw new Error('O número de pessoas tem de ser pelo menos 1.');
     }
 
     // Coordenadas do motorista (se não vierem do frontend, usar FCUL)
-    const motoristaCoords = dados.motoristaCoords || { lat: 38.756734, lon: -9.155412 };
+    const motoristaCoords = pedido.motoristaCoords || { lat: 38.756734, lon: -9.155412 };
 
     // Coordenadas do cliente (origem da viagem)
-    const coordsOrigem = await obterCoordenadas(dados.moradaInicio);
-    const coordsDestino = await obterCoordenadas(dados.moradaFim);
+    const coordsOrigem = await obterCoordenadas(pedido.localizacaoAtual);
+    const coordsDestino = await obterCoordenadas(pedido.destino);
 
     // Distância motorista -> cliente
     const kmMotoristaCliente = haversine(
@@ -131,78 +151,70 @@ exports.createViagem = async (req, res) => {
     console.log(`Hora de início: ${inicio.toISOString()}`);
     console.log(`Tempo estimado de chegada do táxi: ${tempoEstimadoChegadaTaxi} minutos`);
 
-    // Tempo total da viagem (em minutos)
-    const tempoTotalMinutos = km * 4;
-
-    console.log(`Tempo total da viagem: ${tempoTotalMinutos} minutos`);
-
-    // Hora de fim: início + tempo total da viagem
-    const fim = new Date(inicio.getTime() + tempoTotalMinutos * 60000);
-
-    // RIA 5: O início de um período tem de ser anterior ao seu fim
-    if (inicio > fim) {
-      throw new Error('O início do período tem de ser anterior ao fim.');
-    }
-
     // RIA 2: O período da viagem tem de estar contido no período do turno
     if (!dados.turno || !dados.turno.inicio || !dados.turno.fim) {
       throw new Error('Informação do turno em falta.');
     }
     const turnoInicio = new Date(dados.turno.inicio);
     const turnoFim = new Date(dados.turno.fim);
-    if (inicio < turnoInicio || fim > turnoFim) {
-      throw new Error('O período da viagem tem de estar contido no período do turno.');
+    if (inicio < turnoInicio || inicio > turnoFim) {
+      throw new Error('O início da viagem tem de estar contido no período do turno.');
     }
 
     // RIA 18: As viagens de um turno vão do número de sequência 1 em diante
-    const ultimaViagem = await Viagem.findOne({ "turno._id": dados.turno._id }).sort({ numeroSequencia: -1 });
+    const ultimaViagem = await Viagem.findOne({ "turno._id": dados.turno._id }).sort({ numeroSequencia: -1 })
+      .populate('cliente')
+      .populate('pedido')
+      .populate('turno');
     const novoNumeroSequencia = ultimaViagem ? ultimaViagem.numeroSequencia + 1 : 1;
 
     // Cálculo do custo
-    const custoTotal = await calcularPrecoViagem({
-        tipo: dados.turno.tipoCarro,
-        inicio,
-        fim
-    });
+    // const custoTotal = await calcularPrecoViagem({
+    //     tipo: dados.turno.taxi.conforto,
+    //     inicio,
+    //     fim: inicio // Use only inicio for price estimation for now
+    // });
+    // calculate based on km for now (// 4 min/km (como viagem))
+    const precoPorKm = await Preco.findOne();
+    if (!precoPorKm) {
+      throw new Error('Tabela de preços não encontrada.');
+    }
+    
+    let precoPorMinuto = precoPorKm.precoBasico;
+    if (dados.turno.taxi.conforto === 'luxuoso') {
+      precoPorMinuto = precoPorKm.precoLuxo;
+    }
+
+    const custoTotal = km * precoPorMinuto; // km * preço por km
+    console.log(`Custo total da viagem: ${custoTotal} €`);
+    
 
     console.log(`Dados da viagem:`, {
       ...dados,
       inicio,
-      fim,
       custoTotal
     });
 
     // encontrar pedido deste motorista, cujo status é aceite
-    const motoristaId = dados.turno.motorista;
     console.log(`Motorista ID: ${motoristaId}`);
     console.log(`dados.turno.motorista: ${dados.turno.motorista}`);
     console.log(`dados.turno.motorista._._id: ${dados.turno.motorista._id}`);
 
-    const pedido = await Pedido.findOne({
-      status: 'aceite',
-      motoristaSelecionado: motoristaId
-    }).sort({ updatedAt: -1 });
-
-    if (!pedido) {
-        return res.status(404).json({ message: 'Pedido não encontrado ou não aceite.' });
-    }
 
     console.log(`Inicio: ${inicio}`);
-    console.log(`Fim: ${fim}`);
-    console.log(`Fim > Inicio: ${fim > inicio}`);
 
     const viagem = new Viagem({
         localInicio: dados.moradaInicio,
-        localFim: dados.moradaFim,
-        turno: dados.turno._id,
+        turno: dados.turno,
         cliente: dados.cliente,
-        pedido: pedido._id,
+        pedido: pedido,
         numeroSequencia: novoNumeroSequencia,
         quilometrosPercorridos: km,
         inicio: inicio,
-        fim: fim,
         preco: custoTotal,
         numeroPessoas: dados.numeroPessoas,
+        status: 'ativa'
+        // fim and localFim are not set at creation
     });
 
     await viagem.save();
@@ -215,7 +227,10 @@ exports.createViagem = async (req, res) => {
 // Obter todas as viagens
 exports.getAllViagens = async (req, res) => {
   try {
-    const viagens = await Viagem.find();
+    const viagens = await Viagem.find()
+      .populate('cliente')
+      .populate('pedido')
+      .populate('turno');
     res.json(viagens);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -226,7 +241,10 @@ exports.getAllViagens = async (req, res) => {
 // Procurar uma viagem por ID
 exports.getViagemById = async (req, res) => {
   try {
-    const viagem = await Viagem.findById(req.params.id);
+    const viagem = await Viagem.findById(req.params.id)
+      .populate('cliente')
+      .populate('pedido')
+      .populate('turno');
     if (!viagem) return res.status(404).json({ message: 'Viagem não encontrada' });
     res.json(viagem);
   } catch (err) {
@@ -266,7 +284,9 @@ exports.findViagensByMotorista = async (req, res) => {
           model: Turno,
           select: 'motorista' 
       })
-      .sort({ inicio: -1 }); 
+      .sort({ inicio: -1 })
+      .populate('cliente')
+      .populate('pedido'); 
     const viagensFormatadas = viagensDoMotorista.map(v => {
       const viagemObj = v.toObject(); 
 
@@ -279,15 +299,15 @@ exports.findViagensByMotorista = async (req, res) => {
 
       const pedidoIdParaFrontend = viagemObj.pedido._id || "N/D"; 
 
-      let statusDaViagem = 'desconhecido';
-      const agora = new Date();
-      if (viagemObj.fim && new Date(viagemObj.fim) < agora) {
-        statusDaViagem = 'concluida';
-      } else if (viagemObj.inicio && new Date(viagemObj.inicio) <= agora) {
-        statusDaViagem = 'ativa';
-      } else if (viagemObj.inicio) {
-        statusDaViagem = 'agendada';
-      }
+      // let statusDaViagem = 'desconhecido';
+      // const agora = new Date();
+      // if (viagemObj.fim && new Date(viagemObj.fim) < agora) {
+      //   statusDaViagem = 'concluida';
+      // } else if (viagemObj.inicio && new Date(viagemObj.inicio) <= agora) {
+      //   statusDaViagem = 'ativa';
+      // } else if (viagemObj.inicio) {
+      //   statusDaViagem = 'agendada';
+      // }
 
       return {
         _id: viagemObj._id.toString(),
@@ -295,7 +315,7 @@ exports.findViagensByMotorista = async (req, res) => {
         pedidoId: pedidoIdParaFrontend, 
         dataHoraInicio: viagemObj.inicio ? new Date(viagemObj.inicio).toISOString() : "N/D",
         dataHoraFim: viagemObj.fim ? new Date(viagemObj.fim).toISOString() : undefined, 
-        status: statusDaViagem,
+        status: viagemObj.status
       };
     });
 
@@ -304,5 +324,65 @@ exports.findViagensByMotorista = async (req, res) => {
   } catch (error) {
     console.error("Erro no backend ao buscar viagens do motorista:", error);
     res.status(500).json({ message: "Ocorreu um erro no servidor ao tentar buscar as viagens.", details: error.message });
+  }
+};
+
+// Atualizar fim da viagem
+exports.updateFimViagem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { fim, localFim } = req.body;
+    if (!fim || !localFim) {
+      return res.status(400).json({ message: 'Campos fim e localFim são obrigatórios.' });
+    }
+    const viagem = await Viagem.findById(id)
+      .populate('cliente')
+      .populate('pedido')
+      .populate('turno');
+    if (!viagem) {
+      return res.status(404).json({ message: 'Viagem não encontrada.' });
+    }
+
+    // se a viagem já está concluída, não pode ser atualizada
+    if (viagem.status === 'concluida') {
+      return res.status(400).json({ message: 'A viagem já está concluída.' });
+    }
+
+    // calcular custo final real
+    const coordsFim = await obterCoordenadas(localFim, false);
+    const coordsInicio = await obterCoordenadas(viagem.localInicio, false);
+    const kmPercorridos = haversine(
+      coordsInicio.lat,
+      coordsInicio.lon,
+      coordsFim.lat,
+      coordsFim.lon
+    );
+
+    console.log('localInicio:', viagem.localInicio);
+    console.log('localFim:', localFim);
+    console.log('Coordenadas início:', coordsInicio);
+    console.log('Coordenadas fim:', coordsFim);
+    console.log(`Quilómetros percorridos: ${kmPercorridos} km`);
+
+    const precoPorKm = await Preco.findOne();
+    if (!precoPorKm) {
+      throw new Error('Tabela de preços não encontrada.');
+    }
+    let precoPorMinuto = precoPorKm.precoBasico;
+    if (viagem.turno.taxi.conforto === 'luxuoso') {
+      precoPorMinuto = precoPorKm.precoLuxo;
+    }
+    const custoFinal = kmPercorridos * precoPorMinuto; // km * preço por km
+    console.log(`Custo final da viagem: ${custoFinal} €`);
+
+    viagem.fim = new Date(fim);
+    viagem.localFim = localFim;
+    viagem.quilometrosPercorridos = kmPercorridos;
+    viagem.preco = custoFinal; // Atualiza o preço final da viagem
+    viagem.status = 'concluida'; // Atualiza o status da viagem para concluída
+    await viagem.save();
+    res.json(viagem);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };

@@ -20,7 +20,7 @@ exports.createMotorista = async (req, res) => {
         // Duplicação (NIF ou cartaConducao)
         if (err.code === 11000) {
             const campoDuplicado = Object.keys(err.keyValue)[0];
-            const nomeCampo = campoDuplicado === 'pessoa.nif' ? 'NIF' : 'Carta de Condução';
+            const nomeCampo = campoDuplicado === 'nif' ? 'NIF' : 'Carta de Condução';
             return res.status(409).json({ message: `Erro: ${nomeCampo} já existe.` });
         }
 
@@ -61,12 +61,12 @@ exports.getLocalityByPostalCode = async (req, res) => {
 exports.listarParaSelecao = async (req, res) => {
     try {
         
-        const motoristas = await Motorista.find({}, '_id pessoa.nome pessoa.nif').sort({ 'pessoa.nome': 1 });
+        const motoristas = await Motorista.find({}, '_id nome nif').sort({ 'nome': 1 });
 
         const resultadoFormatado = motoristas.map(m => ({
             _id: m._id,
-            nome: m.pessoa.nome,
-            nif: m.pessoa.nif 
+            nome: m.nome,
+            nif: m.nif 
         }));
         
         res.status(200).json(resultadoFormatado);
@@ -89,8 +89,8 @@ exports.acessoPorNIF = async (req, res) => {
 
     try {
         const motorista = await Motorista.findOne(
-            { 'pessoa.nif': nif }, 
-            '_id pessoa.nome pessoa.nif'
+            { 'nif': nif }, 
+            '_id nome nif'
         );
 
         if (!motorista) {
@@ -99,8 +99,8 @@ exports.acessoPorNIF = async (req, res) => {
 
         const resultadoFormatado = {
             _id: motorista._id,
-            nome: motorista.pessoa.nome,
-            nif: motorista.pessoa.nif 
+            nome: motorista.nome,
+            nif: motorista.nif 
         };
         res.status(200).json(resultadoFormatado);
     } catch (error) {

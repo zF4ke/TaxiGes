@@ -1,8 +1,11 @@
 export interface Viagem {
-  _id: string;
-  motoristaId: string;
-  pedidoId: string;
-  dataHoraInicio: string;
-  dataHoraFim?: string;
-  status: string;
+    _id: string;
+    numeroSequencia: number;
+    cliente: string; // ObjectId
+    pedido: string; // ObjectId
+    turno: string; // ObjectId
+    inicio: Date;
+    fim: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Motorista } from '../models/motorista.model';
 import { Observable, of, delay, tap } from 'rxjs';
+import { Motorista } from '../models/motorista.model';
 
 export interface MotoristaSelecao {
   _id: string;

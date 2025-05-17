@@ -5,7 +5,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, interval, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Pedido } from '../models/pedido.model';
-import { Viagem } from '../models/viagem.model';
 
 @Injectable({ providedIn: 'root' })
 export class PedidoService {

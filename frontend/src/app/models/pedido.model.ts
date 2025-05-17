@@ -1,27 +1,24 @@
 import { Cliente } from './cliente.model';
+import { NivelConforto, PedidoStatus } from './constants';
 import { Morada } from './morada.model';
-import { PedidoStatus } from './pedido-status.type';
-import { NivelConforto } from './nivel-conforto.type';
-import { Pessoa } from './pessoa.model';
+import { Motorista } from './motorista.model';
 
 export interface Pedido {
-  _id?: string;
-  cliente: Cliente;
-  localizacaoAtual: Morada;
-  destino: Morada;
-  distanciaKm: number;
-  nivelConforto: NivelConforto;
-  numeroPessoas: number;
-  status?: PedidoStatus;
-  motoristaSelecionado?: {
-    _id: string;
-    pessoa: Pessoa;
-  };
-  motoristaCoords?: {
-    lat: number;
-    lon: number;
-  };
-  motoristasRejeitados?: string[];
-  createdAt?: Date;
-  updatedAt?: Date;
+    _id?: string; // MongoDB ObjectId
+    cliente: Cliente; 
+    localizacaoAtual: Morada;
+    destino: Morada;
+    distanciaKm?: number;
+    motoristaCoords?: {
+        lat: number;
+        lon: number;
+    };
+    nivelConforto: NivelConforto;
+    numeroPessoas: number;
+    status?: PedidoStatus;
+    motoristaSelecionado?: Motorista;
+    motoristasRejeitados?: Motorista[];
+    clienteAceitouMotorista: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
 }

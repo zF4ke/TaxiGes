@@ -25,47 +25,58 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AppComponent } from './app.component';
 import { LandingPageComponent } from './pages/landing-page/landing-page.component';
-import { AddTaxiComponent } from './pages/add-taxi/add-taxi.component';
-import { ListTaxisComponent } from './pages/list-taxis/list-taxis.component';
-import { ListPriceComponent } from './pages/list-price/list-price.component';
-import { AddPriceComponent } from './pages/add-price/add-price.component';
-import { SimulateTravelComponent } from './pages/simulate-travel/simulate-travel.component';
-import { AddMotoristaComponent } from './pages/add-motorista/add-motorista.component';
-import { ListMotoristaComponent } from './pages/list-motorista/list-motorista.component';
-import { MotoristaLoginComponent } from './pages/motorista-login/motorista-login.component';
-import { MotoristaDashboardComponent } from './pages/motorista-dashboard/motorista-dashboard.component';
-import { PedidoTaxiComponent } from './pages/pedido-taxi/pedido-taxi.component';
-import { ListPedidosComponent } from './pages/list-pedidos/list-pedidos.component';
-import { PedidoDetalheComponent } from './pages/pedido-detalhe/pedido-detalhe.component';
+import { AddTaxiComponent } from './pages/gestao-de-taxis/add-taxi/add-taxi.component';
+import { ListTaxisComponent } from './pages/gestao-de-taxis/list-taxis/list-taxis.component';
+import { ListPriceComponent } from './pages/gestao-de-precos/list-price/list-price.component';
+import { AddPriceComponent } from './pages/gestao-de-precos/add-price/add-price.component';
+import { SimulateTravelComponent } from './pages/ferramentas-de-viagem/simulate-travel/simulate-travel.component';
+import { AddMotoristaComponent } from './pages/gestao-de-motoristas/add-motorista/add-motorista.component';
+import { ListMotoristaComponent } from './pages/gestao-de-motoristas/list-motorista/list-motorista.component';
+import { MotoristaLoginComponent } from './pages/gestao-de-motoristas/motorista-login/motorista-login.component';
+import { MotoristaDashboardComponent } from './pages/gestao-de-motoristas/motorista-dashboard/motorista-dashboard.component';
+import { PedidoTaxiComponent } from './pages/pedidos-de-taxi/pedido-taxi/pedido-taxi.component';
+import { ListPedidosComponent } from './pages/pedidos-de-taxi/list-pedidos/list-pedidos.component';
+import { PedidoDetalheComponent } from './pages/pedidos-de-taxi/pedido-detalhe/pedido-detalhe.component';
 import { MatDividerModule } from '@angular/material/divider';
-import { MotoristaPedidoDetalheComponent } from './pages/motorista-pedido-detalhe/motorista-pedido-detalhe.component';
-import { MapaSelecionarDestinoComponent } from './pages/mapa-selecionar-destino/mapa-selecionar-destino.component';
-import { RequisitarTaxiTurnoComponent } from './pages/requisitar-taxi-turno/requisitar-taxi-turno.component';
-import { ListTurnosComponent } from './pages/list-turnos/list-turnos.component';
-import { TravelRegisteComponent } from './pages/travel-registe/travel-registe.component';
-import {TravelResumeComponent} from './pages/travel-resume/travel-resume.component';
-import { MotoristaMinhasViagensComponent } from './pages/motorista-minhas-viagens/motorista-minhas-viagens.component';
+import { MotoristaPedidoDetalheComponent } from './pages/pedidos-de-taxi/motorista-pedido-detalhe/motorista-pedido-detalhe.component';
+import { MapaSelecionarDestinoComponent } from './pages/pedidos-de-taxi/mapa-selecionar-destino/mapa-selecionar-destino.component';
+import { RequisitarTaxiTurnoComponent } from './pages/gestao-de-motoristas/requisitar-taxi-turno/requisitar-taxi-turno.component';
+import { ListTurnosComponent } from './pages/gestao-de-motoristas/list-turnos/list-turnos.component';
+import { TravelRegisterComponent } from './pages/ferramentas-de-viagem/travel-register/travel-register.component';
+import {TravelResumeComponent} from './pages/ferramentas-de-viagem/travel-resume/travel-resume.component';
+import { MotoristaMinhasViagensComponent } from './pages/ferramentas-de-viagem/motorista-minhas-viagens/motorista-minhas-viagens.component';
 
 const routes: Routes = [
   { path: '', component: LandingPageComponent },
+
+  // Rotas de gestão de taxis
   { path: 'add-taxi', component: AddTaxiComponent },
   { path: 'list-taxis', component: ListTaxisComponent },
-  { path: 'list-prices', component: ListPriceComponent },
+
+  // Rotas de gestão de preços
   { path: 'add-price', component: AddPriceComponent },
-  { path: 'simulate-travel', component: SimulateTravelComponent},
+  { path: 'list-prices', component: ListPriceComponent },
+
+  // Rotas de gestão de motoristas
   { path: 'add-motorista', component: AddMotoristaComponent },
   { path: 'list-motoristas', component: ListMotoristaComponent },
   { path: 'motorista-login', component: MotoristaLoginComponent },
-  { path: 'motorista-minhas-viagens', component: MotoristaMinhasViagensComponent },
   { path: 'motorista-dashboard', component: MotoristaDashboardComponent },
+  { path: 'requisitar-taxi-turno', component: RequisitarTaxiTurnoComponent },
+  { path: 'list-turnos', component:ListTurnosComponent},
+
+  // Rotas de pedidos de taxi
   { path: 'pedido-taxi', component: PedidoTaxiComponent },
   { path: 'pedidos', component: ListPedidosComponent },
   { path: 'pedido/:id', component: PedidoDetalheComponent },
   { path: 'motorista/pedido/:id', component: MotoristaPedidoDetalheComponent },
-  { path: 'requisitar-taxi-turno', component: RequisitarTaxiTurnoComponent },
-  { path: 'list-turnos', component:ListTurnosComponent},
-  { path: 'travel-registe', component: TravelRegisteComponent },
+
+  // Rotas de ferramentas de viagem
+  { path: 'simulate-travel', component: SimulateTravelComponent},
+  { path: 'travel-register', component: TravelRegisterComponent },
   { path: 'viagem/resumo/:id', component: TravelResumeComponent },
+  { path: 'motorista-minhas-viagens', component: MotoristaMinhasViagensComponent },
+  
   { path: '**', redirectTo: '' }
 ];
 
@@ -90,7 +101,7 @@ const routes: Routes = [
     RequisitarTaxiTurnoComponent,
     ListTurnosComponent,
     MotoristaMinhasViagensComponent,
-    TravelRegisteComponent,
+    TravelRegisterComponent,
     TravelResumeComponent,
   ],
   imports: [

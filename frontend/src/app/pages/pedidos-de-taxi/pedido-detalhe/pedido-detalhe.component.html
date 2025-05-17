@@ -1,0 +1,130 @@
+<div class="detalhe-container" *ngIf="pedido">
+  <mat-card class="pedido-card">
+    <mat-card-header>
+      <div mat-card-avatar class="avatar-icon">
+        <mat-icon>local_taxi</mat-icon>
+      </div>
+      <mat-card-title>Pedido #{{ pedido._id }}</mat-card-title>
+      <mat-card-subtitle>
+        Status:
+        <span class="status" [ngClass]="pedido.status">
+          {{ pedido.status | titlecase }}
+        </span>
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+      <div class="info-grid">
+        <div class="info-item">
+          <mat-icon>person</mat-icon>
+          <div>
+            <div class="label">Cliente</div>
+            <div>{{ pedido.cliente.nome }}</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <mat-icon>place</mat-icon>
+          <div>
+            <div class="label">Origem</div>
+            <div>{{ pedido.localizacaoAtual.rua }}, {{ pedido.localizacaoAtual.localidade }}</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <mat-icon>flag</mat-icon>
+          <div>
+            <div class="label">Destino</div>
+            <div>{{ pedido.destino.rua }}, {{ pedido.destino.localidade }}</div>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider class="my-3"></mat-divider>
+
+      <!-- Motorista Selecionado -->
+      <div *ngIf="pedido.motoristaSelecionado && pedido.status !== 'aceite'" class="motorista-box">
+        <div class="motorista-title">
+          <mat-icon>directions_car</mat-icon>
+          <span>Motorista Selecionado</span>
+        </div>
+        <div class="motorista-nome">
+          {{ pedido.motoristaSelecionado.nome }} ({{ pedido.motoristaSelecionado.nif }})
+        </div>
+
+        <div *ngIf="taxiSelecionado" class="taxi-info">
+          <div class="taxi-info-grid-modern">
+            <div class="taxi-info-cell">
+              <mat-icon class="taxi-info-icon">confirmation_number</mat-icon>
+              <span class="taxi-info-text"><strong>Matricula:</strong> {{ taxiSelecionado.matricula }}</span>
+            </div>
+            <div class="taxi-info-cell">
+              <mat-icon class="taxi-info-icon">label_outline</mat-icon>
+              <span class="taxi-info-text"><strong>Marca:</strong> {{ taxiSelecionado.marca }}</span>
+            </div>
+            <div class="taxi-info-cell">
+              <mat-icon class="taxi-info-icon">directions_car</mat-icon>
+              <span class="taxi-info-text"><strong>Modelo:</strong> {{ taxiSelecionado.modelo }}</span>
+            </div>
+            <div class="taxi-info-cell">
+              <mat-icon class="taxi-info-icon">calendar_today</mat-icon>
+              <span class="taxi-info-text"><strong>Ano:</strong> {{ taxiSelecionado.anoCompra }}</span>
+            </div>
+            <div class="taxi-info-cell">
+              <mat-icon class="taxi-info-icon">event_seat</mat-icon>
+              <span class="taxi-info-text"><strong>Conforto:</strong> {{ taxiSelecionado.conforto }}</span>
+            </div>
+            <div *ngIf="distanciaKm !== undefined || isCalculating" class="taxi-info-cell">
+              <mat-icon class="taxi-info-icon">straighten</mat-icon>
+              <span class="taxi-info-text">
+                <strong>Distância:</strong>
+                <ng-container *ngIf="!isCalculating; else loadingDist">{{ distanciaKm | number:'1.1-1' }} km</ng-container>
+                <ng-template #loadingDist><mat-spinner diameter="18"></mat-spinner></ng-template>
+              </span>
+            </div>
+            <div *ngIf="duracaoMin !== undefined || isCalculating" class="taxi-info-cell">
+              <mat-icon class="taxi-info-icon">timer</mat-icon>
+              <span class="taxi-info-text">
+                <strong>Duração estimada:</strong>
+                <ng-container *ngIf="!isCalculating; else loadingDur">{{ duracaoMin }} min</ng-container>
+                <ng-template #loadingDur><mat-spinner diameter="18"></mat-spinner></ng-template>
+              </span>
+            </div>
+            <div *ngIf="precoEstimado !== undefined || isCalculating" class="taxi-info-cell">
+              <mat-icon class="taxi-info-icon">euro</mat-icon>
+              <span class="taxi-info-text">
+                <strong>Preço estimado:</strong>
+                <ng-container *ngIf="!isCalculating; else loadingPreco">{{ precoEstimado | currency:'EUR':'symbol':'1.2-2' }}</ng-container>
+                <ng-template #loadingPreco><mat-spinner diameter="18"></mat-spinner></ng-template>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="motorista-acoes">
+          <button mat-raised-button color="primary" class="aceitar-btn btn" (click)="onConfirmarMotorista()">
+            <mat-icon class="aceitar-icon">check</mat-icon>
+            Aceitar Motorista
+          </button>
+          <button mat-raised-button color="warn" class="rejeitar-btn btn" (click)="onRejeitarMotorista()">
+            <mat-icon class="rejeitar-icon">close</mat-icon>
+            Rejeitar Motorista
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-raised-button color="warn" (click)="onCancelar()" [disabled]="pedido.status !== 'pendente'">
+        <mat-icon>cancel</mat-icon>
+        Cancelar Pedido
+      </button>
+      <button mat-raised-button color="primary" routerLink="/">
+        <mat-icon>arrow_back</mat-icon>
+        Voltar
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
