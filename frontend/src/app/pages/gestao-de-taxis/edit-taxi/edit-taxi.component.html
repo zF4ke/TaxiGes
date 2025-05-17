@@ -1,0 +1,37 @@
+<mat-card>
+  <mat-card-title>Editar Táxi</mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="taxiForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Matrícula</mat-label>
+        <input matInput formControlName="matricula" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Ano de Compra</mat-label>
+        <input matInput type="number" formControlName="anoCompra" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Marca</mat-label>
+        <input matInput formControlName="marca" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Modelo</mat-label>
+        <input matInput formControlName="modelo" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Nível de Conforto</mat-label>
+        <input matInput formControlName="conforto" required [readonly]="!podeEditarConforto">
+        <mat-hint *ngIf="!podeEditarConforto" style="color:red">
+          Não é possível editar o nível de conforto: táxi já realizou viagens.
+        </mat-hint>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="taxiForm.invalid">Guardar</button>
+      <button mat-button color="warn" routerLink="/list-taxis">Cancelar</button>
+    </form>
+  </mat-card-content>
+</mat-card>

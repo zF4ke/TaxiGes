@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router'; 
 import { TaxiService } from '../../../services/taxi.service';
 import { Taxi } from '../../../models/taxi.model';
+
 
 @Component({
   selector: 'app-list-taxis',
@@ -12,7 +14,10 @@ export class ListTaxisComponent implements OnInit {
   displayedColumns: string[] = ['matricula', 'anoCompra', 'marca', 'modelo', 'conforto', 'createdAt', 'acoes'];
   isLoading = true;
 
-  constructor(private taxiService: TaxiService) {}
+  constructor(
+    private taxiService: TaxiService,
+    private router: Router 
+  ) {}
 
   ngOnInit() {
     this.loadTaxis();
@@ -38,5 +43,9 @@ export class ListTaxisComponent implements OnInit {
         error: err => alert(err.error?.message || 'Erro ao eliminar táxi')
       });
     }
+  }
+
+  editarTaxi(id: string) {
+    this.router.navigate(['/edit-taxi', id]);
   }
 }

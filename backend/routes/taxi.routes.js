@@ -11,4 +11,8 @@ router.post('/', taxiController.createTaxi);
 // Delete taxi by ID
 router.delete('/:id', taxiController.deleteTaxiById);
 
+// Update taxi by ID
+router.put('/:id', taxiController.updateTaxiById);
+
+router.get('/:id', taxiController.getTaxiById);
 module.exports = router;

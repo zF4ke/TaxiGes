@@ -39,7 +39,7 @@
         <ng-container matColumnDef="acoes">
           <th mat-header-cell *matHeaderCellDef> Ações </th>
           <td mat-cell *matCellDef="let taxi">
-            <button mat-icon-button color="primary" [routerLink]="['/edit-taxi', taxi._id]" matTooltip="Editar">
+            <button mat-icon-button color="primary" (click)="editarTaxi(taxi._id)" matTooltip="Editar">
               <mat-icon>edit</mat-icon>
             </button>
             <button mat-icon-button color="warn" (click)="eliminarTaxi(taxi._id)" matTooltip="Eliminar">

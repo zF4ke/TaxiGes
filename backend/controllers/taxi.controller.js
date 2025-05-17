@@ -1,5 +1,6 @@
 const Turno = require('../models/turno.model');
 const Taxi = require('../models/taxi.model');
+const Viagem = require('../models/viagem.model');
 
 // --- Listar todos os Táxis ---
 exports.getAllTaxis = async (req, res) => {
@@ -50,6 +51,7 @@ exports.createTaxi = async (req, res) => {
     }
 };
 
+//Eliminar o taxi
 exports.deleteTaxiById = async (req, res) => {
     try {
         const taxiId = req.params.id;
@@ -68,5 +70,52 @@ exports.deleteTaxiById = async (req, res) => {
         res.json({ message: 'Táxi removido com sucesso.' });
     } catch (err) {
         res.status(500).json({ message: 'Erro interno ao remover táxi.' });
+    }
+};
+
+//Update do taxi
+exports.updateTaxiById = async (req, res) => {
+    try {
+        const taxiId = req.params.id;
+        const { matricula, anoCompra, marca, modelo, conforto } = req.body;
+
+        // Verifica se o campo conforto está a ser alterado
+        if (conforto !== undefined) {
+            // Verifica se já existem viagens com este táxi
+            const viagem = await Viagem.findOne({ taxi: taxiId });
+            if (viagem) {
+                return res.status(400).json({ message: 'Não é possível editar o nível de conforto: táxi já realizou viagens.' });
+            }
+        }
+
+        const taxi = await Taxi.findByIdAndUpdate(
+            taxiId,
+            { matricula, anoCompra, marca, modelo, ...(conforto !== undefined && { conforto }) },
+            { new: true }
+        );
+
+        if (!taxi) {
+            return res.status(404).json({ message: 'Táxi não encontrado.' });
+        }
+
+        res.json(taxi);
+    } catch (err) {
+        res.status(500).json({ message: 'Erro interno ao editar táxi.' });
+    }
+};
+
+exports.getTaxiById = async (req, res) => {
+    try {
+        const taxiId = req.params.id;
+        if (!taxiId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ message: 'ID inválido.' });
+        }
+        const taxi = await Taxi.findById(taxiId);
+        if (!taxi) {
+            return res.status(404).json({ message: 'Táxi não encontrado.' });
+        }
+        res.json(taxi);
+    } catch (err) {
+        res.status(500).json({ message: 'Erro interno ao buscar táxi.' });
     }
 };
