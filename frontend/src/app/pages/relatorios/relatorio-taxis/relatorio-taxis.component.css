@@ -1,0 +1,111 @@
+.relatorio-taxis {
+  margin: 2.5rem auto;
+  max-width: 950px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.1);
+  padding: 2.5rem 2rem 2rem 2rem;
+}
+.relatorio-taxis mat-card-title {
+  margin-bottom: 1.5rem;
+  display: block;
+}
+.periodo-form {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  align-items: flex-start;
+}
+.periodo-form mat-form-field {
+  flex: 1;
+  margin-bottom: 0;
+  /* Remove espaço extra do Angular Material */
+  --mat-mdc-form-field-bottom-space: 0px;
+}
+.periodo-form .mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
+}
+.periodo-form button[type="submit"] {
+  height: 56px;
+  min-width: 110px;
+  margin-left: 0;
+  box-shadow: 0 2px 8px 0 rgba(44,62,80,0.07);
+}
+.totais {
+  display: flex;
+  gap: 3rem;
+  margin-bottom: 2rem;
+  font-size: 1.15rem;
+  background: #f5f7fa;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.04);
+}
+.totais span {
+  font-weight: 500;
+  color: #2d3a4a;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.totais span:hover {
+  color: #1976d2;
+  text-decoration: underline;
+}
+.mat-table {
+  background: #fafbfc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.mat-header-row,
+.mat-row {
+  min-height: 48px;
+}
+.mat-header-cell {
+  font-weight: bold;
+  background: #e3eaf2;
+  color: #1a2330;
+}
+.mat-cell {
+  color: #2d3a4a;
+}
+.erro-relatorio {
+  color: #b71c1c;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+.no-data {
+  margin-top: 1.5rem;
+  color: #888;
+  font-style: italic;
+  text-align: center;
+}
+.subtotais-title {
+  margin: 2rem 0 1rem 0;
+  font-size: 1.2rem;
+  color: #1976d2;
+  font-weight: 600;
+}
+.detalhe-link {
+  color: #1976d2;
+  cursor: pointer;
+  //text-decoration: underline;
+  font-weight: 500;
+}
+/* .detalhe-link:hover {
+  color: #0d47a1;
+} */
+.fechar-subtotais-btn {
+  margin-top: 1.5rem;
+  min-width: 110px;
+  height: 36px;
+  background: #1976d2 !important;
+  color: #fff !important;
+  font-weight: 500;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px 0 rgba(44,62,80,0.07);
+  transition: background 0.2s, color 0.2s;
+}
+.fechar-subtotais-btn:hover {
+  background: #1565c0 !important;
+  color: #fff !important;
+}

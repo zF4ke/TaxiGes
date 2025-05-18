@@ -18,4 +18,9 @@ export class TaxiService {
   addTaxi(taxi: Taxi): Observable<Taxi> {
     return this.http.post<Taxi>(this.apiUrl, taxi);
   }
+
+  // Relatório de viagens por táxi
+  getRelatorioTaxis(params?: { inicio?: string, fim?: string }): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/relatorio`, { params });
+  }
 }

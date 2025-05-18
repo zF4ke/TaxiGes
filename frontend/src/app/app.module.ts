@@ -45,6 +45,7 @@ import { ListTurnosComponent } from './pages/gestao-de-motoristas/list-turnos/li
 import { TravelRegisterComponent } from './pages/ferramentas-de-viagem/travel-register/travel-register.component';
 import {TravelResumeComponent} from './pages/ferramentas-de-viagem/travel-resume/travel-resume.component';
 import { MotoristaMinhasViagensComponent } from './pages/ferramentas-de-viagem/motorista-minhas-viagens/motorista-minhas-viagens.component';
+import { RelatorioTaxisComponent } from './pages/relatorios/relatorio-taxis/relatorio-taxis.component';
 
 const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -77,6 +78,9 @@ const routes: Routes = [
   { path: 'viagem/resumo/:id', component: TravelResumeComponent },
   { path: 'motorista-minhas-viagens', component: MotoristaMinhasViagensComponent },
   
+  // Rotas de relatórios
+  { path: 'relatorios/taxis', component: RelatorioTaxisComponent },
+  
   { path: '**', redirectTo: '' }
 ];
 
@@ -103,6 +107,7 @@ const routes: Routes = [
     MotoristaMinhasViagensComponent,
     TravelRegisterComponent,
     TravelResumeComponent,
+    RelatorioTaxisComponent,
   ],
   imports: [
     BrowserModule,
@@ -127,7 +132,7 @@ const routes: Routes = [
     MatSelectModule,
     MatDividerModule,
     FormsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

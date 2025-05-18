@@ -8,4 +8,7 @@ router.get('/', taxiController.getAllTaxis);
 // Create new taxi
 router.post('/', taxiController.createTaxi);
 
+// Relatório de viagens por táxi
+router.get('/relatorio', taxiController.getRelatorioTaxis);
+
 module.exports = router;
