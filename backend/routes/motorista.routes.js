@@ -17,4 +17,13 @@ router.get('/para-selecao', motoristaController.listarParaSelecao);
 //POST  
 router.post('/acesso-nif', motoristaController.acessoPorNIF);
 
+//delete
+router.delete('/:id', motoristaController.deleteMotorista);
+
+//get /api/motoristas/:id - Obter um motorista por ID
+router.get('/:id', motoristaController.getMotoristaById);
+
+//put /api/motoristas/:id - Atualizar um motorist
+router.put('/:id', motoristaController.updateMotorista);
+
 module.exports = router;

@@ -46,6 +46,7 @@ import { TravelRegisterComponent } from './pages/ferramentas-de-viagem/travel-re
 import {TravelResumeComponent} from './pages/ferramentas-de-viagem/travel-resume/travel-resume.component';
 import { MotoristaMinhasViagensComponent } from './pages/ferramentas-de-viagem/motorista-minhas-viagens/motorista-minhas-viagens.component';
 import { RelatorioTaxisComponent } from './pages/relatorios/relatorio-taxis/relatorio-taxis.component';
+import { EditMotoristaComponent } from './pages/gestao-de-motoristas/edit-motorista/edit-motorista.component';
 
 const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -60,6 +61,7 @@ const routes: Routes = [
 
   // Rotas de gestão de motoristas
   { path: 'add-motorista', component: AddMotoristaComponent },
+  { path: 'gestao-motoristas/editar/:id', component: EditMotoristaComponent },
   { path: 'list-motoristas', component: ListMotoristaComponent },
   { path: 'motorista-login', component: MotoristaLoginComponent },
   { path: 'motorista-dashboard', component: MotoristaDashboardComponent },
@@ -108,6 +110,7 @@ const routes: Routes = [
     TravelRegisterComponent,
     TravelResumeComponent,
     RelatorioTaxisComponent,
+    EditMotoristaComponent,
   ],
   imports: [
     BrowserModule,
