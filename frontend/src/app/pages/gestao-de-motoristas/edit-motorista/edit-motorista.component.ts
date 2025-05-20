@@ -26,16 +26,16 @@ export function birthYearValidator(control: AbstractControl): { [key: string]: a
 export class EditMotoristaComponent implements OnInit, OnDestroy {
 
   motoristaForm!: FormGroup;
-  generoOpcoes: Genero[] = ['feminino', 'masculino']; // Ou ['Feminino', 'Masculino'] dependendo do que o backend espera/retorna
+  generoOpcoes: Genero[] = ['feminino', 'masculino']; 
   
   currentYear = new Date().getFullYear();
-  minBirthYear = this.currentYear - 100; // Exemplo: idade máxima de 100 anos
-  maxBirthYear = this.currentYear - 18;  // Idade mínima de 18 anos
+  minBirthYear = this.currentYear - 100; 
+  maxBirthYear = this.currentYear - 18;  
 
   isLoadingLocality = false;
-  isLoading = true; // Flag para o estado de carregamento inicial dos dados do motorista
+  isLoading = true; 
   motoristaId: string | null = null;
-  errorMessage: string | null = null; // Para mostrar mensagens de erro no template
+  errorMessage: string | null = null; 
 
   private destroy$ = new Subject<void>();
 
@@ -44,7 +44,7 @@ export class EditMotoristaComponent implements OnInit, OnDestroy {
     private motoristaService: MotoristaService,
     private snackBar: MatSnackBar,
     private router: Router,
-    private route: ActivatedRoute // Para ler o ID da rota
+    private route: ActivatedRoute 
   ) {}
 
   ngOnInit(): void {
@@ -62,7 +62,7 @@ export class EditMotoristaComponent implements OnInit, OnDestroy {
               console.error('Erro ao carregar dados do motorista:', err);
               this.errorMessage = err.error?.message || 'Não foi possível carregar os dados do motorista para edição.';
               this.isLoading = false;
-              return of(null); // Retorna um observable nulo para o subscribe não quebrar
+              return of(null);
             })
           );
         } else {
@@ -76,10 +76,7 @@ export class EditMotoristaComponent implements OnInit, OnDestroy {
         this.populateForm(motoristaData);
         this.isLoading = false;
       } else if (this.motoristaId) {
-        // Se motoristaData for null mas tínhamos um ID, significa que houve erro no carregamento
         this.snackBar.open(this.errorMessage || 'Erro ao carregar motorista.', 'Fechar', { duration: 5000 });
-        // Opcionalmente, redirecionar se o erro for crítico
-        // this.router.navigate(['/list-motoristas']);
       } else {
         // Não há ID, erro já tratado, talvez redirecionar
          this.snackBar.open(this.errorMessage || 'ID do motorista não encontrado.', 'Fechar', { duration: 3000 });
@@ -102,13 +99,13 @@ export class EditMotoristaComponent implements OnInit, OnDestroy {
       genero: ['', Validators.required],
       anoNascimento: ['', [
         Validators.required,
-        Validators.min(this.minBirthYear), // Ano mínimo (ex: 1925)
-        Validators.max(this.maxBirthYear), // Ano máximo (ex: 2007 para 18 anos em 2025)
-        birthYearValidator // Validador customizado para não ser ano futuro
+        Validators.min(this.minBirthYear),
+        Validators.max(this.maxBirthYear), 
+        birthYearValidator 
       ]],
       morada: this.fb.group({
         rua: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(150)]],
-        numeroPorta: ['', Validators.maxLength(10)], // Não obrigatório
+        numeroPorta: ['', Validators.maxLength(10)], 
         codigoPostal: ['', [Validators.required, Validators.pattern(/^\d{4}-\d{3}$/)]],
         localidade: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(2), Validators.maxLength(100)]]
       }),
@@ -120,11 +117,11 @@ export class EditMotoristaComponent implements OnInit, OnDestroy {
     this.motoristaForm.patchValue({
       nif: motorista.nif,
       nome: motorista.nome,
-      genero: motorista.genero, // Assegure que o valor corresponde às opções (ex: 'feminino')
+      genero: motorista.genero, 
       anoNascimento: motorista.anoNascimento,
       morada: {
         rua: motorista.morada.rua,
-        numeroPorta: motorista.morada.numeroPorta || '', // Tratar null/undefined
+        numeroPorta: motorista.morada.numeroPorta || '', 
         codigoPostal: motorista.morada.codigoPostal,
         localidade: motorista.morada.localidade
       },
@@ -135,8 +132,6 @@ export class EditMotoristaComponent implements OnInit, OnDestroy {
     const cpControl = this.motoristaForm.get('morada.codigoPostal');
     if (cpControl && cpControl.value && cpControl.valid) {
       this.motoristaForm.get('morada.localidade')?.enable();
-      // Opcional: Poderia disparar uma nova busca de localidade se a lógica de `setupPostalCodeLookup` não cobrir o preenchimento inicial.
-      // Mas o `patchValue` já deve preencher a localidade se ela veio do backend.
     } else {
         this.motoristaForm.get('morada.localidade')?.disable();
     }
@@ -148,8 +143,8 @@ export class EditMotoristaComponent implements OnInit, OnDestroy {
 
     if (cpControl && localidadeControl) {
       cpControl.valueChanges.pipe(
-        debounceTime(400), // Espera 400ms após o utilizador parar de digitar
-        distinctUntilChanged(), // Só emite se o valor realmente mudou
+        debounceTime(400), 
+        distinctUntilChanged(), 
         tap(() => { // Ações antes de chamar o serviço
           this.isLoadingLocality = true;
           localidadeControl.setValue(''); // Limpa localidade anterior
@@ -159,31 +154,30 @@ export class EditMotoristaComponent implements OnInit, OnDestroy {
         }),
         // Só continua se o código postal for válido e tiver algum valor
         filter(cpValue => cpControl.valid && !!cpValue),
-        switchMap(cpValue => // Cancela chamadas anteriores se o user digitar rápido
+        switchMap(cpValue => 
           this.motoristaService.getLocalityFromPostalCode(cpValue).pipe(
             catchError(error => {
               console.error('Erro ao buscar localidade:', error);
               this.snackBar.open('Localidade não encontrada para o código postal fornecido.', 'Fechar', { duration: 3000 });
-              localidadeControl.enable(); // Habilita para entrada manual em caso de erro
-              return of(null); // Para não quebrar a cadeia do Observable
+              localidadeControl.enable();
+              return of(null); 
             })
           )
         ),
-        takeUntil(this.destroy$) // Cancela a subscrição quando o componente é destruído
+        takeUntil(this.destroy$) 
       ).subscribe(result => {
         this.isLoadingLocality = false;
-        localidadeControl.enable(); // Habilita o campo após a busca
+        localidadeControl.enable(); 
         if (result && result.localidade) {
           localidadeControl.setValue(result.localidade);
         } else {
-          // Permite entrada manual se não encontrar ou se o CP for inválido e o user quiser preencher
         }
       });
 
       // Verificação inicial: se já existe um código postal válido ao carregar o formulário
       if (cpControl.valid && cpControl.value) {
         this.triggerPostalCodeFetch(cpControl.value, localidadeControl);
-      } else if (cpControl.value === '' || cpControl.invalid) { // Se estiver vazio ou inválido, desabilita localidade
+      } else if (cpControl.value === '' || cpControl.invalid) {
         localidadeControl.disable();
       }
     }
@@ -198,7 +192,7 @@ export class EditMotoristaComponent implements OnInit, OnDestroy {
     if (cpControl && localidadeControl) {
       if (cpControl.valid && cpValue) { // Verifica se o formato do CP é válido e se há valor
         this.triggerPostalCodeFetch(cpValue, localidadeControl);
-      } else { // Se o CP não for válido ou estiver vazio, limpa e desabilita para entrada manual.
+      } else { 
         localidadeControl.setValue('');
         localidadeControl.disable();
       }
@@ -224,7 +218,7 @@ export class EditMotoristaComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         this.isLoadingLocality = false;
-        localidadeControl.enable(); // Habilita mesmo em erro
+        localidadeControl.enable(); 
         localidadeControl.setValue('');
         console.error('Erro ao buscar localidade:', error);
         this.snackBar.open('Erro ao buscar localidade. Pode inseri-la manualmente.', 'Fechar', { duration: 3000 });
@@ -248,13 +242,12 @@ export class EditMotoristaComponent implements OnInit, OnDestroy {
     if (this.motoristaId) {
       this.isLoading = true; // Ativa o loading para o processo de submissão
       const motoristaDataToUpdate: Motorista = {
-        // _id não é enviado no corpo da atualização, é parte da URL
         ...this.motoristaForm.value,
-        morada: { // Garante que o objeto morada está completo
+        morada: {
             ...this.motoristaForm.value.morada,
-            localidade: this.motoristaForm.get('morada.localidade')?.value // Pega o valor mesmo se desabilitado
+            localidade: this.motoristaForm.get('morada.localidade')?.value
         },
-        anoNascimento: Number(this.motoristaForm.value.anoNascimento) // Garante que é número
+        anoNascimento: Number(this.motoristaForm.value.anoNascimento) 
       };
       
       // Remover espaços em branco desnecessários
@@ -288,19 +281,17 @@ export class EditMotoristaComponent implements OnInit, OnDestroy {
           }
         });
     } else {
-      // Este caso não deveria acontecer se a lógica de carregamento estiver correta
       this.snackBar.open('ID do motorista não encontrado. Não é possível atualizar.', 'Fechar', { duration: 3000 });
       this.isLoading = false;
     }
   }
 
-  // Getters para facilitar o acesso aos controlos do formulário no template HTML
   get nif() { return this.motoristaForm.get('nif'); }
   get nome() { return this.motoristaForm.get('nome'); }
   get genero() { return this.motoristaForm.get('genero'); }
   get anoNascimento() { return this.motoristaForm.get('anoNascimento'); }
   get cartaConducao() { return this.motoristaForm.get('cartaConducao'); }
-  get morada() { return this.motoristaForm.get('morada'); } // FormGroup aninhado
+  get morada() { return this.motoristaForm.get('morada'); } 
   get rua() { return this.morada?.get('rua'); }
   get numeroPorta() { return this.morada?.get('numeroPorta'); }
   get codigoPostal() { return this.morada?.get('codigoPostal'); }
