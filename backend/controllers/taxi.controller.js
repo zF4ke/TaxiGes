@@ -4,13 +4,12 @@ const Viagem = require('../models/viagem.model');
 
 // --- Listar todos os Táxis ---
 exports.getAllTaxis = async (req, res) => {
-    try {
-        const taxis = await Taxi.find().sort({ createdAt: -1 });
-        return res.status(200).json(taxis);
-    } catch (err) {
-        //console.error('[GetAllTaxis] Erro ao buscar táxis:', err);
-        return res.status(500).json({ message: 'Erro interno ao buscar táxis.' });
-    }
+  try {
+    const taxis = await Taxi.find().sort({ updatedAt: -1 });
+    return res.status(200).json(taxis);
+  } catch (err) {
+    return res.status(500).json({ message: 'Erro interno ao buscar táxis.' });
+  }
 };
 
 // --- Criar Táxi ---

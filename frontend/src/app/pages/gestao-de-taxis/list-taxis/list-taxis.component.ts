@@ -4,6 +4,7 @@ import { TaxiService } from '../../../services/taxi.service';
 import { Taxi } from '../../../models/taxi.model';
 
 
+
 @Component({
   selector: 'app-list-taxis',
   templateUrl: './list-taxis.component.html',
