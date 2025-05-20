@@ -50,6 +50,7 @@ const motoristaSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-motoristaSchema.index({ createdAt: -1 });
+//motoristaSchema.index({ createdAt: -1 }); COMENTEI PARA TESTAR UMA CENA
+
 
 module.exports = mongoose.model('Motorista', motoristaSchema);
