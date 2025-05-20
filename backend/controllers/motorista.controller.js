@@ -105,10 +105,10 @@ exports.getRelatorioMotoristas = async (req, res) => {
 // --- Listar Motoristas ---
 exports.getAllMotoristas = async (req, res) => {
     try {
-        const motoristas = await Motorista.find().sort({ updateAt: -1 });
+        const motoristas = await Motorista.find().sort({ updatedAt: -1 });
         return res.status(200).json(motoristas);
     } catch (err) {
-        //console.error('Erro ao buscar motoristas:', err);
+        console.error('Erro ao buscar motoristas:', err); 
         return res.status(500).json({ message: 'Erro interno ao buscar motoristas.' });
     }
 };
