@@ -1,0 +1,71 @@
+<mat-card class="relatorio-motoristas">
+  <mat-card-title>Relatório de Viagens por Motorista</mat-card-title>
+  <form [formGroup]="periodoForm" (ngSubmit)="onPeriodoSubmit()" class="periodo-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Início</mat-label>
+      <input matInput type="date" formControlName="inicio">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Fim</mat-label>
+      <input matInput type="date" formControlName="fim">
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Filtrar</button>
+  </form>
+  <div *ngIf="erroRelatorio" class="erro-relatorio">{{ erroRelatorio }}</div>
+  <div *ngIf="relatorioTotais">
+    <div class="totais">
+      <span (click)="onTotalClick('viagens')"><strong>Total de Viagens:</strong> {{ relatorioTotais.totalViagens }}</span>
+      <span (click)="onTotalClick('horas')"><strong>Total de Horas:</strong> {{ relatorioTotais.totalHoras | number:'1.2-2' }}</span>
+      <span (click)="onTotalClick('km')"><strong>Total de Km:</strong> {{ relatorioTotais.totalKm | number:'1.2-2' }}</span>
+    </div>
+
+    <div *ngIf="relatorioSubtotais.tipo">
+      <h3 class="subtotais-title">Subtotais por Motorista ({{ relatorioSubtotais.tipo | titlecase }})</h3>
+      <table mat-table [dataSource]="relatorioSubtotais.data" class="mat-elevation-z2">
+        <ng-container matColumnDef="nome">
+          <th mat-header-cell *matHeaderCellDef> Nome </th>
+          <td mat-cell *matCellDef="let r">
+            <a class="detalhe-link">{{ r.motorista.nome }}</a>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="nif">
+          <th mat-header-cell *matHeaderCellDef> NIF </th>
+          <td mat-cell *matCellDef="let r">{{ r.motorista.nif }}</td>
+        </ng-container>
+        <ng-container matColumnDef="valor">
+          <th mat-header-cell *matHeaderCellDef> {{ relatorioSubtotais.tipo | titlecase }} </th>
+          <td mat-cell *matCellDef="let r">{{ r[relatorioSubtotais.tipo] | number:'1.2-2' }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['nome','nif','valor']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['nome','nif','valor'];"></tr>
+      </table>
+      <button mat-button color="primary" class="fechar-subtotais-btn" (click)="relatorioSubtotais.tipo = null">Fechar Subtotais</button>
+    </div>
+
+    <table mat-table [dataSource]="relatorioPorMotorista" class="mat-elevation-z2" *ngIf="relatorioPorMotorista.length && !relatorioSubtotais.tipo">
+      <ng-container matColumnDef="nome">
+        <th mat-header-cell *matHeaderCellDef> Nome </th>
+        <td mat-cell *matCellDef="let r">{{ r.motorista.nome }}</td>
+      </ng-container>
+      <ng-container matColumnDef="nif">
+        <th mat-header-cell *matHeaderCellDef> NIF </th>
+        <td mat-cell *matCellDef="let r">{{ r.motorista.nif }}</td>
+      </ng-container>
+      <ng-container matColumnDef="viagens">
+        <th mat-header-cell *matHeaderCellDef> Viagens </th>
+        <td mat-cell *matCellDef="let r">{{ r.viagens }}</td>
+      </ng-container>
+      <ng-container matColumnDef="horas">
+        <th mat-header-cell *matHeaderCellDef> Horas </th>
+        <td mat-cell *matCellDef="let r">{{ r.horas | number:'1.2-2' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="km">
+        <th mat-header-cell *matHeaderCellDef> Km </th>
+        <td mat-cell *matCellDef="let r">{{ r.km | number:'1.2-2' }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="['nome','nif','viagens','horas','km']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['nome','nif','viagens','horas','km'];"></tr>
+    </table>
+    <div *ngIf="relatorioPorMotorista.length === 0 && !relatorioSubtotais.tipo" class="no-data">Nenhum motorista com viagens no período.</div>
+  </div>
+</mat-card>

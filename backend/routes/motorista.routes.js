@@ -17,6 +17,9 @@ router.get('/para-selecao', motoristaController.listarParaSelecao);
 //POST  
 router.post('/acesso-nif', motoristaController.acessoPorNIF);
 
+// GET /api/motoristas/relatorio - Obter relatorio de motoristas
+router.get('/relatorio', motoristaController.getRelatorioMotoristas);
+
 //delete
 router.delete('/:id', motoristaController.deleteMotorista);
 

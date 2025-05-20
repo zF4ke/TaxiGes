@@ -105,6 +105,10 @@ export class MotoristaService {
       console.log(`[MotoristaService] Atualizando motorista com ID: ${id} na URL: ${url}`, motoristaData);
       return this.http.put<Motorista>(url, motoristaData);
     }
+
+    getRelatorioMotoristas(params?: { inicio?: string, fim?: string }): Observable<any> {
+      return this.http.get<any>(`${this.apiUrl}/relatorio`, { params });
+    }
     
 }
 
