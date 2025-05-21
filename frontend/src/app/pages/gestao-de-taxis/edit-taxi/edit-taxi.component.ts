@@ -18,6 +18,7 @@ export class EditTaxiComponent implements OnInit {
   marcas = TAXI_BRANDS;
   modelos: string[] = [];
   confortoOpcoes: NivelConforto[] = ['básico', 'luxuoso'];
+  confortoAtual: string = '';
   currentYear = new Date().getFullYear();
 
   constructor(
@@ -37,19 +38,30 @@ export class EditTaxiComponent implements OnInit {
   }
 
   ngOnInit() {
-  this.taxiId = this.route.snapshot.paramMap.get('id') || '';
-  this.taxiForm = this.fb.group({
-    matricula: ['', [Validators.required, plateValidator()]],
-    anoCompra: ['', [Validators.required, Validators.max(this.currentYear), Validators.min(0)]],
-    marca: ['', Validators.required],
-    modelo: ['', Validators.required],
-    conforto: ['', Validators.required]
-  });
+    this.taxiId = this.route.snapshot.paramMap.get('id') || '';
+    this.taxiForm = this.fb.group({
+      matricula: ['', [Validators.required, plateValidator()]],
+      anoCompra: ['', [Validators.required, Validators.max(this.currentYear), Validators.min(0)]],
+      marca: ['', Validators.required],
+      modelo: ['', Validators.required],
+      conforto: ['', Validators.required]
+    });
 
-  this.taxiService.getTaxiById(this.taxiId).subscribe({
+    this.taxiService.getTaxiById(this.taxiId).subscribe({
       next: (taxi: Taxi) => {
         this.taxiForm.patchValue(taxi);
+        this.confortoAtual = taxi.conforto;
         this.modelos = TAXI_MODELS[taxi.marca as keyof typeof TAXI_MODELS] || [];
+
+        // Corrigido: acede à propriedade podeEditar do objeto de resposta
+        this.taxiService.podeEditarConforto(this.taxiId).subscribe({
+          next: (res: { podeEditar: boolean }) => {
+            this.podeEditarConforto = res.podeEditar;
+            if (!this.podeEditarConforto) {
+              this.taxiForm.get('conforto')?.disable();
+            }
+          }
+        });
       },
       error: () => {
         alert('Erro ao carregar táxi.');
@@ -57,11 +69,11 @@ export class EditTaxiComponent implements OnInit {
       }
     });
 
-  this.taxiForm.get('marca')?.valueChanges.subscribe((marca: keyof typeof TAXI_MODELS) => {
-    this.modelos = TAXI_MODELS[marca] || [];
-    this.taxiForm.get('modelo')?.setValue('');
-  });
-}
+    this.taxiForm.get('marca')?.valueChanges.subscribe((marca: keyof typeof TAXI_MODELS) => {
+      this.modelos = TAXI_MODELS[marca] || [];
+      this.taxiForm.get('modelo')?.setValue('');
+    });
+  }
 
   onSubmit(): void {
     if (this.taxiForm.invalid) return;

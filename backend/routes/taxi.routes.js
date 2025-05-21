@@ -16,6 +16,9 @@ router.put('/:id', taxiController.updateTaxiById);
 
 router.get('/:id', taxiController.getTaxiById);
 
+// Verifica se pode editar conforto (novo endpoint)
+router.get('/:id/pode-editar-conforto', taxiController.podeEditarConforto);
+
 // Relatório de viagens por táxi
 router.get('/relatorio', taxiController.getRelatorioTaxis);
 

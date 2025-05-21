@@ -50,7 +50,7 @@
           <mat-icon>speed</mat-icon>
           <div>
             <div class="label">Quilómetros</div>
-            <div>{{ viagem.quilometrosPercorridos }} km</div>
+            <div>{{ viagem.quilometrosPercorridos | number:'1.2-2' }} km</div>
           </div>
         </div>
 
@@ -58,7 +58,7 @@
           <mat-icon>attach_money</mat-icon>
           <div>
             <div class="label">Preço</div>
-            <div>{{ viagem.preco }} €</div>
+            <div>{{ viagem.preco | number:'1.2-2' }} €</div>
           </div>
         </div>
 

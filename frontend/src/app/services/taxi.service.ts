@@ -31,7 +31,7 @@ export class TaxiService {
     return this.http.put<Taxi>(`${this.apiUrl}/${id}`, dados);
   }
 
-  // (Opcional) Para verificar se pode editar conforto, se implementares no backend:
+  // Para verificar se pode editar conforto, se implementares no backend:
   podeEditarConforto(id: string): Observable<{ podeEditar: boolean }> {
     return this.http.get<{ podeEditar: boolean }>(`${this.apiUrl}/${id}/pode-editar-conforto`);
   }

@@ -72,18 +72,28 @@ exports.deleteTaxiById = async (req, res) => {
     }
 };
 
-//Update do taxi
 exports.updateTaxiById = async (req, res) => {
     try {
         const taxiId = req.params.id;
         const { matricula, anoCompra, marca, modelo, conforto } = req.body;
 
-        // Verifica se o campo conforto está a ser alterado
-        if (conforto !== undefined) {
-            // Verifica se já existem viagens com este táxi
-            const viagem = await Viagem.findOne({ taxi: taxiId });
-            if (viagem) {
-                return res.status(400).json({ message: 'Não é possível editar o nível de conforto: táxi já realizou viagens.' });
+
+        // Busca o táxi atual
+        const taxiAtual = await Taxi.findById(taxiId);
+        if (!taxiAtual) {
+            return res.status(404).json({ message: 'Táxi não encontrado.' });
+        }
+
+        // Só verifica viagens se o valor de conforto está a ser alterado
+        if (conforto !== undefined && conforto !== taxiAtual.conforto) {
+            // Verifica se já existem viagens associadas a este táxi (via turnos)
+            const turnos = await Turno.find({ taxi: taxiId }).select('_id');
+            if (turnos.length) {
+                const turnoIds = turnos.map(t => t._id);
+                const viagem = await Viagem.findOne({ turno: { $in: turnoIds } });
+                if (viagem) {
+                    return res.status(400).json({ message: 'Não é possível editar o nível de conforto: táxi já realizou viagens.' });
+                }
             }
         }
 
@@ -101,6 +111,22 @@ exports.updateTaxiById = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: 'Erro interno ao editar táxi.' });
     }
+};
+
+exports.podeEditarConforto = async (req, res) => {
+  try {
+    const turnos = await Turno.find({ taxi: req.params.id }).select('_id');
+    if (!turnos.length) {
+      return res.json({ podeEditar: true });
+    }
+
+    const turnoIds = turnos.map(t => t._id);
+    const viagem = await Viagem.findOne({ turno: { $in: turnoIds } });
+
+    res.json({ podeEditar: !viagem });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro ao verificar viagens.' });
+  }
 };
 
 exports.getTaxiById = async (req, res) => {
