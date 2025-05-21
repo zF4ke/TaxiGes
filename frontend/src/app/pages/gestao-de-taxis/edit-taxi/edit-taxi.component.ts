@@ -49,7 +49,6 @@ export class EditTaxiComponent implements OnInit {
   this.taxiService.getTaxiById(this.taxiId).subscribe({
       next: (taxi: Taxi) => {
         this.taxiForm.patchValue(taxi);
-        // Corrige o erro de tipo aqui:
         this.modelos = TAXI_MODELS[taxi.marca as keyof typeof TAXI_MODELS] || [];
       },
       error: () => {
