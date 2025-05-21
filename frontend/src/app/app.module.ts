@@ -46,6 +46,9 @@ import { TravelRegisterComponent } from './pages/ferramentas-de-viagem/travel-re
 import {TravelResumeComponent} from './pages/ferramentas-de-viagem/travel-resume/travel-resume.component';
 import { MotoristaMinhasViagensComponent } from './pages/ferramentas-de-viagem/motorista-minhas-viagens/motorista-minhas-viagens.component';
 import { EditTaxiComponent } from './pages/gestao-de-taxis/edit-taxi/edit-taxi.component';
+import { RelatorioTaxisComponent } from './pages/relatorios/relatorio-taxis/relatorio-taxis.component';
+import { EditMotoristaComponent } from './pages/gestao-de-motoristas/edit-motorista/edit-motorista.component';
+import { RelatorioMotoristasComponent } from './pages/relatorios/relatorio-motoristas/relatorio-motoristas.component';
 
 const routes: Routes = [
   { path: '', component: LandingPageComponent },
@@ -61,6 +64,7 @@ const routes: Routes = [
 
   // Rotas de gestão de motoristas
   { path: 'add-motorista', component: AddMotoristaComponent },
+  { path: 'gestao-motoristas/editar/:id', component: EditMotoristaComponent },
   { path: 'list-motoristas', component: ListMotoristaComponent },
   { path: 'motorista-login', component: MotoristaLoginComponent },
   { path: 'motorista-dashboard', component: MotoristaDashboardComponent },
@@ -78,6 +82,10 @@ const routes: Routes = [
   { path: 'travel-register', component: TravelRegisterComponent },
   { path: 'viagem/resumo/:id', component: TravelResumeComponent },
   { path: 'motorista-minhas-viagens', component: MotoristaMinhasViagensComponent },
+  
+  // Rotas de relatórios
+  { path: 'relatorios/taxis', component: RelatorioTaxisComponent },
+  { path: 'relatorios/motoristas', component: RelatorioMotoristasComponent },
   
   { path: '**', redirectTo: '' }
 ];
@@ -105,7 +113,10 @@ const routes: Routes = [
     MotoristaMinhasViagensComponent,
     TravelRegisterComponent,
     TravelResumeComponent,
-    EditTaxiComponent
+    EditTaxiComponent,
+    RelatorioTaxisComponent,
+    EditMotoristaComponent,
+    RelatorioMotoristasComponent
   ],
   imports: [
     BrowserModule,
@@ -130,7 +141,7 @@ const routes: Routes = [
     MatSelectModule,
     MatDividerModule,
     FormsModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

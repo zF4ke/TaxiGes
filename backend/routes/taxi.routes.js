@@ -15,4 +15,8 @@ router.delete('/:id', taxiController.deleteTaxiById);
 router.put('/:id', taxiController.updateTaxiById);
 
 router.get('/:id', taxiController.getTaxiById);
+
+// Relatório de viagens por táxi
+router.get('/relatorio', taxiController.getRelatorioTaxis);
+
 module.exports = router;

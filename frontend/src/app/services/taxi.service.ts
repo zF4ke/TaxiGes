@@ -35,4 +35,8 @@ export class TaxiService {
   podeEditarConforto(id: string): Observable<{ podeEditar: boolean }> {
     return this.http.get<{ podeEditar: boolean }>(`${this.apiUrl}/${id}/pode-editar-conforto`);
   }
+  // Relatório de viagens por táxi
+  getRelatorioTaxis(params?: { inicio?: string, fim?: string }): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/relatorio`, { params });
+  }
 }

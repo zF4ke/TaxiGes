@@ -118,3 +118,75 @@ exports.getTaxiById = async (req, res) => {
         res.status(500).json({ message: 'Erro interno ao buscar táxi.' });
     }
 };
+// --- Relatório de viagens por táxi ---
+// GET /api/taxis/relatorio?inicio=YYYY-MM-DD&fim=YYYY-MM-DD
+exports.getRelatorioTaxis = async (req, res) => {
+    try {
+        // Período: por omissão, hoje
+        let { inicio, fim } = req.query;
+        const hoje = new Date();
+        if (!inicio) inicio = hoje.toISOString().slice(0, 10);
+        if (!fim) fim = hoje.toISOString().slice(0, 10);
+        const dataInicio = new Date(`${inicio}T00:00:00.000Z`);
+        const dataFim = new Date(`${fim}T23:59:59.999Z`);
+
+        // Buscar viagens no período
+        const Viagem = require('../models/viagem.model');
+        const Turno = require('../models/turno.model');
+        const Taxi = require('../models/taxi.model');
+
+        // Buscar todas as viagens concluídas no período
+        const viagens = await Viagem.find({
+            status: 'concluida',
+            inicio: { $gte: dataInicio, $lte: dataFim }
+        }).populate({
+            path: 'turno',
+            populate: { path: 'taxi' }
+        });
+
+        // Agrupar por táxi
+        const totaisPorTaxi = {};
+        let totalViagens = 0;
+        let totalHoras = 0;
+        let totalKm = 0;
+
+        viagens.forEach(v => {
+            if (!v.turno || !v.turno.taxi) return;
+            const taxiId = v.turno.taxi._id.toString();
+            if (!totaisPorTaxi[taxiId]) {
+                totaisPorTaxi[taxiId] = {
+                    taxi: v.turno.taxi,
+                    viagens: 0,
+                    horas: 0,
+                    km: 0
+                };
+            }
+            totaisPorTaxi[taxiId].viagens++;
+            totalViagens++;
+            // Horas = diferença entre fim e início (em horas)
+            if (v.inicio && v.fim) {
+                const horas = (new Date(v.fim) - new Date(v.inicio)) / (1000 * 60 * 60);
+                totaisPorTaxi[taxiId].horas += horas;
+                totalHoras += horas;
+            }
+            // Km
+            if (v.quilometrosPercorridos) {
+                totaisPorTaxi[taxiId].km += v.quilometrosPercorridos;
+                totalKm += v.quilometrosPercorridos;
+            }
+        });
+
+        // Resposta
+        res.json({
+            periodo: { inicio, fim },
+            totais: {
+                totalViagens,
+                totalHoras: Number(totalHoras.toFixed(2)),
+                totalKm: Number(totalKm.toFixed(2))
+            },
+            porTaxi: Object.values(totaisPorTaxi)
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Erro ao gerar relatório de táxis', details: err.message });
+    }
+};

@@ -1,4 +1,5 @@
 const Motorista = require('../models/motorista.model');
+const Turno = require('../models/turno.model');
 const { getLocalityByPostalCode: findLocalityByPostalCode } = require('../utils/postalCodes');
 
 // --- Criar Motorista ---
@@ -28,13 +29,86 @@ exports.createMotorista = async (req, res) => {
     }
 };
 
+// --- Relatorio de viagens por motorista ---
+exports.getRelatorioMotoristas = async (req, res) => {
+    try {
+        // Período: por omissao, hoje
+        let { inicio, fim } = req.query;
+        const hoje = new Date();
+        if (!inicio) inicio = hoje.toISOString().slice(0, 10);
+        if (!fim) fim = hoje.toISOString().slice(0, 10);
+        const dataInicio = new Date(`${inicio}T00:00:00.000Z`);
+        const dataFim = new Date(`${fim}T23:59:59.999Z`);
+
+        // Buscar viagens concluidas no período
+        const Viagem = require('../models/viagem.model');
+
+        const viagens = await Viagem.find({
+            status: 'concluida',
+            inicio: { $gte: dataInicio, $lte: dataFim }
+        }).populate({
+            path: 'turno',
+            populate: { path: 'motorista' }
+        });
+
+        // Agrupar por motorista
+        const totaisPorMotorista = {};
+        let totalViagens = 0;
+        let totalHoras = 0;
+        let totalKm = 0;
+
+        viagens.forEach(v => {
+            if (!v.turno || !v.turno.motorista) return;
+            const motoristaId = v.turno.motorista._id.toString();
+            if (!totaisPorMotorista[motoristaId]) {
+                totaisPorMotorista[motoristaId] = {
+                    motorista: v.turno.motorista,
+                    viagens: 0,
+                    horas: 0,
+                    km: 0
+                };
+            }
+            totaisPorMotorista[motoristaId].viagens++;
+            totalViagens++;
+            // Horas = diferença entre fim e início (em horas)
+            if (v.inicio && v.fim) {
+                const horas = (new Date(v.fim) - new Date(v.inicio)) / (1000 * 60 * 60);
+                totaisPorMotorista[motoristaId].horas += horas;
+                totalHoras += horas;
+            }
+            // Km
+            if (v.quilometrosPercorridos) {
+                totaisPorMotorista[motoristaId].km += v.quilometrosPercorridos;
+                totalKm += v.quilometrosPercorridos;
+            }
+        });
+
+        // Ordenar subtotais por horas (decrescente)
+        const porMotorista = Object.values(totaisPorMotorista).sort((a, b) => b.horas - a.horas);
+
+        // Resposta
+        res.json({
+            periodo: { inicio, fim },
+            totais: {
+                totalViagens,
+                totalHoras: Number(totalHoras.toFixed(2)),
+                totalKm: Number(totalKm.toFixed(2))
+            },
+            porMotorista
+        });
+    } catch (err) {
+        res.status(500).json({ message: 'Erro ao gerar relatório de motoristas', details: err.message });
+    }
+};
+
+
 // --- Listar Motoristas ---
 exports.getAllMotoristas = async (req, res) => {
     try {
-        const motoristas = await Motorista.find().sort({ createdAt: -1 });
+        const motoristas = await Motorista.find().sort({ updatedAt: -1 });
         return res.status(200).json(motoristas);
     } catch (err) {
-        //console.error('Erro ao buscar motoristas:', err);
+        console.error('Erro ao buscar motoristas:', err); 
         return res.status(500).json({ message: 'Erro interno ao buscar motoristas.' });
     }
 };
@@ -109,3 +183,106 @@ exports.acessoPorNIF = async (req, res) => {
     }
 };
 
+
+exports.deleteMotorista = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // 1. Verificar se o motorista existe
+        const motorista = await Motorista.findById(id);
+        if (!motorista) {
+            return res.status(404).json({ message: 'Motorista não encontrado.' });
+        }
+
+        // 2. Verificar se o motorista tem turnos associados
+        // Assumindo que no seu turno.model.js, tem um campo como 'motoristaId' ou 'motorista' que referencia o _id do motorista
+        const turnosAssociados = await Turno.findOne({ motorista: id }); // Ou o nome do campo correto: ex: { motoristaId: id }
+
+        if (turnosAssociados) {
+            return res.status(403).json({ message: 'Este motorista não pode ser removido pois possui turnos associados.' });
+        }
+
+        // 3. Se não houver turnos, remover o motorista
+        await Motorista.findByIdAndDelete(id);
+
+        return res.status(200).json({ message: 'Motorista removido com sucesso.' });
+
+    } catch (error) {
+        if (error.kind === 'ObjectId') {
+            return res.status(400).json({ message: 'ID do motorista inválido.' });
+        }
+        console.error('Erro ao remover motorista:', error);
+        return res.status(500).json({ message: 'Erro interno ao remover o motorista.' });
+    }
+};
+
+// --- Obter Motorista por ID ---
+exports.getMotoristaById = async (req, res) => {
+    try {
+        const motorista = await Motorista.findById(req.params.id);
+        if (!motorista) {
+            return res.status(404).json({ message: 'Motorista não encontrado.' });
+        }
+        return res.status(200).json(motorista);
+    } catch (error) {
+        if (error.kind === 'ObjectId') { // Verifica se o ID tem um formato inválido
+            return res.status(400).json({ message: 'ID do motorista inválido.' });
+        }
+        console.error('Erro ao buscar motorista por ID:', error);
+        return res.status(500).json({ message: 'Erro interno ao buscar o motorista.' });
+    }
+};
+
+// --- Atualizar Motorista --- 
+exports.updateMotorista = async (req, res) => {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    try {
+        // 1. Verificar se o motorista existe
+        const motoristaExistente = await Motorista.findById(id);
+        if (!motoristaExistente) {
+            return res.status(404).json({ message: 'Motorista não encontrado para atualização.' });
+        }
+
+        // 2. Validações de unicidade para NIF e Carta de Condução se forem alterados
+        if (updateData.nif && updateData.nif !== motoristaExistente.nif) {
+            const duplicadoNif = await Motorista.findOne({ nif: updateData.nif, _id: { $ne: id } });
+            if (duplicadoNif) {
+                return res.status(409).json({ message: 'Erro: O NIF fornecido já está associado a outro motorista.' });
+            }
+        }
+        if (updateData.cartaConducao && updateData.cartaConducao !== motoristaExistente.cartaConducao) {
+            const duplicadoCarta = await Motorista.findOne({ cartaConducao: updateData.cartaConducao, _id: { $ne: id } });
+            if (duplicadoCarta) {
+                return res.status(409).json({ message: 'Erro: O número da Carta de Condução fornecido já está associado a outro motorista.' });
+            }
+        }
+        
+        // 3. Atualizar o motorista
+        const motoristaAtualizado = await Motorista.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+
+        if (!motoristaAtualizado) { // Segurança adicional
+             return res.status(404).json({ message: 'Motorista não encontrado após tentativa de atualização.' });
+        }
+        return res.status(200).json(motoristaAtualizado);
+
+    } catch (err) {
+        if (err.name === 'ValidationError') {
+            const mensagens = Object.values(err.errors).map(e => e.message);
+            return res.status(400).json({ message: mensagens.join('; ') });
+        }
+        if (err.code === 11000) { 
+             const campoDuplicado = Object.keys(err.keyValue)[0];
+             let nomeCampoUserFriendly = campoDuplicado;
+             if (campoDuplicado === 'nif') nomeCampoUserFriendly = 'NIF';
+             if (campoDuplicado === 'cartaConducao') nomeCampoUserFriendly = 'Carta de Condução';
+             return res.status(409).json({ message: `Erro: ${nomeCampoUserFriendly} já existe.` });
+        }
+        if (err.kind === 'ObjectId') {
+            return res.status(400).json({ message: 'ID do motorista fornecido é inválido.' });
+        }
+        console.error('Erro ao atualizar motorista:', err);
+        return res.status(500).json({ message: 'Erro interno ao atualizar o motorista.' });
+    }
+};

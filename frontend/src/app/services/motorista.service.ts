@@ -87,5 +87,28 @@ export class MotoristaService {
       this.isLoggedIn = false;    
       localStorage.removeItem('motoristaLogado');
     }
+
+    deleteMotorista(id: string): Observable<{ message: string }> {
+      const url = `${this.apiUrl}/${id}`;
+      console.log('[MotoristaService] Deleting motorista at URL:', url); 
+      return this.http.delete<{ message: string }>(url);
+    }
+
+    getMotoristaById(id: string): Observable<Motorista> {
+      const url = `${this.apiUrl}/${id}`;
+      console.log(`[MotoristaService] Buscando motorista por ID: ${id} na URL: ${url}`);
+      return this.http.get<Motorista>(url);
+    }
+
+    updateMotorista(id: string, motoristaData: Motorista): Observable<Motorista> {
+      const url = `${this.apiUrl}/${id}`;
+      console.log(`[MotoristaService] Atualizando motorista com ID: ${id} na URL: ${url}`, motoristaData);
+      return this.http.put<Motorista>(url, motoristaData);
+    }
+
+    getRelatorioMotoristas(params?: { inicio?: string, fim?: string }): Observable<any> {
+      return this.http.get<any>(`${this.apiUrl}/relatorio`, { params });
+    }
+    
 }
 
