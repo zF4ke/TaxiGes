@@ -1,0 +1,41 @@
+.list-container {
+  max-width: 500px;
+  margin: 40px auto;
+}
+
+.price-table-container {
+  margin-top: 24px;
+}
+
+.price-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.price-table th {
+  text-align: left;
+  font-weight: 600;
+  color: #1976d2;
+  width: 60%;
+}
+
+.price-table td {
+  text-align: right;
+  font-size: 1.1em;
+}
+
+.price-value {
+  font-weight: bold;
+  color: #333;
+}
+
+.actions {
+  margin-top: 24px;
+  text-align: right;
+}
+
+.no-data {
+  text-align: center;
+  margin-top: 32px;
+}

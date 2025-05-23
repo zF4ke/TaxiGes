@@ -1,0 +1,33 @@
+<mat-card class="relatorio-viagens">
+  <mat-card-title>Relatório Total de Viagens</mat-card-title>
+  <form [formGroup]="periodoForm" (ngSubmit)="onPeriodoSubmit()" class="periodo-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Início</mat-label>
+      <input matInput type="date" formControlName="inicio">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Fim</mat-label>
+      <input matInput type="date" formControlName="fim">
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Filtrar</button>
+  </form>
+  <div *ngIf="erroRelatorio" class="erro-relatorio">{{ erroRelatorio }}</div>
+  <div *ngIf="relatorioTotais">
+    <div class="totais">
+      <span><strong>Total de Viagens:</strong> {{ relatorioTotais.totalViagens }}</span>
+      <span><strong>Total de Horas:</strong> {{ relatorioTotais.totalHoras | number:'1.2-2' }}</span>
+      <span><strong>Total de Km:</strong> {{ relatorioTotais.totalKm | number:'1.2-2' }}</span>
+    </div>
+    <div class="relatorio-links">
+      <button mat-stroked-button color="primary" (click)="verPorTaxis()">
+        Ver por Táxi
+      </button>
+      <button mat-stroked-button color="primary" (click)="verPorMotoristas()">
+        Ver por Motorista
+      </button>
+      <button mat-stroked-button color="primary" (click)="voltarAtras()">
+        Voltar menu principal
+      </button>
+    </div>
+  </div>
+</mat-card>

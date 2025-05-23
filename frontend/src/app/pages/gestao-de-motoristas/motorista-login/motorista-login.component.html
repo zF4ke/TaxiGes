@@ -1,0 +1,38 @@
+<div class="login-container">
+    <h2>Acesso do Motorista</h2>
+    <div class="form-section">
+      <form #nifForm="ngForm" (ngSubmit)="onSubmitNIF(nifForm)" autocomplete="off">
+        <label for="nif" class="form-label">Aceder com NIF</label>
+        <input
+          type="text"
+          id="nif"
+          name="nif"
+          ngModel  #nifInput="ngModel" placeholder="Digite os 9 dígitos do seu NIF"
+          required pattern="^\d{9}$" maxlength="9"
+          class="form-input"
+          [class.invalid-input]="nifInput.invalid && (nifInput.dirty || nifInput.touched)"
+        />
+        <div *ngIf="nifInput.invalid && (nifInput.dirty || nifInput.touched)" class="error-messages">
+          <div *ngIf="nifInput.errors?.['required']">O NIF é obrigatório.</div>
+          <div *ngIf="nifInput.errors?.['pattern']">O NIF deve conter exatamente 9 dígitos numéricos.</div>
+        </div>
+        <button type="submit" [disabled]="nifForm.invalid" class="primary-btn">Aceder com NIF</button>
+      </form>
+    </div>
+    <div class="divider"><span>ou</span></div>
+    <div class="list-section">
+      <label for="motoristaSelect" class="form-label">Selecione a sua conta</label>
+      <select id="motoristaSelect" name="selectedMotorista" (change)="onSelectMotorista($event)" class="form-input">
+        <option value="">-- Selecione um motorista --</option>
+        <option *ngFor="let motorista of motoristasParaSelecao" [value]="motorista._id">
+          {{ motorista.nome }} (NIF: {{ motorista.nif }})
+        </option>
+      </select>
+      <ng-template [ngIf]="!motoristasParaSelecao || motoristasParaSelecao.length === 0">
+        <p class="info-message">A carregar lista de motoristas ou nenhum motorista disponível...</p>
+      </ng-template>
+    </div>
+    <div *ngIf="errorMessage" class="error-messages global-error">
+      {{ errorMessage }}
+    </div>
+  </div>

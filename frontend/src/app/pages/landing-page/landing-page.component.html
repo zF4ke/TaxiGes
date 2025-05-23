@@ -1,0 +1,131 @@
+<div class="landing-container">
+
+  <section class="welcome-section">
+    <h1 class="welcome-title">Bem-vindo ao TaxiGes</h1>
+    <p class="welcome-description">Sistema de Gestão de Táxis. Gerencie sua frota de táxis, motoristas e preços de forma eficiente.</p>
+  </section>
+
+  <mat-card class="taxi-card">
+    <mat-card-header>
+      <mat-card-title>Gestão de Táxis</mat-card-title>
+      <mat-card-subtitle>Adicione e visualize os táxis da sua frota</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p> Adicione, edite ou visualize os táxis da sua frota. </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" routerLink="/add-taxi">
+        <mat-icon>add</mat-icon>
+        Adicionar Táxi
+      </button>
+      <button mat-raised-button color="accent" routerLink="/list-taxis">
+        <mat-icon>list</mat-icon>
+        Ver Táxis
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="motorista-card">
+    <mat-card-header>
+      <mat-card-title>Gestão de Motoristas</mat-card-title>
+      <mat-card-subtitle>Adicione e visualize os motoristas da sua frota</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p> Adicione, edite ou visualize os motoristas da sua frota. </p>
+      <p>Se é motorista, aceda à sua área para gerir os seus turnos e viagens.</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" routerLink="/add-motorista">
+        <mat-icon>add</mat-icon>
+        Adicionar Motorista </button>
+      <button mat-raised-button color="accent" routerLink="/list-motoristas">
+        <mat-icon>list</mat-icon>
+        Ver Motoristas </button>
+
+      <button mat-stroked-button color="primary" routerLink="/motorista-login">
+        <mat-icon>login</mat-icon> Acesso do Motorista
+      </button>
+      </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="precos-card">
+    <mat-card-header>
+      <mat-card-title>Preços</mat-card-title>
+      <mat-card-subtitle>Defina e visualize os preços dos serviços</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Defina os preços para os serviços e visualize ou edite os preços existentes.</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" routerLink="/add-price">
+        <mat-icon>add</mat-icon> Adicionar Preço
+      </button>
+      <button mat-raised-button color="accent" routerLink="/list-prices">
+        <mat-icon>list</mat-icon> Ver Preços
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="simulation-card">
+    <mat-card-header>
+      <mat-card-title>Ferramentas de Viagem</mat-card-title>
+    <mat-card-subtitle>Simule custos ou registe os detalhes das suas viagens</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Clientes podem estimar o custo de uma viagem. Motoristas podem registar as viagens realizadas.</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" routerLink="/simulate-travel">
+        <mat-icon>calculate</mat-icon>
+        Simular Viagem
+      </button>
+      <button mat-raised-button color="accent" routerLink="/travel-register">
+      <mat-icon>edit_road</mat-icon>
+        Registar Viagem
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="pedidos-card">
+    <mat-card-header>
+      <mat-card-title>Pedidos de Táxi</mat-card-title>
+      <mat-card-subtitle>Faça pedidos de táxi ou visualize os pedidos existentes</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Solicite um táxi ou consulte os pedidos em andamento.</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" routerLink="/pedido-taxi">
+        <mat-icon>local_taxi</mat-icon> Pedir Táxi
+      </button>
+      <button mat-raised-button color="accent" routerLink="/pedidos">
+        <mat-icon>list</mat-icon> Ver Pedidos
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="relatorio-card">
+    <mat-card-header>
+      <mat-card-title>Relatórios</mat-card-title>
+      <mat-card-subtitle>Consulte estatísticas e totais da operação</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>Veja relatórios detalhados sobre viagens, táxis e motoristas.</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" routerLink="/relatorios/viagens">
+        <mat-icon>bar_chart</mat-icon>
+        Relatório de Viagens
+      </button>
+      <button mat-raised-button color="accent" routerLink="/relatorios/taxis">
+        <mat-icon>bar_chart</mat-icon>
+        Relatório de Táxis
+      </button>
+      <button mat-raised-button color="accent" routerLink="/relatorios/motoristas">
+        <mat-icon>bar_chart</mat-icon>
+        Relatório de Motoristas
+      </button>
+    </mat-card-actions>
+  </mat-card>
+  
+</div>

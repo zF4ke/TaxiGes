@@ -1,0 +1,38 @@
+.list-container {
+  padding: 20px;
+}
+
+table {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.mat-mdc-header-cell {
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+}
+
+.no-data p {
+  margin-bottom: 20px;
+  font-size: 1.1em;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+mat-card-actions {
+  padding: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+mat-card-content {
+  overflow-x: auto;
+}
+
+mat-progress-bar {
+  margin-bottom: 20px;
+}

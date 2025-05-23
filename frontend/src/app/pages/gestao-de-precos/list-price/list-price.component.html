@@ -1,0 +1,76 @@
+<div class="list-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon color="primary" style="vertical-align: middle;">euro_symbol</mat-icon>
+        <span style="vertical-align: middle;">Preços Atuais</span>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-progress-bar *ngIf="isLoading" mode="indeterminate"></mat-progress-bar>
+
+      <!-- Visualização dos preços -->
+      <div *ngIf="!isLoading && price && !editMode" class="price-table-container">
+        <table class="mat-elevation-z8 price-table">
+          <tr>
+            <th>Preço por Minuto (Básico)</th>
+            <td>
+              <span class="price-value">{{ price.precoBasico | currency:'EUR':'symbol':'1.2-2' }}</span>
+            </td>
+          </tr>
+          <tr>
+            <th>Preço por Minuto (Luxo)</th>
+            <td>
+              <span class="price-value">{{ price.precoLuxo | currency:'EUR':'symbol':'1.2-2' }}</span>
+            </td>
+          </tr>
+          <tr>
+            <th>Agravamento no período noturno</th>
+            <td>
+              <span class="price-value">{{ price.agravamento }}%</span>
+            </td>
+          </tr>
+        </table>
+        <div class="actions">
+          <button mat-raised-button color="primary" (click)="editMode = true">
+            <mat-icon>edit</mat-icon>
+            Editar Preços
+          </button>
+        </div>
+      </div>
+
+      <form *ngIf="!isLoading && price && editMode" [formGroup]="editForm" (ngSubmit)="onUpdate()">
+        <mat-form-field appearance="outline" class="edit-field">
+          <mat-label>Preço por minuto (Básico) €</mat-label>
+          <input matInput type="number" formControlName="precoBasico">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="edit-field">
+          <mat-label>Preço por minuto (Luxo) €</mat-label>
+          <input matInput type="number" formControlName="precoLuxo">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="edit-field">
+          <mat-label>Agravamento no período noturno (%)</mat-label>
+          <input matInput type="number" formControlName="agravamento">
+        </mat-form-field>
+        <div class="actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="!editForm.valid">
+            <mat-icon>save</mat-icon>
+            Guardar
+          </button>
+          <button mat-button type="button" (click)="cancelEdit()">
+            <mat-icon>cancel</mat-icon>
+            Cancelar
+          </button>
+        </div>
+      </form>
+
+      <div class="no-data" *ngIf="!isLoading && !price">
+        <p>Não existem preços registrados.</p>
+        <button mat-raised-button color="primary" routerLink="/add-price">
+          <mat-icon>add</mat-icon>
+          Adicionar Preço
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

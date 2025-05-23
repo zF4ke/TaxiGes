@@ -1,0 +1,42 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button [matMenuTriggerFor]="appMenu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <mat-menu #appMenu="matMenu">
+    <button mat-menu-item routerLink="/add-taxi">Adicionar Táxi</button>
+    <button mat-menu-item routerLink="/list-taxis">Ver Taxis</button>
+    <button mat-menu-item routerLink="/add-motorista">Adicionar Motorista</button>
+    <button mat-menu-item routerLink="/list-motoristas">Ver Motoristas</button>
+    <button mat-menu-item routerLink="/add-price">Adicionar Preço</button>
+    <button mat-menu-item routerLink="/list-prices">Ver Preços</button>
+    <button mat-menu-item routerLink="/pedido-taxi">Pedir Táxi</button>
+    <button mat-menu-item routerLink="/pedidos">Ver Pedidos</button>
+    <button mat-menu-item routerLink="/simulate-travel">Simular Viagem</button>
+  </mat-menu>
+
+  <button mat-button routerLink="/" class="app-name-button">TaxiGes</button>
+
+  <span class="spacer"></span>
+
+  <ng-container *ngIf="!motoristaService.isLoggedIn">
+    <button mat-button routerLink="/motorista-login">
+      <mat-icon>login</mat-icon> Login
+    </button>
+  </ng-container>
+
+  <ng-container *ngIf="motoristaService.isLoggedIn">
+    <button mat-button [matMenuTriggerFor]="userActionsMenu">
+      <mat-icon>account_circle</mat-icon>
+      {{ nomeMotoristaLogado || 'Utilizador' }}
+    </button>
+    <mat-menu #userActionsMenu="matMenu">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        Logout
+      </button>
+    </mat-menu>
+  </ng-container>
+
+</mat-toolbar>
+
+<router-outlet></router-outlet>

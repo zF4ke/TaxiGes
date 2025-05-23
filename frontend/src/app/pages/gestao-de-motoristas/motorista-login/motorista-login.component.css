@@ -1,0 +1,114 @@
+.login-container {
+    max-width: 400px;
+    margin: 3rem auto;
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+    background: #f7f8fa;
+    border-radius: 14px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+    border: 1.5px solid #e0e3ea;
+  }
+  
+  .login-container h2 {
+    text-align: center;
+    font-size: 1.35rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: #222;
+  }
+  
+  .form-section, .list-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #444;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: #fff;
+    margin-bottom: 0.5rem;
+    box-sizing: border-box;
+    transition: border 0.15s;
+  }
+  
+  .form-input:focus {
+    border: 1.5px solid #007bff;
+    outline: none;
+  }
+  
+  .invalid-input {
+    border: 1.5px solid #dc3545;
+  }
+  
+  .primary-btn {
+    width: 100%;
+    padding: 0.85rem;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.15s;
+  }
+  
+  .primary-btn:disabled {
+    background: #b3c6e0;
+    cursor: not-allowed;
+  }
+  
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0 1.5rem 0;
+    color: #bbb;
+    font-size: 0.95rem;
+  }
+  
+  .divider span {
+    background: #f7f8fa;
+    padding: 0 1rem;
+    z-index: 1;
+  }
+  
+  .divider:before, .divider:after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e0e3ea;
+    margin: 0 0.5rem;
+  }
+  
+  .error-messages {
+    color: #dc3545;
+    font-size: 0.97rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .global-error {
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+  
+  .info-message {
+    color: #888;
+    font-size: 0.98rem;
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+  
+  @media (max-width: 600px) {
+    .login-container {
+      padding: 1rem 0.2rem 1rem 0.2rem;
+    }
+  }

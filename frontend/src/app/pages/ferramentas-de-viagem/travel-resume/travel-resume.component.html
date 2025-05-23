@@ -1,0 +1,98 @@
+<div class="resumo-container" *ngIf="viagem">
+  <mat-card class="resumo-card">
+    <mat-card-header>
+      <div mat-card-avatar class="avatar-icon">
+        <mat-icon>map</mat-icon>
+      </div>
+      <mat-card-title>Resumo da Viagem</mat-card-title>
+      <mat-card-subtitle>ID: {{ viagem._id }}</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+      <div class="info-grid">
+        <div class="info-item">
+          <mat-icon>person</mat-icon>
+          <div>
+            <div class="label">Cliente</div>
+            <div>{{ cliente?.nome || viagem.cliente.nome }} ({{ cliente?.nif || viagem.cliente.nif }})</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <mat-icon>play_arrow</mat-icon>
+          <div>
+            <div class="label">Início</div>
+            <div>{{ viagem.inicio | date:'short' }}</div>
+            <div>{{ viagem.localInicio }}</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <mat-icon>stop</mat-icon>
+          <div>
+            <div class="label">Fim</div>
+            <div>{{ (viagem.fim | date:'short') || 'Ainda não terminada' }}</div>
+            <div>{{ viagem.localFim }}</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <mat-icon>people</mat-icon>
+          <div>
+            <div class="label">N.º Pessoas</div>
+            <div>{{ viagem.numeroPessoas }}</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <mat-icon>speed</mat-icon>
+          <div>
+            <div class="label">Quilómetros</div>
+            <div>{{ viagem.quilometrosPercorridos | number:'1.2-2' }} km</div>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <mat-icon>attach_money</mat-icon>
+          <div>
+            <div class="label">Preço</div>
+            <div>{{ viagem.preco | number:'1.2-2' }} €</div>
+          </div>
+        </div>
+
+        <div class="info-item" *ngIf="turno?.taxi">
+          <mat-icon>directions_car</mat-icon>
+          <div>
+            <div class="label">Carro</div>
+            <div>{{ turno.taxi.marca }} {{ turno.taxi.modelo }} ({{ turno.taxi.matricula }})</div>
+          </div>
+        </div>
+      </div>
+
+      <mat-divider class="my-3"></mat-divider>
+
+      <div style="display: flex; gap: 16px; margin-bottom: 24px; justify-content: flex-end;">
+        <button mat-raised-button color="primary" routerLink="/">Voltar ao início</button>
+        <button mat-raised-button color="accent" (click)="mostrarFormularioFim = true">
+          Registar fim da viagem
+        </button>
+      </div>
+
+      <form *ngIf="mostrarFormularioFim" [formGroup]="fimForm" (ngSubmit)="onSubmitFimViagem()">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Morada de fim</mat-label>
+          <input matInput formControlName="moradaFim" />
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Hora de fim</mat-label>
+          <input matInput formControlName="horaFim" type="datetime-local" />
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit" [disabled]="fimForm.invalid">
+          Guardar fim da viagem
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

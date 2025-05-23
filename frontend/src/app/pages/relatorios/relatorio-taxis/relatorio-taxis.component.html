@@ -1,0 +1,228 @@
+<mat-card class="relatorio-taxis">
+  <mat-card-title>Relatório de Viagens por Táxi</mat-card-title>
+  <form [formGroup]="periodoForm" (ngSubmit)="onPeriodoSubmit()" class="periodo-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Início</mat-label>
+      <input matInput type="date" formControlName="inicio">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Fim</mat-label>
+      <input matInput type="date" formControlName="fim">
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Filtrar</button>
+  </form>
+  <div *ngIf="erroRelatorio" class="erro-relatorio">{{ erroRelatorio }}</div>
+  <div *ngIf="relatorioTotais">
+    <div class="totais">
+      <span (click)="onTotalClick('viagens')"><strong>Total de Viagens:</strong> {{ relatorioTotais.totalViagens }}</span>
+      <span (click)="onTotalClick('horas')"><strong>Total de Horas:</strong> {{ relatorioTotais.totalHoras | number:'1.2-2' }}</span>
+      <span (click)="onTotalClick('km')"><strong>Total de Km:</strong> {{ relatorioTotais.totalKm | number:'1.2-2' }}</span>
+    </div>
+
+    <div *ngIf="relatorioSubtotais.tipo">
+      <h3 class="subtotais-title">Subtotais por Táxi ({{ relatorioSubtotais.tipo | titlecase }})</h3>
+      <table mat-table [dataSource]="relatorioSubtotais.data" class="mat-elevation-z2">
+        <ng-container matColumnDef="matricula">
+          <th mat-header-cell *matHeaderCellDef> Matrícula </th>
+          <td mat-cell *matCellDef="let r">
+            <a class="detalhe-link" (click)="mostrarDetalhesTaxi(r.taxi)">
+              {{ r.taxi.matricula }}
+            </a>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="valor">
+          <th mat-header-cell *matHeaderCellDef> {{ relatorioSubtotais.tipo | titlecase }} </th>
+          <td mat-cell *matCellDef="let r">{{ r[relatorioSubtotais.tipo] | number:'1.2-2' }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['matricula','valor']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['matricula','valor'];"></tr>
+      </table>
+      <button mat-button color="primary" (click)="relatorioSubtotais.tipo = null">
+        Fechar Subtotais
+      </button>
+    </div>
+
+    <div *ngIf="detailsTaxi && relatorioSubtotais.tipo" class="taxi-details">
+      <mat-card class="details-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar>directions_car</mat-icon>
+          <mat-card-title>{{ detailsTaxi.matricula }}</mat-card-title>
+          <mat-card-subtitle>
+            {{ detailsTaxi.marca }} {{ detailsTaxi.modelo }} ({{ detailsTaxi.conforto }})
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-divider class="divider"></mat-divider>
+
+        <div *ngIf="loadingDetalhes" class="loading-detalhes">
+          <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+        </div>
+        
+        <mat-card-content>
+          <table mat-table [dataSource]="viagensDetalhe" class="mat-elevation-z2" *ngIf="!loadingDetalhes">
+            <ng-container matColumnDef="inicio">
+              <th mat-header-cell *matHeaderCellDef> Data </th>
+              <td mat-cell *matCellDef="let v">{{ v.inicio | date:'dd/MM/yyyy' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="horario">
+              <th mat-header-cell *matHeaderCellDef> Horário </th>
+              <td mat-cell *matCellDef="let v">
+                {{ v.inicio | date:'HH:mm' }} → {{ v.fim ? (v.fim | date:'HH:mm') : 'Em andamento' }}
+              </td>
+            </ng-container>
+            <ng-container *ngIf="relatorioSubtotais.tipo === 'horas'" matColumnDef="horas">
+              <th mat-header-cell *matHeaderCellDef> Horas </th>
+              <td mat-cell *matCellDef="let v">{{ calcularHorasViagem(v) | number:'1.2-2' }}</td>
+            </ng-container>
+            <ng-container *ngIf="relatorioSubtotais.tipo === 'km'" matColumnDef="km">
+              <th mat-header-cell *matHeaderCellDef> Quilômetros </th>
+              <td mat-cell *matCellDef="let v">{{ v.quilometrosPercorridos | number:'1.2-2' }}</td>
+            </ng-container>
+            <ng-container *ngIf="relatorioSubtotais.tipo === 'viagens'" matColumnDef="rota">
+              <th mat-header-cell *matHeaderCellDef> Rota </th>
+              <td mat-cell *matCellDef="let v">
+                {{ v.localInicio }} → {{ v.localFim || 'Em andamento' }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="getDetailColumns()"></tr>
+            <tr mat-row *matRowDef="let row; columns: getDetailColumns();"></tr>
+          </table>
+          
+          <div *ngIf="!loadingDetalhes && viagensDetalhe.length === 0" class="no-viagens">
+            <mat-icon>info</mat-icon>
+            <span>Nenhuma viagem encontrada para este táxi no período selecionado.</span>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions align="end">
+          <button mat-button color="primary" (click)="detailsTaxi = null">
+            <mat-icon>close</mat-icon>
+            Fechar detalhes
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <table mat-table [dataSource]="relatorioPorTaxi" class="mat-elevation-z2" *ngIf="!relatorioSubtotais.tipo">
+      <ng-container matColumnDef="matricula">
+        <th mat-header-cell *matHeaderCellDef> Matrícula </th>
+        <td mat-cell *matCellDef="let r">
+          <a class="detalhe-link" (click)="mostrarDetalhesTaxi(r.taxi)">
+            {{ r.taxi.matricula }}
+          </a>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="viagens">
+        <th mat-header-cell *matHeaderCellDef> Viagens </th>
+        <td mat-cell *matCellDef="let r">{{ r.viagens }}</td>
+      </ng-container>
+      <ng-container matColumnDef="horas">
+        <th mat-header-cell *matHeaderCellDef> Horas </th>
+        <td mat-cell *matCellDef="let r">{{ r.horas | number:'1.2-2' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="km">
+        <th mat-header-cell *matHeaderCellDef> Km </th>
+        <td mat-cell *matCellDef="let r">{{ r.km | number:'1.2-2' }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="['matricula','viagens','horas','km']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['matricula','viagens','horas','km'];"></tr>
+    </table>
+  </div>
+
+  <div class="botoes-voltar">
+    <div class="voltar-relatorio-total">
+      <button mat-stroked-button color="primary"
+        (click)="voltarRelatorioViagens()">
+        <mat-icon>arrow_back</mat-icon>
+        Relatório total de viagens
+      </button>
+    </div>
+    <div class="voltar">
+      <button mat-stroked-button color="primary" (click)="voltarAtras()">
+        Voltar ao menu principal
+      </button>
+    </div>
+  </div>
+</mat-card>
+
+<style>
+.relatorio-taxis {
+  padding: 20px;
+}
+
+.taxi-details {
+  margin: 20px 0;
+}
+
+.details-card {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.loading-detalhes {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.mat-mdc-card-avatar {
+  background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.divider {
+  margin: 16px 0;
+}
+
+.detalhe-link {
+  color: #1976d2;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.detalhe-link:hover {
+  text-decoration: underline;
+}
+
+.no-viagens {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: #666;
+  gap: 8px;
+}
+
+table {
+  width: 100%;
+}
+
+.botoes-voltar {
+  margin-top: 20px;
+  display: flex;
+  gap: 16px;
+}
+
+.totais {
+  display: flex;
+  gap: 24px;
+  padding: 16px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  margin: 16px 0;
+}
+
+.totais span {
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.totais span:hover {
+  background: #e0e0e0;
+}
+</style>
